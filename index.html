@@ -1,0 +1,4395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>开票回款 / 成本费用 UI 预览</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --line: #f0f0f0;
+        --line-strong: #e5e7eb;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --blue: #1677ff;
+        --blue-soft: #e8f3ff;
+        --green: #52c41a;
+        --green-soft: #edf9e8;
+        --gold: #faad14;
+        --gold-soft: #fff7e6;
+        --orange: #fa8c16;
+        --orange-soft: #fff2e8;
+        --red: #ff4d4f;
+        --red-soft: #fff1f0;
+        --cyan: #13c2c2;
+        --cyan-soft: #e6fffb;
+        --purple: #722ed1;
+        --purple-soft: #f9f0ff;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        --radius: 16px;
+        --radius-sm: 10px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      body {
+        overflow-x: hidden;
+      }
+
+      .app-shell {
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: #0f172a;
+        border-right: 1px solid #111827;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .brand {
+        padding: 18px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .brand-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .brand-subtitle {
+        margin: 4px 0 0;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 12px;
+      }
+
+      .menu-group {
+        padding: 12px 12px 0;
+      }
+
+      .menu-label {
+        padding: 8px 12px;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 12px;
+      }
+
+      .menu-item {
+        width: 100%;
+        margin: 0;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.85);
+        text-align: left;
+        padding: 12px 14px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .menu-item + .menu-item {
+        margin-top: 4px;
+      }
+
+      .menu-item.active {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .menu-item.muted {
+        opacity: 0.72;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 16px 20px 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .workspace {
+        min-width: 0;
+      }
+
+      .header {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        flex-wrap: wrap;
+      }
+
+      .breadcrumbs .current {
+        color: var(--text);
+      }
+
+      .user-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: #e8f3ff;
+        color: var(--blue);
+        font-weight: 700;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .page-block + .page-block {
+        margin-top: 16px;
+      }
+
+      .page-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .page-header {
+        padding: 20px 22px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.3;
+      }
+
+      .toolbar {
+        padding: 18px 22px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar-left,
+      .toolbar-right,
+      .toolbar-filters {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .field,
+      .btn,
+      .stat-tag {
+        min-height: 36px;
+        border-radius: 8px;
+        font-size: 13px;
+      }
+
+      .control-input,
+      .control-select,
+      .control-date {
+        min-height: 36px;
+        padding: 0 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        background: #fff;
+        color: #374151;
+        font-size: 13px;
+        outline: none;
+      }
+
+      .control-input {
+        min-width: 220px;
+      }
+
+      .control-select,
+      .control-date {
+        min-width: 138px;
+      }
+
+      .field {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid #d9d9d9;
+        background: #fff;
+        color: #374151;
+      }
+
+      .field.project {
+        min-width: 360px;
+      }
+
+      .project-control {
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
+        width: 100%;
+        max-width: 780px;
+      }
+
+      .project-field-strong {
+        position: relative;
+        flex: 1;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 10px 14px 10px 18px;
+        border: 1px solid #91caff;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #f0f8ff 0%, #ffffff 100%);
+        box-shadow: inset 0 0 0 1px rgba(22, 119, 255, 0.06);
+        cursor: pointer;
+      }
+
+      .project-field-strong::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        border-radius: 10px 0 0 10px;
+        background: var(--blue);
+      }
+
+      .project-field-main {
+        min-width: 0;
+      }
+
+      .project-field-label {
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .project-field-value {
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .project-field-action {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .project-switch-icon {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        background: #fff;
+        color: #667085;
+        flex: 0 0 auto;
+      }
+
+      .project-switch-icon svg {
+        width: 14px;
+        height: 14px;
+        display: block;
+      }
+
+      .field.search {
+        min-width: 220px;
+      }
+
+      .field.filter {
+        min-width: 138px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border: 1px solid #d9d9d9;
+        background: #fff;
+        color: var(--text);
+      }
+
+      .btn.primary {
+        border-color: var(--blue);
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .btn.link {
+        min-height: auto;
+        padding: 0;
+        border: 0;
+        color: var(--blue);
+        background: transparent;
+      }
+
+      .btn.link.danger {
+        color: var(--red);
+      }
+
+      .project-summary {
+        margin: 0 22px 20px;
+        padding: 12px 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fafcff;
+      }
+
+      .project-summary.subtle {
+        background: #fcfcfd;
+        border-color: #f3f4f6;
+      }
+
+      .summary-title {
+        margin: 0 0 10px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .summary-tip {
+        margin: -2px 0 12px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .payment-terms-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      .term-pill {
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #f5f7fa;
+        color: #475467;
+        font-size: 12px;
+        line-height: 1.4;
+        white-space: normal;
+        word-break: break-word;
+      }
+
+      .modal-mask {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1000;
+      }
+
+      .modal-mask.open {
+        display: flex;
+      }
+
+      .modal {
+        width: min(640px, 100%);
+        max-height: min(720px, calc(100vh - 48px));
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+      }
+
+      .modal-header,
+      .modal-footer {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .modal-footer {
+        border-bottom: 0;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .modal-subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .modal-body {
+        padding: 16px 20px 20px;
+        overflow: auto;
+      }
+
+      .search-input {
+        width: 100%;
+        min-height: 40px;
+        padding: 0 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        outline: none;
+        font-size: 13px;
+      }
+
+      .project-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .project-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 1px solid var(--line-strong);
+        border-radius: 10px;
+        background: #fff;
+        cursor: pointer;
+      }
+
+      .project-option.active {
+        border-color: #91caff;
+        background: #f0f8ff;
+      }
+
+      .project-radio {
+        width: 16px;
+        height: 16px;
+        margin-top: 2px;
+        border: 1px solid #bfbfbf;
+        border-radius: 50%;
+        position: relative;
+        flex: 0 0 auto;
+      }
+
+      .project-option.active .project-radio {
+        border-color: var(--blue);
+      }
+
+      .project-option.active .project-radio::after {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        border-radius: 50%;
+        background: var(--blue);
+      }
+
+      .project-option-name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .project-option-meta {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .empty-state {
+        padding: 28px 12px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .summary-item {
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: #fff;
+        border: 1px solid var(--line);
+      }
+
+      .summary-item-label {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .summary-item-value {
+        margin-top: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.5;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+        padding: 0 22px 22px;
+      }
+
+      .stats-grid.four {
+        grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+      }
+
+      .stat-card {
+        position: relative;
+        overflow: hidden;
+        padding: 16px 16px 14px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+      }
+
+      .stat-card.soft-blue {
+        background: linear-gradient(180deg, #f9fcff 0%, #ffffff 100%);
+      }
+
+      .stat-card.soft-gold {
+        background: linear-gradient(180deg, #fffaf0 0%, #ffffff 100%);
+      }
+
+      .stat-card.soft-green {
+        background: linear-gradient(180deg, #f7fff5 0%, #ffffff 100%);
+      }
+
+      .stat-card.soft-purple {
+        background: linear-gradient(180deg, #fbf7ff 0%, #ffffff 100%);
+      }
+
+      .stat-card.soft-red {
+        background: linear-gradient(180deg, #fff8f8 0%, #ffffff 100%);
+      }
+
+      .stat-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      }
+
+      .stat-icon svg {
+        width: 24px;
+        height: 24px;
+        display: block;
+      }
+
+      .stat-icon.blue {
+        color: var(--blue);
+        background: var(--blue-soft);
+      }
+
+      .stat-icon.gold {
+        color: var(--gold);
+        background: var(--gold-soft);
+      }
+
+      .stat-icon.green {
+        color: var(--green);
+        background: var(--green-soft);
+      }
+
+      .stat-icon.purple {
+        color: var(--purple);
+        background: var(--purple-soft);
+      }
+
+      .stat-icon.red {
+        color: var(--red);
+        background: var(--red-soft);
+      }
+
+      .stat-icon.cyan {
+        color: var(--cyan);
+        background: var(--cyan-soft);
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .stat-value {
+        margin-top: 8px;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .stat-note {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .stats-grid.invoice .stat-note {
+        display: none;
+      }
+
+      .total-cost-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 132px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .mini-ring {
+        position: relative;
+        width: 108px;
+        height: 108px;
+        margin-left: auto;
+        border-radius: 50%;
+        background: radial-gradient(
+            closest-side,
+            #fff 70%,
+            transparent 71% 100%
+          ),
+          conic-gradient(var(--cyan) 0 48.5%, #e5edf7 48.5% 100%);
+      }
+
+      .mini-ring-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+
+      .mini-ring-center strong {
+        display: block;
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .mini-ring-center span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .tabs-card {
+        padding: 0 22px 22px;
+      }
+
+      .tabs-bar {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .tabs-left {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+
+      .tab-btn {
+        position: relative;
+        border: 0;
+        background: transparent;
+        padding: 0 0 12px;
+        font-size: 14px;
+        color: var(--muted);
+        cursor: pointer;
+        line-height: 1.2;
+      }
+
+      .tab-btn.active {
+        color: var(--blue);
+        font-weight: 600;
+      }
+
+      .tab-btn.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--blue);
+      }
+
+      .table-panel {
+        padding-top: 16px;
+      }
+
+      .table-panel.hidden {
+        display: none;
+      }
+
+      .panel-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .panel-title {
+        position: relative;
+        margin: 0;
+        padding-left: 14px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .panel-title::before,
+      .section-title::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #69b1ff 0%, #1677ff 100%);
+      }
+
+      .panel-title::before {
+        height: 16px;
+      }
+
+      .stats-grid.invoice .stat-note {
+        display: none;
+      }
+
+      .panel-desc {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .table-wrap {
+        overflow: visible;
+        background: transparent;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 12px 0 0;
+        background: transparent;
+      }
+
+      .pagination-info {
+        color: var(--muted);
+        font-size: 12px;
+        margin-right: 6px;
+      }
+
+      .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .page-btn {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 8px;
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        background: #fff;
+        color: var(--text);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .page-btn:hover:not(:disabled) {
+        border-color: #4096ff;
+        color: #4096ff;
+      }
+
+      .page-btn.active {
+        border-color: var(--blue);
+        color: var(--blue);
+        background: #fff;
+      }
+
+      .page-btn:disabled {
+        cursor: not-allowed;
+        color: #bfbfbf;
+        background: #fafafa;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        background: #fff;
+      }
+
+      thead {
+        background: #fafafa;
+      }
+
+      th,
+      td {
+        padding: 14px 12px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        font-size: 13px;
+        vertical-align: top;
+      }
+
+      th {
+        color: #4b5563;
+        font-weight: 600;
+      }
+
+      th:first-child,
+      td:first-child {
+        padding-left: 16px;
+      }
+
+      th:last-child,
+      td:last-child {
+        padding-right: 16px;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .placeholder-row td {
+        color: transparent;
+        user-select: none;
+      }
+
+      .money {
+        font-weight: 600;
+        color: #111827;
+      }
+
+      .subtext {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .trend-up {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #f6ffed;
+        color: #389e0d;
+        font-weight: 600;
+      }
+
+      .status,
+      .tiny-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .status.blue,
+      .tiny-tag.blue {
+        color: var(--blue);
+        background: var(--blue-soft);
+      }
+
+      .status.green,
+      .tiny-tag.green {
+        color: var(--green);
+        background: var(--green-soft);
+      }
+
+      .status.gold,
+      .tiny-tag.gold {
+        color: #d48806;
+        background: var(--gold-soft);
+      }
+
+      .status.red,
+      .tiny-tag.red {
+        color: var(--red);
+        background: var(--red-soft);
+      }
+
+      .status.cyan,
+      .tiny-tag.cyan {
+        color: var(--cyan);
+        background: var(--cyan-soft);
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        white-space: nowrap;
+      }
+
+      .divider {
+        width: 1px;
+        height: 14px;
+        background: #d9d9d9;
+      }
+
+      .section-card {
+        padding: 20px 22px 22px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .section-head-right {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-left: auto;
+      }
+
+      .section-title {
+        position: relative;
+        margin: 0;
+        padding-left: 16px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .section-title::before {
+        height: 18px;
+      }
+
+      .section-subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .step {
+        padding: 16px;
+        border: 1px dashed #dbe4f0;
+        border-radius: 12px;
+        background: #fafcff;
+      }
+
+      .step-index {
+        display: inline-grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: #e8f3ff;
+        color: var(--blue);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .step-title {
+        margin: 10px 0 6px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .step-text {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .cost-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 16px;
+      }
+
+      .cost-grid > .page-card {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chart-bars {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 320px;
+      }
+
+      .bar-row {
+        display: grid;
+        gap: 10px;
+      }
+
+      .bar-row-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .bar-label {
+        font-size: 14px;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      .bar-meta {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 18px;
+        white-space: nowrap;
+      }
+
+      .bar-amount {
+        color: #1f2937;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .bar-percent {
+        min-width: 36px;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: right;
+      }
+
+      .bar-track {
+        height: 8px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #edf0f4;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--blue), #69b1ff);
+      }
+
+      .bar-fill.purple {
+        background: linear-gradient(90deg, #7b61ff, #9c8cff);
+      }
+
+      .bar-fill.gold {
+        background: linear-gradient(90deg, #d4a100, #f3c23c);
+      }
+
+      .bar-fill.green {
+        background: linear-gradient(90deg, #41b46a, #71cb8d);
+      }
+
+      .bar-fill.red {
+        background: linear-gradient(90deg, #f04b37, #ff7a63);
+      }
+
+      .bar-total {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding-top: 18px;
+        border-top: 1px solid #eef1f5;
+      }
+
+      .bar-total span {
+        color: #4b5563;
+        font-size: 13px;
+      }
+
+      .bar-total strong {
+        color: #1f2937;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .labor-alt-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 16px;
+      }
+
+      .range-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .range-toolbar.in-head {
+        margin-bottom: 0;
+      }
+
+      .range-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .labor-trend-list {
+        min-height: 340px;
+      }
+
+      .axis-chart {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 12px;
+        min-height: 340px;
+      }
+
+      .axis-y {
+        position: relative;
+        height: 280px;
+      }
+
+      .axis-y-label {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .month-column {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        height: 100%;
+      }
+
+      .month-value {
+        display: none;
+      }
+
+      .axis-chart-main {
+        display: grid;
+        grid-template-rows: 280px auto;
+        gap: 10px;
+      }
+
+      .axis-plot {
+        position: relative;
+        height: 280px;
+      }
+
+      .axis-grid {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-rows: repeat(5, 1fr);
+        pointer-events: none;
+      }
+
+      .axis-grid-line {
+        border-top: 1px dashed #e6ebf2;
+      }
+
+      .axis-columns {
+        position: relative;
+        height: 280px;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+        align-items: end;
+        padding: 0 10px;
+        border-left: 1px solid #d9e2ef;
+        border-bottom: 1px solid #d9e2ef;
+      }
+
+      .month-bar {
+        width: 28px;
+        min-height: 28px;
+        border-radius: 16px 16px 10px 10px;
+        background: linear-gradient(180deg, #35b36a 0%, #81d79e 100%);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.24);
+      }
+
+      .month-bar.blue {
+        background: linear-gradient(180deg, #1677ff 0%, #69b1ff 100%);
+      }
+
+      .month-bar.gold {
+        background: linear-gradient(180deg, #d4a100 0%, #f3c23c 100%);
+      }
+
+      .month-bar.purple {
+        background: linear-gradient(180deg, #7b61ff 0%, #9c8cff 100%);
+      }
+
+      .month-bar.red {
+        background: linear-gradient(180deg, #f04b37 0%, #ff7a63 100%);
+      }
+
+      .month-hours {
+        display: none;
+      }
+
+      .axis-x-row {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+        padding: 0 10px;
+      }
+
+      .axis-x-tick {
+        display: grid;
+        gap: 4px;
+        justify-items: center;
+      }
+
+      .axis-x-label {
+        color: #374151;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .dept-breakdown-module {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .dept-donut-wrap {
+        display: grid;
+        place-items: center;
+      }
+
+      .dept-donut {
+        width: 184px;
+        height: 184px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: conic-gradient(
+          #1677ff 0 40%,
+          #41b46a 40% 72%,
+          #d4a100 72% 90%,
+          #7b61ff 90% 100%
+        );
+      }
+
+      .dept-donut-center {
+        width: 116px;
+        height: 116px;
+        border-radius: 50%;
+        background: #fff;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        box-shadow: inset 0 0 0 1px #eef1f5;
+      }
+
+      .dept-donut-center span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .dept-donut-center strong {
+        display: block;
+        margin-top: 6px;
+        color: #111827;
+        font-size: 18px;
+        line-height: 1.1;
+      }
+
+      .dept-breakdown {
+        display: grid;
+        gap: 12px;
+      }
+
+      .dept-item {
+        padding: 12px 14px;
+        border: 1px solid #eef1f5;
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .dept-item-head,
+      .dept-item-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .dept-item-head {
+        margin-bottom: 8px;
+      }
+
+      .dept-name-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dept-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #1677ff;
+        flex: 0 0 auto;
+      }
+
+      .dept-dot.green {
+        background: #41b46a;
+      }
+
+      .dept-dot.gold {
+        background: #d4a100;
+      }
+
+      .dept-dot.purple {
+        background: #7b61ff;
+      }
+
+      .dept-dot.red {
+        background: #f04b37;
+      }
+
+      .dept-name {
+        color: #374151;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .dept-percent {
+        color: #111827;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .dept-meta {
+        color: var(--muted);
+        font-size: 12px;
+        flex-wrap: wrap;
+      }
+
+      .dept-cost {
+        color: #111827;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .labor-alt-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .labor-alt-kpi {
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: #f8fbff;
+        border: 1px solid #e7eef7;
+      }
+
+      .labor-alt-kpi-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .labor-alt-kpi-value {
+        margin-top: 8px;
+        color: #111827;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .scheme-caption {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .mini-cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .mini-card {
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .mini-card-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .mini-card-value {
+        margin-top: 8px;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .hint {
+        padding: 12px 14px;
+        border: 1px solid #ffe58f;
+        border-radius: 10px;
+        background: #fffbe6;
+        color: #8c6d1f;
+        font-size: 12px;
+        line-height: 1.7;
+        margin-bottom: 14px;
+      }
+
+      .footer-note {
+        margin-top: 14px;
+        color: var(--muted);
+        text-align: right;
+        font-size: 12px;
+      }
+
+      @media (max-width: 1280px) {
+        .stats-grid,
+        .stats-grid.four,
+        .summary-grid,
+        .steps,
+        .mini-cards,
+        .labor-alt-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .cost-grid,
+        .labor-alt-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dept-breakdown-module {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          min-height: auto;
+        }
+
+        .stats-grid,
+        .stats-grid.four,
+        .summary-grid,
+        .steps,
+        .mini-cards,
+        .labor-alt-summary {
+          grid-template-columns: 1fr;
+        }
+
+        .field.project,
+        .field.search,
+        .field.filter {
+          min-width: 0;
+          width: 100%;
+        }
+
+        .toolbar-left,
+        .toolbar-right,
+        .toolbar-filters {
+          width: 100%;
+        }
+
+        .panel-toolbar {
+          align-items: flex-start;
+        }
+
+        table,
+        thead,
+        tbody,
+        tr,
+        th,
+        td {
+          display: block;
+          width: 100%;
+        }
+
+        thead {
+          display: none;
+        }
+
+        td {
+          padding: 10px 12px;
+        }
+
+        td::before {
+          content: attr(data-label);
+          display: block;
+          margin-bottom: 4px;
+          color: var(--muted);
+          font-size: 12px;
+        }
+
+        .actions {
+          padding-top: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <p class="brand-title">财务管理中台</p>
+          <p class="brand-subtitle">OA Next.js Demo</p>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-label">财务管理</div>
+          <button
+            class="menu-item active"
+            data-screen-target="invoice-screen"
+            type="button"
+          >
+            开票回款
+          </button>
+          <button class="menu-item muted" type="button">收入确认</button>
+          <button
+            class="menu-item"
+            data-screen-target="cost-screen"
+            type="button"
+          >
+            成本费用
+          </button>
+        </div>
+
+        <div class="sidebar-footer">
+          这个文件是静态高保真预览。
+          <br />
+          主体内容按照语雀文档的信息结构重排，控件语言尽量贴近 Ant Design
+          的后台页面风格。
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="header">
+          <div class="breadcrumbs">
+            <span>财务管理</span>
+            <span>/</span>
+            <span id="current-page-name">开票回款</span>
+            <span>/</span>
+            <span class="current">页面效果预览</span>
+          </div>
+
+          <div class="user-chip">
+            <div class="avatar">LQ</div>
+            <span>luoqi</span>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="screen active" id="invoice-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">开票回款</h1>
+              </div>
+
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="project-control">
+                    <div
+                      class="project-field-strong"
+                      data-open-project-modal="invoice"
+                    >
+                      <div class="project-field-main">
+                        <div class="project-field-label">当前项目：</div>
+                        <div
+                          class="project-field-value"
+                          data-project-name="invoice"
+                        >
+                          SCDL-2026-018 城市交通数据中台建设一期
+                        </div>
+                      </div>
+                      <div class="project-field-action">
+                        <span class="project-switch-icon" aria-hidden="true">
+                          <svg viewBox="0 0 1024 1024" fill="currentColor">
+                            <path
+                              d="M768 296H387.3l84.4-84.3a32 32 0 1 0-45.3-45.3L287.3 305.4a32 32 0 0 0 0 45.3l139.1 139a32 32 0 1 0 45.3-45.2L387.3 360H768a32 32 0 0 0 0-64zm-31.3 238.7a32 32 0 0 0-45.3 45.3l84.4 84.3H256a32 32 0 0 0 0 64h519.8l-84.4 84.3a32 32 0 1 0 45.3 45.3l139.1-139a32 32 0 0 0 0-45.3l-139.1-138.9z"
+                            ></path>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="project-summary subtle">
+                <p class="summary-title">项目合同信息</p>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-item-label">客户名称</div>
+                    <div class="summary-item-value" id="invoice-customer-name">
+                      成都数智交通集团
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">合同名称</div>
+                    <div class="summary-item-value" id="invoice-contract-name">
+                      城市交通数据中台建设一期
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">合同金额</div>
+                    <div
+                      class="summary-item-value"
+                      id="invoice-contract-amount"
+                    >
+                      ¥ 8,620,000
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">支付条件</div>
+                    <div
+                      class="summary-item-value"
+                      id="invoice-payment-terms"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stats-grid invoice">
+                <div class="stat-card soft-blue">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">合同金额（含税）</div>
+                      <div class="stat-value" id="invoice-stat-contract">
+                        ¥ 8,620,000
+                      </div>
+                    </div>
+                    <div class="stat-icon blue">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M224 160h448l128 128v576H224V160zm64 64v576h448V320H608V224H288zm96 128h224v64H384v-64zm0 128h256v64H384v-64zm0 128h192v64H384v-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">项目合同总金额</div>
+                </div>
+
+                <div class="stat-card soft-gold">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">已开票金额</div>
+                      <div class="stat-value" id="invoice-stat-invoiced">
+                        ¥ 6,780,000
+                      </div>
+                    </div>
+                    <div class="stat-icon gold">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M160 224h704v576H160V224zm64 64v448h576V288H224zm96 64h384v64H320v-64zm0 128h384v64H320v-64zm0 128h256v64H320v-64z"
+                        ></path>
+                        <path d="M736 192h64v96h-64zm-96 0h64v96h-64z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">已完成开票累计金额</div>
+                </div>
+
+                <div class="stat-card soft-green">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">已回款金额</div>
+                      <div class="stat-value" id="invoice-stat-collected">
+                        ¥ 5,240,000
+                      </div>
+                    </div>
+                    <div class="stat-icon green">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M128 256h768a64 64 0 0 1 64 64v384a64 64 0 0 1-64 64H128a64 64 0 0 1-64-64V320a64 64 0 0 1 64-64zm0 64v384h768V320H128zm128 96h160v64H256v-64zm0 128h512v64H256v-64z"
+                        ></path>
+                        <path
+                          d="M736 544l-96-96 45.3-45.3L736 453.5l109.7-109.8L891 389l-155 155z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">已登记回款总额</div>
+                </div>
+
+                <div class="stat-card soft-red">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">未开票金额</div>
+                      <div class="stat-value" id="invoice-stat-uninvoiced">
+                        ¥ 1,840,000
+                      </div>
+                    </div>
+                    <div class="stat-icon red">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M832 192H192a64 64 0 0 0-64 64v512a64 64 0 0 0 64 64h640a64 64 0 0 0 64-64V256a64 64 0 0 0-64-64zm0 576H192V256h640v512z"
+                        ></path>
+                        <path
+                          d="M320 448h256v64H320zm0 128h192v64H320zM704 384l64 64-160 160-64-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">剩余可开票金额</div>
+                </div>
+
+                <div class="stat-card soft-purple">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">已开票未回款金额</div>
+                      <div class="stat-value" id="invoice-stat-uncollected">
+                        ¥ 1,540,000
+                      </div>
+                    </div>
+                    <div class="stat-icon purple">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M512 128c194.4 0 352 157.6 352 352S706.4 832 512 832 160 674.4 160 480 317.6 128 512 128zm0 64c-159.1 0-288 128.9-288 288s128.9 288 288 288 288-128.9 288-288S671.1 192 512 192z"
+                        ></path>
+                        <path
+                          d="M512 288c106 0 192 86 192 192h-64c0-70.7-57.3-128-128-128V288zm0 384c-88.4 0-160-71.6-160-160h64c0 53 43 96 96 96 35.1 0 66.7-18.8 83.6-49.1l55 32C622.5 640.7 570.5 672 512 672z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">待回款重点关注金额</div>
+                </div>
+              </div>
+
+              <div class="tabs-card">
+                <div class="tabs-bar">
+                  <div class="tabs-left">
+                    <button
+                      class="tab-btn active"
+                      data-invoice-tab="invoice"
+                      type="button"
+                    >
+                      开票明细
+                    </button>
+                    <button
+                      class="tab-btn"
+                      data-invoice-tab="collection"
+                      type="button"
+                    >
+                      回款明细
+                    </button>
+                  </div>
+                </div>
+
+                <div class="table-panel" data-invoice-panel="invoice">
+                  <div class="panel-toolbar">
+                    <div class="toolbar-filters">
+                      <input
+                        class="control-input"
+                        type="text"
+                        placeholder="搜索发票编号 / 备注"
+                      />
+                      <select class="control-select">
+                        <option>开票类型</option>
+                        <option>专票</option>
+                        <option>普票</option>
+                      </select>
+                      <input class="control-date" type="date" />
+                      <select class="control-select">
+                        <option>状态</option>
+                        <option>待审核</option>
+                        <option>财务办理中</option>
+                        <option>已开票</option>
+                      </select>
+                      <div class="btn primary">查询</div>
+                    </div>
+                  </div>
+
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width: 16%">发票编号</th>
+                          <th style="width: 13%">开票日期</th>
+                          <th style="width: 14%">开票金额</th>
+                          <th style="width: 11%">开票类型</th>
+                          <th style="width: 12%">状态</th>
+                          <th style="width: 22%">备注</th>
+                          <th style="width: 12%">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody id="invoice-table-body"></tbody>
+                    </table>
+                    <div class="pagination" id="invoice-pagination"></div>
+                  </div>
+                </div>
+
+                <div class="table-panel hidden" data-invoice-panel="collection">
+                  <div class="panel-toolbar">
+                    <div class="toolbar-filters">
+                      <input
+                        class="control-input"
+                        type="text"
+                        placeholder="搜索回款编号 / 备注"
+                      />
+                      <input class="control-date" type="date" />
+                      <div class="btn primary">查询</div>
+                      <div class="btn primary">新增回款</div>
+                    </div>
+                  </div>
+
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width: 16%">回款编号</th>
+                          <th style="width: 16%">回款日期</th>
+                          <th style="width: 16%">回款金额</th>
+                          <th style="width: 14%">回款方式</th>
+                          <th style="width: 24%">备注</th>
+                          <th style="width: 14%">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody id="collection-table-body"></tbody>
+                    </table>
+                    <div class="pagination" id="collection-pagination"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="cost-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">成本费用</h1>
+              </div>
+
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="project-control">
+                    <div
+                      class="project-field-strong"
+                      data-open-project-modal="cost"
+                    >
+                      <div class="project-field-main">
+                        <div class="project-field-label">当前项目：</div>
+                        <div
+                          class="project-field-value"
+                          data-project-name="cost"
+                        >
+                          SCDL-2026-018 城市交通数据中台建设一期
+                        </div>
+                      </div>
+                      <div class="project-field-action">
+                        <span class="project-switch-icon" aria-hidden="true">
+                          <svg viewBox="0 0 1024 1024" fill="currentColor">
+                            <path
+                              d="M768 296H387.3l84.4-84.3a32 32 0 1 0-45.3-45.3L287.3 305.4a32 32 0 0 0 0 45.3l139.1 139a32 32 0 1 0 45.3-45.2L387.3 360H768a32 32 0 0 0 0-64zm-31.3 238.7a32 32 0 0 0-45.3 45.3l84.4 84.3H256a32 32 0 0 0 0 64h519.8l-84.4 84.3a32 32 0 1 0 45.3 45.3l139.1-139a32 32 0 0 0 0-45.3l-139.1-138.9z"
+                            ></path>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="toolbar-right">
+                  <div class="btn primary">导出成本分析</div>
+                </div>
+              </div>
+
+              <div class="project-summary subtle">
+                <p class="summary-title">项目合同信息</p>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-item-label">客户名称</div>
+                    <div class="summary-item-value" id="cost-customer-name">
+                      成都数智交通集团
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">合同名称</div>
+                    <div class="summary-item-value" id="cost-contract-name">
+                      城市交通数据中台建设一期
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">合同金额</div>
+                    <div class="summary-item-value" id="cost-contract-amount">
+                      ¥ 8,620,000
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">支付条件</div>
+                    <div
+                      class="summary-item-value"
+                      id="cost-payment-terms"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stats-grid four">
+                <div class="stat-card">
+                  <div class="total-cost-card">
+                    <div>
+                      <div class="stat-head">
+                        <div>
+                          <div class="stat-label">成本总额</div>
+                          <div class="stat-value" id="cost-stat-total">
+                            ¥ 4,180,000
+                          </div>
+                        </div>
+                        <div class="stat-icon cyan">
+                          <svg viewBox="0 0 1024 1024" fill="currentColor">
+                            <path
+                              d="M512 128c212.1 0 384 171.9 384 384S724.1 896 512 896 128 724.1 128 512 299.9 128 512 128zm0 64c-176.7 0-320 143.3-320 320s143.3 320 320 320 320-143.3 320-320S688.7 192 512 192zm-32 96v256h224v64H416V288h64z"
+                            ></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="stat-note" id="cost-total-note">
+                        合同金额 ¥ 8,620,000
+                        <br />
+                        成本占比 48.5%
+                      </div>
+                    </div>
+
+                    <div class="mini-ring">
+                      <div class="mini-ring-center">
+                        <div>
+                          <strong id="cost-ring-percent">48.5%</strong>
+                          <span>占合同比</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="stat-card soft-gold">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">供应商成本</div>
+                      <div class="stat-value" id="cost-stat-supplier">
+                        ¥ 2,340,000
+                      </div>
+                    </div>
+                    <div class="stat-icon gold">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M160 256h704a64 64 0 0 1 64 64v416a64 64 0 0 1-64 64H160a64 64 0 0 1-64-64V320a64 64 0 0 1 64-64zm0 64v96h704v-96H160zm0 160v256h704V480H160zm96 64h160v64H256v-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">采购合同和发票归集金额</div>
+                </div>
+
+                <div class="stat-card soft-green">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">人工成本</div>
+                      <div class="stat-value" id="cost-stat-labor">
+                        ¥ 1,380,000
+                      </div>
+                    </div>
+                    <div class="stat-icon green">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M352 512a160 160 0 1 1 0-320 160 160 0 0 1 0 320zm320 0a128 128 0 1 1 0-256 128 128 0 0 1 0 256zM160 832c0-123.7 100.3-224 224-224h64c123.7 0 224 100.3 224 224H160zm480 0c0-88.4 71.6-160 160-160h32c88.4 0 160 71.6 160 160H640z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note" id="cost-labor-note">
+                    较上月 +8.7%，按工时分摊
+                  </div>
+                </div>
+
+                <div class="stat-card soft-red">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">报销费用</div>
+                      <div class="stat-value" id="cost-stat-expense">
+                        ¥ 460,000
+                      </div>
+                    </div>
+                    <div class="stat-icon red">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M256 160h448l128 128v576H192V160h64zm64 64v576h448V320H640V224H320zm96 160h256v64H416v-64zm0 128h256v64H416v-64zm0 128h192v64H416v-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">已归集项目报销费用</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="page-card page-block section-card">
+              <div class="section-head">
+                <div>
+                  <h2 class="section-title">供应商成本</h2>
+                </div>
+                <div class="tiny-tag blue">采购链路闭环</div>
+              </div>
+
+              <div class="steps">
+                <div class="step">
+                  <div class="step-index">01</div>
+                  <div class="step-title">采购申请</div>
+                  <div class="step-text">
+                    走审批流程沉淀采购需求来源，形成后续合同签订的前置动作。
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-index">02</div>
+                  <div class="step-title">采购合同签订</div>
+                  <div class="step-text">
+                    审批通过后生成合同主数据，为供应商成本归集提供合同编号、金额与签订日期。
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-index">03</div>
+                  <div class="step-title">发票上传</div>
+                  <div class="step-text">
+                    支持 OCR 识别。专票取不含税金额，普票取价税合计金额。
+                  </div>
+                </div>
+              </div>
+
+              <div class="hint">
+                上传发票后可自动识别金额与税额，并按普票 /
+                专票规则回填成本金额。
+              </div>
+
+              <div class="panel-toolbar">
+                <div>
+                  <p class="panel-title">供应商成本明细</p>
+                </div>
+
+                <div class="toolbar-filters">
+                  <input class="control-date" type="date" />
+                  <select class="control-select">
+                    <option>状态</option>
+                    <option>待上传发票</option>
+                    <option>已上传发票</option>
+                  </select>
+                  <select class="control-select">
+                    <option>分类</option>
+                    <option>专票</option>
+                    <option>普票</option>
+                  </select>
+                  <div class="btn primary">查询</div>
+                  <div class="btn primary">上传发票</div>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 22%">供应商名称</th>
+                      <th style="width: 12%">状态</th>
+                      <th style="width: 15%">合同编号</th>
+                      <th style="width: 12%">合同金额</th>
+                      <th style="width: 12%">成本金额</th>
+                      <th style="width: 12%">含税金额</th>
+                      <th style="width: 12%">签订日期</th>
+                      <th style="width: 13%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="supplier-table-body"></tbody>
+                </table>
+                <div class="pagination" id="supplier-pagination"></div>
+              </div>
+            </div>
+
+            <div class="cost-grid page-block">
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div>
+                    <h2 class="section-title">报销费用</h2>
+                  </div>
+                  <div class="tiny-tag gold">费用类型分析</div>
+                </div>
+
+                <div class="chart-bars" id="expense-bars"></div>
+              </div>
+
+              <div class="page-card section-card">
+                <div class="panel-toolbar">
+                  <div>
+                    <p class="panel-title">报销费用明细</p>
+                  </div>
+
+                  <div class="toolbar-filters">
+                    <input class="control-date" type="date" />
+                    <select class="control-select">
+                      <option>费用类型</option>
+                      <option>差旅费</option>
+                      <option>业务招待</option>
+                      <option>交通费</option>
+                      <option>办公用品</option>
+                    </select>
+                    <select class="control-select">
+                      <option>申请人</option>
+                      <option>张晨</option>
+                      <option>李岚</option>
+                      <option>王晟</option>
+                    </select>
+                    <div class="btn primary">查询</div>
+                  </div>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>报销单号</th>
+                        <th>申请人</th>
+                        <th>费用类型</th>
+                        <th>报销金额</th>
+                        <th>申请日期</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                      </tr>
+                    </thead>
+                    <tbody id="expense-table-body"></tbody>
+                  </table>
+                  <div class="pagination" id="expense-pagination"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="page-card page-block section-card">
+              <div class="section-head">
+                <div>
+                  <h2 class="section-title">人力成本</h2>
+                </div>
+                <div class="section-head-right">
+                  <div class="range-toolbar in-head">
+                    <span class="range-label">统计区间</span>
+                    <select
+                      class="control-select"
+                      id="labor-main-range-start"
+                    ></select>
+                    <span class="range-label">至</span>
+                    <select
+                      class="control-select"
+                      id="labor-main-range-end"
+                    ></select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mini-cards">
+                <div class="mini-card">
+                  <div class="mini-card-label">人力成本</div>
+                  <div class="mini-card-value" id="labor-month-cost">
+                    ¥ 612,000
+                  </div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-card-label">参与人数</div>
+                  <div class="mini-card-value" id="labor-headcount">18</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-card-label">人均成本</div>
+                  <div class="mini-card-value" id="labor-per-capita">
+                    ¥ 34,000
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-toolbar">
+                <div class="toolbar-filters">
+                  <input
+                    class="control-input"
+                    type="text"
+                    placeholder="搜索员工姓名"
+                  />
+                  <select class="control-select">
+                    <option>部门筛选</option>
+                    <option>交付实施部</option>
+                    <option>研发中心</option>
+                    <option>产品中心</option>
+                  </select>
+                  <div class="btn primary">查询</div>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 18%">员工姓名</th>
+                      <th style="width: 18%">部门</th>
+                      <th style="width: 18%">职位</th>
+                      <th style="width: 14%">工时</th>
+                      <th style="width: 16%">成本</th>
+                      <th style="width: 16%">月份</th>
+                    </tr>
+                  </thead>
+                  <tbody id="labor-table-body"></tbody>
+                </table>
+                <div class="pagination" id="labor-pagination"></div>
+              </div>
+            </div>
+
+            <div class="labor-alt-grid page-block">
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div>
+                    <h2 class="section-title">人力成本（方案2）</h2>
+                  </div>
+                  <div class="section-head-right">
+                    <div class="range-toolbar in-head">
+                      <span class="range-label">统计区间</span>
+                      <select
+                        class="control-select"
+                        id="labor-range-start"
+                      ></select>
+                      <span class="range-label">至</span>
+                      <select
+                        class="control-select"
+                        id="labor-range-end"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+                <p class="scheme-caption">
+                  适合在成本费用页先看项目月度人力成本走势，再决定是否下钻到员工明细。
+                </p>
+                <div class="labor-alt-summary">
+                  <div class="labor-alt-kpi">
+                    <div class="labor-alt-kpi-label">合计成本</div>
+                    <div class="labor-alt-kpi-value" id="labor-alt-total-cost">
+                      ¥ 2,180,000
+                    </div>
+                  </div>
+                  <div class="labor-alt-kpi">
+                    <div class="labor-alt-kpi-label">合计工时</div>
+                    <div class="labor-alt-kpi-value" id="labor-alt-total-hours">
+                      3,480h
+                    </div>
+                  </div>
+                  <div class="labor-alt-kpi">
+                    <div class="labor-alt-kpi-label">期末参与人数</div>
+                    <div
+                      class="labor-alt-kpi-value"
+                      id="labor-alt-current-headcount"
+                    >
+                      18人
+                    </div>
+                  </div>
+                </div>
+                <div class="labor-trend-list" id="labor-trend-chart"></div>
+              </div>
+
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div>
+                    <h2 class="section-title">部门与工时分布</h2>
+                  </div>
+                  <div class="section-head-right">
+                    <div class="range-toolbar in-head">
+                      <span class="range-label">统计区间</span>
+                      <select
+                        class="control-select"
+                        id="dept-range-start"
+                      ></select>
+                      <span class="range-label">至</span>
+                      <select
+                        class="control-select"
+                        id="dept-range-end"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+                <p class="scheme-caption">
+                  同一项目下，按部门查看人员投入、工时和成本占比，更适合管理层横向比较。
+                </p>
+                <div id="labor-dept-module"></div>
+              </div>
+            </div>
+          </section>
+
+          <div class="footer-note">
+            静态 HTML 高保真预览，可直接用浏览器打开查看。
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal-mask" id="project-modal">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-modal-title"
+      >
+        <div class="modal-header">
+          <h2 class="modal-title" id="project-modal-title">选择交付项目</h2>
+          <p class="modal-subtitle">
+            支持搜索项目名称、项目编号、客户名称。单选后点击确定，全页数据会同步切换。
+          </p>
+        </div>
+        <div class="modal-body">
+          <input
+            class="search-input"
+            id="project-search-input"
+            type="text"
+            placeholder="搜索项目名称 / 项目编号 / 客户名称"
+          />
+          <div class="project-list" id="project-list"></div>
+          <div class="empty-state" id="project-empty-state" hidden>
+            没有匹配的项目，请修改搜索条件。
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="project-cancel-btn" type="button">
+            取消
+          </button>
+          <button class="btn primary" id="project-confirm-btn" type="button">
+            确定
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const menuItems = document.querySelectorAll("[data-screen-target]");
+      const screens = document.querySelectorAll(".screen");
+      const pageName = document.getElementById("current-page-name");
+
+      menuItems.forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.getAttribute("data-screen-target");
+
+          menuItems.forEach((item) => item.classList.remove("active"));
+          screens.forEach((screen) => screen.classList.remove("active"));
+
+          button.classList.add("active");
+          document.getElementById(targetId).classList.add("active");
+          pageName.textContent = button.textContent.trim();
+        });
+      });
+
+      const invoiceTabs = document.querySelectorAll("[data-invoice-tab]");
+      const invoicePanels = document.querySelectorAll("[data-invoice-panel]");
+
+      invoiceTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("data-invoice-tab");
+
+          invoiceTabs.forEach((item) => item.classList.remove("active"));
+          invoicePanels.forEach((panel) => panel.classList.add("hidden"));
+
+          tab.classList.add("active");
+          document
+            .querySelector(`[data-invoice-panel="${target}"]`)
+            .classList.remove("hidden");
+        });
+      });
+
+      const projectOptions = [
+        {
+          id: "project-a",
+          code: "SCDL-2026-018",
+          name: "城市交通数据中台建设一期",
+          customer: "成都数智交通集团",
+          invoice: {
+            customerName: "成都数智交通集团",
+            contractName: "城市交通数据中台建设一期",
+            contractAmount: "¥ 8,620,000",
+            paymentTerms: ["预付款 30%", "里程碑验收 50%", "质保尾款 20%"],
+            stats: {
+              contract: "¥ 8,620,000",
+              invoiced: "¥ 6,780,000",
+              collected: "¥ 5,240,000",
+              uninvoiced: "¥ 1,840,000",
+              uncollected: "¥ 1,540,000",
+            },
+            invoices: [
+              {
+                code: "FP-2026-032",
+                date: "2026-04-02",
+                amount: "¥ 860,000",
+                sub: "税额 ¥ 51,600",
+                type: "专票",
+                typeClass: "blue",
+                status: "财务办理中",
+                statusClass: "gold",
+                remark: "发票附件待上传，审批已通过",
+              },
+              {
+                code: "FP-2026-029",
+                date: "2026-03-28",
+                amount: "¥ 420,000",
+                sub: "税额待确认",
+                type: "普票",
+                typeClass: "gold",
+                status: "待审核",
+                statusClass: "red",
+                remark: "项目经理审批中",
+              },
+              {
+                code: "FP-2026-021",
+                date: "2026-03-12",
+                amount: "¥ 1,240,000",
+                sub: "税额 ¥ 74,400",
+                type: "专票",
+                typeClass: "blue",
+                status: "已开票",
+                statusClass: "green",
+                remark: "已上传电子发票附件",
+              },
+              {
+                code: "FP-2026-018",
+                date: "2026-03-05",
+                amount: "¥ 960,000",
+                sub: "税额 ¥ 57,600",
+                type: "专票",
+                typeClass: "blue",
+                status: "已开票",
+                statusClass: "green",
+                remark: "阶段里程碑对应开票完成",
+              },
+              {
+                code: "FP-2026-014",
+                date: "2026-02-22",
+                amount: "¥ 310,000",
+                sub: "税额待确认",
+                type: "普票",
+                typeClass: "gold",
+                status: "已开票",
+                statusClass: "green",
+                remark: "实施支持服务补充开票",
+              },
+            ],
+            collections: [
+              {
+                code: "RC-2026-015",
+                sub: "第二阶段回款",
+                date: "2026-04-01",
+                amount: "¥ 300,000",
+                method: "银行转账",
+                remark: "客户已付款，待补充回单附件",
+              },
+              {
+                code: "RC-2026-012",
+                sub: "节点二回款",
+                date: "2026-03-21",
+                amount: "¥ 980,000",
+                method: "银行转账",
+                remark: "与 FP-2026-021 对应回款",
+              },
+              {
+                code: "RC-2026-009",
+                sub: "合同首付款",
+                date: "2026-02-06",
+                amount: "¥ 1,620,000",
+                method: "银行转账",
+                remark: "首付款到账完成",
+              },
+              {
+                code: "RC-2026-007",
+                sub: "一期实施回款",
+                date: "2026-01-26",
+                amount: "¥ 860,000",
+                method: "银行转账",
+                remark: "与阶段实施服务对应",
+              },
+              {
+                code: "RC-2026-005",
+                sub: "合同预付款",
+                date: "2026-01-12",
+                amount: "¥ 1,480,000",
+                method: "银行转账",
+                remark: "项目启动预付款已核对",
+              },
+            ],
+          },
+          cost: {
+            total: "¥ 4,180,000",
+            contract: "¥ 8,620,000",
+            contractName: "城市交通数据中台建设一期",
+            customerName: "成都数智交通集团",
+            paymentTerms: ["预付款 30%", "里程碑验收 50%", "质保尾款 20%"],
+            ratio: "48.5%",
+            supplier: "¥ 2,340,000",
+            labor: "¥ 1,380,000",
+            laborNote: "较上月 +8.7%，按工时分摊",
+            expense: "¥ 460,000",
+            suppliers: [
+              {
+                name: "成都天擎科技",
+                status: "已上传发票",
+                statusClass: "green",
+                contractNo: "CG-2026-018-01",
+                contractAmount: "¥ 1,260,000",
+                costAmount: "¥ 1,108,000",
+                costSub: "专票，不含税",
+                taxAmount: "¥ 1,260,000",
+                signDate: "2026-03-16",
+              },
+              {
+                name: "川维设备服务",
+                status: "待上传发票",
+                statusClass: "gold",
+                contractNo: "CG-2026-018-04",
+                contractAmount: "¥ 520,000",
+                costAmount: "¥ 520,000",
+                costSub: "普票，价税合计",
+                taxAmount: "¥ 520,000",
+                signDate: "2026-03-28",
+              },
+              {
+                name: "云图集成",
+                status: "已上传发票",
+                statusClass: "green",
+                contractNo: "CG-2026-018-06",
+                contractAmount: "¥ 740,000",
+                costAmount: "¥ 712,400",
+                costSub: "专票，不含税",
+                taxAmount: "¥ 740,000",
+                signDate: "2026-04-01",
+              },
+              {
+                name: "成都智维服务",
+                status: "待上传发票",
+                statusClass: "gold",
+                contractNo: "CG-2026-018-08",
+                contractAmount: "¥ 360,000",
+                costAmount: "¥ 360,000",
+                costSub: "普票，价税合计",
+                taxAmount: "¥ 360,000",
+                signDate: "2026-04-06",
+              },
+              {
+                name: "星联系统集成",
+                status: "已上传发票",
+                statusClass: "green",
+                contractNo: "CG-2026-018-09",
+                contractAmount: "¥ 410,000",
+                costAmount: "¥ 387,000",
+                costSub: "专票，不含税",
+                taxAmount: "¥ 410,000",
+                signDate: "2026-04-09",
+              },
+            ],
+            expenseBars: [
+              {
+                label: "差旅费",
+                width: "40%",
+                cls: "",
+                amount: "¥ 182,000",
+                percent: "40%",
+              },
+              {
+                label: "业务招待",
+                width: "25%",
+                cls: "green",
+                amount: "¥ 116,000",
+                percent: "25%",
+              },
+              {
+                label: "办公用品",
+                width: "11%",
+                cls: "purple",
+                amount: "¥ 50,000",
+                percent: "11%",
+              },
+              {
+                label: "交通费",
+                width: "16%",
+                cls: "gold",
+                amount: "¥ 72,000",
+                percent: "16%",
+              },
+              {
+                label: "通讯费",
+                width: "8%",
+                cls: "red",
+                amount: "¥ 40,000",
+                percent: "8%",
+              },
+            ],
+            expenses: [
+              {
+                code: "BX-2026-084",
+                user: "张晨",
+                type: "差旅费",
+                typeClass: "gold",
+                amount: "¥ 28,400",
+                date: "2026-04-01",
+                status: "已归集",
+                statusClass: "green",
+                remark: "成都驻场交通及住宿",
+              },
+              {
+                code: "BX-2026-077",
+                user: "李岚",
+                type: "办公用品",
+                typeClass: "blue",
+                amount: "¥ 6,200",
+                date: "2026-03-25",
+                status: "待归集",
+                statusClass: "gold",
+                remark: "项目测试设备采购",
+              },
+              {
+                code: "BX-2026-072",
+                user: "王晟",
+                type: "业务招待",
+                typeClass: "red",
+                amount: "¥ 14,800",
+                date: "2026-03-19",
+                status: "已归集",
+                statusClass: "green",
+                remark: "客户汇报会接待",
+              },
+              {
+                code: "BX-2026-069",
+                user: "陈果",
+                type: "交通费",
+                typeClass: "green",
+                amount: "¥ 3,680",
+                date: "2026-03-16",
+                status: "已归集",
+                statusClass: "green",
+                remark: "项目现场往返交通",
+              },
+              {
+                code: "BX-2026-061",
+                user: "刘畅",
+                type: "差旅费",
+                typeClass: "gold",
+                amount: "¥ 9,200",
+                date: "2026-03-09",
+                status: "已归集",
+                statusClass: "green",
+                remark: "阶段验收驻场住宿",
+              },
+            ],
+            laborSummary: {
+              monthCost: "¥ 612,000",
+              headcount: "18",
+              perCapita: "¥ 34,000",
+            },
+            laborTrendSummary: {
+              totalCost: "¥ 2,180,000",
+              totalHours: "3,480h",
+              currentHeadcount: "18人",
+            },
+            laborTrend: [
+              {
+                month: "2025-12",
+                amount: "¥ 328,000",
+                amountValue: 328000,
+                hours: "602h",
+                hoursValue: 602,
+                headcount: 12,
+                cls: "blue",
+              },
+              {
+                month: "2026-01",
+                amount: "¥ 402,000",
+                amountValue: 402000,
+                hours: "668h",
+                hoursValue: 668,
+                headcount: 14,
+                cls: "gold",
+              },
+              {
+                month: "2026-02",
+                amount: "¥ 438,000",
+                amountValue: 438000,
+                hours: "714h",
+                hoursValue: 714,
+                headcount: 15,
+                cls: "purple",
+              },
+              {
+                month: "2026-03",
+                amount: "¥ 400,000",
+                amountValue: 400000,
+                hours: "646h",
+                hoursValue: 646,
+                headcount: 16,
+                cls: "green",
+              },
+              {
+                month: "2026-04",
+                amount: "¥ 612,000",
+                amountValue: 612000,
+                hours: "850h",
+                hoursValue: 850,
+                headcount: 18,
+                cls: "red",
+              },
+            ],
+            laborDeptMonthly: [
+              {
+                month: "2025-12",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 5,
+                    hoursValue: 228,
+                    costValue: 142000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 4,
+                    hoursValue: 206,
+                    costValue: 118000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 96,
+                    costValue: 42000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 1,
+                    hoursValue: 72,
+                    costValue: 26000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-01",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 6,
+                    hoursValue: 250,
+                    costValue: 164000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 4,
+                    hoursValue: 224,
+                    costValue: 136000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 108,
+                    costValue: 54000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 2,
+                    hoursValue: 86,
+                    costValue: 48000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-02",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 6,
+                    hoursValue: 264,
+                    costValue: 178000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 5,
+                    hoursValue: 236,
+                    costValue: 148000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 114,
+                    costValue: 58000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 2,
+                    hoursValue: 100,
+                    costValue: 54000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-03",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 6,
+                    hoursValue: 246,
+                    costValue: 168000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 5,
+                    hoursValue: 220,
+                    costValue: 136000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 3,
+                    hoursValue: 102,
+                    costValue: 52000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 2,
+                    hoursValue: 78,
+                    costValue: 44000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-04",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 7,
+                    hoursValue: 318,
+                    costValue: 268000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 6,
+                    hoursValue: 292,
+                    costValue: 214000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 3,
+                    hoursValue: 138,
+                    costValue: 78000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 2,
+                    hoursValue: 102,
+                    costValue: 52000,
+                    cls: "purple",
+                  },
+                ],
+              },
+            ],
+            laborRows: [
+              {
+                name: "张晨",
+                dept: "交付实施部",
+                role: "项目经理",
+                hours: "164h",
+                cost: "¥ 58,400",
+                month: "2026-04",
+              },
+              {
+                name: "李岚",
+                dept: "研发中心",
+                role: "前端工程师",
+                hours: "152h",
+                cost: "¥ 46,700",
+                month: "2026-04",
+              },
+              {
+                name: "王晟",
+                dept: "交付实施部",
+                role: "实施顾问",
+                hours: "176h",
+                cost: "¥ 41,200",
+                month: "2026-04",
+              },
+              {
+                name: "陈果",
+                dept: "产品中心",
+                role: "测试工程师",
+                hours: "148h",
+                cost: "¥ 31,600",
+                month: "2026-04",
+              },
+              {
+                name: "刘畅",
+                dept: "研发中心",
+                role: "后端工程师",
+                hours: "160h",
+                cost: "¥ 49,800",
+                month: "2026-04",
+              },
+            ],
+          },
+        },
+        {
+          id: "project-b",
+          code: "GZDL-2026-006",
+          name: "智慧工地综合监管平台二期",
+          customer: "贵州交投建设集团",
+          invoice: {
+            customerName: "贵州交投建设集团",
+            contractName: "智慧工地综合监管平台二期",
+            contractAmount: "¥ 6,480,000",
+            paymentTerms: ["预付款 40%", "阶段验收 40%", "尾款 20%"],
+            stats: {
+              contract: "¥ 6,480,000",
+              invoiced: "¥ 4,260,000",
+              collected: "¥ 3,180,000",
+              uninvoiced: "¥ 2,220,000",
+              uncollected: "¥ 1,080,000",
+            },
+            invoices: [
+              {
+                code: "FP-2026-044",
+                date: "2026-04-06",
+                amount: "¥ 680,000",
+                sub: "税额 ¥ 40,800",
+                type: "专票",
+                typeClass: "blue",
+                status: "已开票",
+                statusClass: "green",
+                remark: "运维服务补充开票",
+              },
+              {
+                code: "FP-2026-037",
+                date: "2026-03-26",
+                amount: "¥ 360,000",
+                sub: "税额待确认",
+                type: "普票",
+                typeClass: "gold",
+                status: "待审核",
+                statusClass: "red",
+                remark: "实施节点二提交审批",
+              },
+              {
+                code: "FP-2026-030",
+                date: "2026-03-10",
+                amount: "¥ 920,000",
+                sub: "税额 ¥ 55,200",
+                type: "专票",
+                typeClass: "blue",
+                status: "财务办理中",
+                statusClass: "gold",
+                remark: "财务待上传发票文件",
+              },
+              {
+                code: "FP-2026-025",
+                date: "2026-02-27",
+                amount: "¥ 540,000",
+                sub: "税额 ¥ 32,400",
+                type: "专票",
+                typeClass: "blue",
+                status: "已开票",
+                statusClass: "green",
+                remark: "监管平台设备集成开票",
+              },
+              {
+                code: "FP-2026-019",
+                date: "2026-02-14",
+                amount: "¥ 240,000",
+                sub: "税额待确认",
+                type: "普票",
+                typeClass: "gold",
+                status: "已开票",
+                statusClass: "green",
+                remark: "阶段驻场服务补充开票",
+              },
+            ],
+            collections: [
+              {
+                code: "RC-2026-022",
+                sub: "验收节点回款",
+                date: "2026-04-08",
+                amount: "¥ 420,000",
+                method: "银行转账",
+                remark: "已到账，等待核销",
+              },
+              {
+                code: "RC-2026-018",
+                sub: "里程碑二回款",
+                date: "2026-03-29",
+                amount: "¥ 780,000",
+                method: "银行转账",
+                remark: "与 FP-2026-030 对应",
+              },
+              {
+                code: "RC-2026-011",
+                sub: "合同预付款",
+                date: "2026-02-18",
+                amount: "¥ 1,100,000",
+                method: "银行转账",
+                remark: "合同预付款到款",
+              },
+              {
+                code: "RC-2026-009",
+                sub: "节点一回款",
+                date: "2026-02-02",
+                amount: "¥ 560,000",
+                method: "银行转账",
+                remark: "与监管平台一期实施对应",
+              },
+              {
+                code: "RC-2026-004",
+                sub: "启动款到账",
+                date: "2026-01-15",
+                amount: "¥ 920,000",
+                method: "银行转账",
+                remark: "项目启动款已确认",
+              },
+            ],
+          },
+          cost: {
+            total: "¥ 3,260,000",
+            contract: "¥ 6,480,000",
+            contractName: "智慧工地综合监管平台二期",
+            customerName: "贵州交投建设集团",
+            paymentTerms: ["预付款 40%", "阶段验收 40%", "尾款 20%"],
+            ratio: "50.3%",
+            supplier: "¥ 1,920,000",
+            labor: "¥ 980,000",
+            laborNote: "较上月 +5.2%，项目验收阶段投入上升",
+            expense: "¥ 360,000",
+            suppliers: [
+              {
+                name: "贵安天行科技",
+                status: "已上传发票",
+                statusClass: "green",
+                contractNo: "CG-2026-006-01",
+                contractAmount: "¥ 980,000",
+                costAmount: "¥ 910,800",
+                costSub: "专票，不含税",
+                taxAmount: "¥ 980,000",
+                signDate: "2026-03-16",
+              },
+              {
+                name: "川南设备服务",
+                status: "待上传发票",
+                statusClass: "gold",
+                contractNo: "CG-2026-006-04",
+                contractAmount: "¥ 520,000",
+                costAmount: "¥ 520,000",
+                costSub: "普票，价税合计",
+                taxAmount: "¥ 520,000",
+                signDate: "2026-03-28",
+              },
+              {
+                name: "云图网络",
+                status: "已上传发票",
+                statusClass: "green",
+                contractNo: "CG-2026-006-06",
+                contractAmount: "¥ 740,000",
+                costAmount: "¥ 712,400",
+                costSub: "专票，不含税",
+                taxAmount: "¥ 740,000",
+                signDate: "2026-04-01",
+              },
+              {
+                name: "贵黔智联设备",
+                status: "待上传发票",
+                statusClass: "gold",
+                contractNo: "CG-2026-006-08",
+                contractAmount: "¥ 280,000",
+                costAmount: "¥ 280,000",
+                costSub: "普票，价税合计",
+                taxAmount: "¥ 280,000",
+                signDate: "2026-04-05",
+              },
+              {
+                name: "中黔信息服务",
+                status: "已上传发票",
+                statusClass: "green",
+                contractNo: "CG-2026-006-09",
+                contractAmount: "¥ 330,000",
+                costAmount: "¥ 311,300",
+                costSub: "专票，不含税",
+                taxAmount: "¥ 330,000",
+                signDate: "2026-04-09",
+              },
+            ],
+            expenseBars: [
+              {
+                label: "差旅费",
+                width: "35%",
+                cls: "",
+                amount: "¥ 126,000",
+                percent: "35%",
+              },
+              {
+                label: "业务招待",
+                width: "26%",
+                cls: "green",
+                amount: "¥ 94,000",
+                percent: "26%",
+              },
+              {
+                label: "办公用品",
+                width: "13%",
+                cls: "purple",
+                amount: "¥ 46,000",
+                percent: "13%",
+              },
+              {
+                label: "交通费",
+                width: "16%",
+                cls: "gold",
+                amount: "¥ 58,000",
+                percent: "16%",
+              },
+              {
+                label: "通讯费",
+                width: "10%",
+                cls: "red",
+                amount: "¥ 36,000",
+                percent: "10%",
+              },
+            ],
+            expenses: [
+              {
+                code: "BX-2026-091",
+                user: "赵宁",
+                type: "差旅费",
+                typeClass: "gold",
+                amount: "¥ 18,200",
+                date: "2026-04-07",
+                status: "已归集",
+                statusClass: "green",
+                remark: "贵阳驻场差旅",
+              },
+              {
+                code: "BX-2026-083",
+                user: "周芸",
+                type: "交通费",
+                typeClass: "green",
+                amount: "¥ 5,600",
+                date: "2026-03-31",
+                status: "待归集",
+                statusClass: "gold",
+                remark: "项目现场交通",
+              },
+              {
+                code: "BX-2026-079",
+                user: "何磊",
+                type: "业务招待",
+                typeClass: "red",
+                amount: "¥ 12,000",
+                date: "2026-03-24",
+                status: "已归集",
+                statusClass: "green",
+                remark: "客户例会接待",
+              },
+              {
+                code: "BX-2026-073",
+                user: "孙珂",
+                type: "办公用品",
+                typeClass: "blue",
+                amount: "¥ 4,260",
+                date: "2026-03-17",
+                status: "已归集",
+                statusClass: "green",
+                remark: "现场办公耗材采购",
+              },
+              {
+                code: "BX-2026-066",
+                user: "陈禾",
+                type: "差旅费",
+                typeClass: "gold",
+                amount: "¥ 8,900",
+                date: "2026-03-08",
+                status: "已归集",
+                statusClass: "green",
+                remark: "验收阶段驻场住宿",
+              },
+            ],
+            laborSummary: {
+              monthCost: "¥ 428,000",
+              headcount: "13",
+              perCapita: "¥ 32,923",
+            },
+            laborTrendSummary: {
+              totalCost: "¥ 1,640,000",
+              totalHours: "2,760h",
+              currentHeadcount: "13人",
+            },
+            laborTrend: [
+              {
+                month: "2025-12",
+                amount: "¥ 246,000",
+                amountValue: 246000,
+                hours: "486h",
+                hoursValue: 486,
+                headcount: 9,
+                cls: "blue",
+              },
+              {
+                month: "2026-01",
+                amount: "¥ 302,000",
+                amountValue: 302000,
+                hours: "538h",
+                hoursValue: 538,
+                headcount: 10,
+                cls: "gold",
+              },
+              {
+                month: "2026-02",
+                amount: "¥ 318,000",
+                amountValue: 318000,
+                hours: "574h",
+                hoursValue: 574,
+                headcount: 11,
+                cls: "purple",
+              },
+              {
+                month: "2026-03",
+                amount: "¥ 346,000",
+                amountValue: 346000,
+                hours: "612h",
+                hoursValue: 612,
+                headcount: 12,
+                cls: "green",
+              },
+              {
+                month: "2026-04",
+                amount: "¥ 428,000",
+                amountValue: 428000,
+                hours: "650h",
+                hoursValue: 650,
+                headcount: 13,
+                cls: "red",
+              },
+            ],
+            laborDeptMonthly: [
+              {
+                month: "2025-12",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 4,
+                    hoursValue: 184,
+                    costValue: 98000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 3,
+                    hoursValue: 162,
+                    costValue: 76000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 1,
+                    hoursValue: 74,
+                    costValue: 42000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 1,
+                    hoursValue: 66,
+                    costValue: 30000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-01",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 4,
+                    hoursValue: 204,
+                    costValue: 118000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 3,
+                    hoursValue: 178,
+                    costValue: 92000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 86,
+                    costValue: 52000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 1,
+                    hoursValue: 70,
+                    costValue: 40000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-02",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 4,
+                    hoursValue: 214,
+                    costValue: 126000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 4,
+                    hoursValue: 192,
+                    costValue: 104000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 92,
+                    costValue: 52000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 1,
+                    hoursValue: 76,
+                    costValue: 36000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-03",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 5,
+                    hoursValue: 226,
+                    costValue: 138000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 4,
+                    hoursValue: 206,
+                    costValue: 112000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 100,
+                    costValue: 56000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 1,
+                    hoursValue: 80,
+                    costValue: 40000,
+                    cls: "purple",
+                  },
+                ],
+              },
+              {
+                month: "2026-04",
+                departments: [
+                  {
+                    dept: "交付实施部",
+                    headcount: 5,
+                    hoursValue: 248,
+                    costValue: 176000,
+                    cls: "blue",
+                  },
+                  {
+                    dept: "研发中心",
+                    headcount: 4,
+                    hoursValue: 221,
+                    costValue: 142000,
+                    cls: "green",
+                  },
+                  {
+                    dept: "产品中心",
+                    headcount: 2,
+                    hoursValue: 104,
+                    costValue: 68000,
+                    cls: "gold",
+                  },
+                  {
+                    dept: "测试质量部",
+                    headcount: 2,
+                    hoursValue: 77,
+                    costValue: 42000,
+                    cls: "purple",
+                  },
+                ],
+              },
+            ],
+            laborRows: [
+              {
+                name: "赵宁",
+                dept: "交付实施部",
+                role: "项目经理",
+                hours: "148h",
+                cost: "¥ 52,600",
+                month: "2026-04",
+              },
+              {
+                name: "周芸",
+                dept: "产品中心",
+                role: "产品经理",
+                hours: "136h",
+                cost: "¥ 39,400",
+                month: "2026-04",
+              },
+              {
+                name: "何磊",
+                dept: "研发中心",
+                role: "后端工程师",
+                hours: "158h",
+                cost: "¥ 44,800",
+                month: "2026-04",
+              },
+              {
+                name: "孙珂",
+                dept: "交付实施部",
+                role: "实施顾问",
+                hours: "144h",
+                cost: "¥ 33,600",
+                month: "2026-04",
+              },
+              {
+                name: "陈禾",
+                dept: "研发中心",
+                role: "测试工程师",
+                hours: "150h",
+                cost: "¥ 29,800",
+                month: "2026-04",
+              },
+            ],
+          },
+        },
+      ];
+
+      let currentProjectId = projectOptions[0].id;
+      let pendingProjectId = currentProjectId;
+      const paginationState = {
+        invoice: 1,
+        collection: 1,
+        supplier: 1,
+        expense: 1,
+        labor: 1,
+      };
+      let latestTableData = {
+        invoice: [],
+        collection: [],
+        supplier: [],
+        expense: [],
+        labor: [],
+      };
+      const laborFilterState = {
+        mainStart: "",
+        mainEnd: "",
+        trendStart: "",
+        trendEnd: "",
+        deptStart: "",
+        deptEnd: "",
+      };
+
+      function setText(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+      }
+
+      function formatCurrency(value) {
+        return `¥ ${value.toLocaleString("en-US")}`;
+      }
+
+      function formatHours(value) {
+        return `${value}h`;
+      }
+
+      function formatHeadcount(value) {
+        return `${value}人`;
+      }
+
+      function parseCurrencyValue(value) {
+        return Number(String(value).replace(/[^\d.]/g, "")) || 0;
+      }
+
+      function parseHoursValue(value) {
+        return Number(String(value).replace(/[^\d.]/g, "")) || 0;
+      }
+
+      function renderPaymentTerms(terms) {
+        return `<div class="payment-terms-list">${terms
+          .map((term) => `<span class="term-pill">${term}</span>`)
+          .join("")}</div>`;
+      }
+
+      function renderLaborNote(note) {
+        return note.replace(
+          /([+-]\d+(?:\.\d+)?%)/,
+          '<span class="trend-up">$1</span>'
+        );
+      }
+
+      function actionsHtml() {
+        return `<div class="actions"><span class="btn link">详情</span><span class="divider"></span><span class="btn link">编辑</span><span class="divider"></span><span class="btn link danger">删除</span></div>`;
+      }
+
+      function renderPlaceholderRows(count, columns) {
+        if (count <= 0) return "";
+        return Array.from(
+          { length: count },
+          () =>
+            `<tr class="placeholder-row">${Array.from(
+              { length: columns },
+              () => "<td>&nbsp;</td>"
+            ).join("")}</tr>`
+        ).join("");
+      }
+
+      function renderInvoiceRows(rows) {
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="发票编号"><div class="money">${
+                row.code
+              }</div></td>
+              <td data-label="开票日期">${row.date}</td>
+              <td data-label="开票金额"><div class="money">${
+                row.amount
+              }</div><div class="subtext">${row.sub}</div></td>
+              <td data-label="开票类型"><span class="status ${row.typeClass}">${
+              row.type
+            }</span></td>
+              <td data-label="状态"><span class="status ${row.statusClass}">${
+              row.status
+            }</span></td>
+              <td data-label="备注">${row.remark}</td>
+              <td data-label="操作">${actionsHtml()}</td>
+            </tr>`
+          )
+          .join("");
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 7);
+      }
+
+      function renderCollectionRows(rows) {
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="回款编号"><div class="money">${
+                row.code
+              }</div><div class="subtext">${row.sub}</div></td>
+              <td data-label="回款日期">${row.date}</td>
+              <td data-label="回款金额"><div class="money">${
+                row.amount
+              }</div></td>
+              <td data-label="回款方式"><span class="status cyan">${
+                row.method
+              }</span></td>
+              <td data-label="备注">${row.remark}</td>
+              <td data-label="操作">${actionsHtml()}</td>
+            </tr>`
+          )
+          .join("");
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 6);
+      }
+
+      function renderExpenseBars(items, total) {
+        const rows = items
+          .map(
+            (item) => `<div class="bar-row">
+              <div class="bar-row-head">
+                <div class="bar-label">${item.label}</div>
+                <div class="bar-meta">
+                  <span class="bar-amount">${item.amount}</span>
+                  <span class="bar-percent">${item.percent}</span>
+                </div>
+              </div>
+              <div class="bar-track"><div class="bar-fill ${item.cls}" style="width: ${item.width}"></div></div>
+            </div>`
+          )
+          .join("");
+
+        return `${rows}<div class="bar-total"><span>合计</span><strong>${total}</strong></div>`;
+      }
+
+      function getSeriesColor(cls) {
+        if (cls === "green") return "#41b46a";
+        if (cls === "gold") return "#d4a100";
+        if (cls === "purple") return "#7b61ff";
+        if (cls === "red") return "#f04b37";
+        return "#1677ff";
+      }
+
+      function renderMonthRangeOptions(selectId, months, selectedValue) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+        select.innerHTML = months
+          .map(
+            (month) =>
+              `<option value="${month}" ${
+                month === selectedValue ? "selected" : ""
+              }>${month}</option>`
+          )
+          .join("");
+      }
+
+      function normalizeRange(start, end, months) {
+        let startIndex = months.indexOf(start);
+        let endIndex = months.indexOf(end);
+        if (startIndex === -1) startIndex = 0;
+        if (endIndex === -1) endIndex = months.length - 1;
+        if (startIndex > endIndex) {
+          return { start: months[endIndex], end: months[startIndex] };
+        }
+        return { start: months[startIndex], end: months[endIndex] };
+      }
+
+      function getSelectedMonths(months, start, end) {
+        const range = normalizeRange(start, end, months);
+        const startIndex = months.indexOf(range.start);
+        const endIndex = months.indexOf(range.end);
+        return months.slice(startIndex, endIndex + 1);
+      }
+
+      function renderLaborTrend(items) {
+        const maxValue = Math.max(...items.map((item) => item.amountValue), 0);
+        const tickValues = Array.from({ length: 5 }, (_, index) =>
+          Math.round((maxValue * (4 - index)) / 4)
+        );
+        const yAxis = tickValues
+          .map(
+            (value, index) =>
+              `<span class="axis-y-label" style="top: ${
+                index * 25
+              }%">${formatCurrency(value)}</span>`
+          )
+          .join("");
+        const columns = items
+          .map((item) => {
+            const height =
+              maxValue === 0
+                ? 0
+                : Math.max(28, Math.round((item.amountValue / maxValue) * 220));
+            return `<div class="month-column">
+              <div class="month-bar ${item.cls}" style="height: ${height}px"></div>
+            </div>`;
+          })
+          .join("");
+        const xAxis = items
+          .map(
+            (item) => `<div class="axis-x-tick">
+              <div class="axis-x-label">${item.month}</div>
+            </div>`
+          )
+          .join("");
+        return `<div class="axis-chart">
+          <div class="axis-y">${yAxis}</div>
+          <div class="axis-chart-main">
+            <div class="axis-plot">
+              <div class="axis-grid">
+                <span class="axis-grid-line"></span>
+                <span class="axis-grid-line"></span>
+                <span class="axis-grid-line"></span>
+                <span class="axis-grid-line"></span>
+                <span class="axis-grid-line"></span>
+              </div>
+              <div class="axis-columns" style="grid-template-columns: repeat(${items.length}, minmax(0, 1fr));">${columns}</div>
+            </div>
+            <div class="axis-x-row" style="grid-template-columns: repeat(${items.length}, minmax(0, 1fr));">${xAxis}</div>
+          </div>
+        </div>`;
+      }
+
+      function renderLaborDeptModule(items, totalCost) {
+        let currentPercent = 0;
+        const segments = items.map((item) => {
+          const start = currentPercent;
+          currentPercent += Number.parseFloat(item.percent);
+          return `${getSeriesColor(item.cls)} ${start}% ${currentPercent}%`;
+        });
+        if (currentPercent < 100) {
+          segments.push(`#edf0f4 ${currentPercent}% 100%`);
+        }
+
+        const legend = items
+          .map(
+            (item) => `<div class="dept-item">
+              <div class="dept-item-head">
+                <div class="dept-name-wrap">
+                  <span class="dept-dot ${item.cls}"></span>
+                  <span class="dept-name">${item.dept}</span>
+                </div>
+                <span class="dept-percent">${item.percent}</span>
+              </div>
+              <div class="dept-item-meta">
+                <span>${item.headcount}</span>
+                <span>${item.hours}</span>
+                <span class="dept-cost">${item.cost}</span>
+              </div>
+            </div>`
+          )
+          .join("");
+
+        return `<div class="dept-breakdown-module">
+          <div class="dept-donut-wrap">
+            <div class="dept-donut" style="background: conic-gradient(${segments.join(
+              ", "
+            )})">
+              <div class="dept-donut-center">
+                <div>
+                  <span>部门成本</span>
+                  <strong>${totalCost}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dept-breakdown">${legend}</div>
+        </div>`;
+      }
+
+      function renderLaborAnalytics(project) {
+        const months = project.cost.laborTrend.map((item) => item.month);
+        if (
+          !laborFilterState.mainStart ||
+          !months.includes(laborFilterState.mainStart)
+        )
+          laborFilterState.mainStart = months[0];
+        if (
+          !laborFilterState.mainEnd ||
+          !months.includes(laborFilterState.mainEnd)
+        )
+          laborFilterState.mainEnd = months[months.length - 1];
+        if (
+          !laborFilterState.trendStart ||
+          !months.includes(laborFilterState.trendStart)
+        )
+          laborFilterState.trendStart = months[0];
+        if (
+          !laborFilterState.trendEnd ||
+          !months.includes(laborFilterState.trendEnd)
+        )
+          laborFilterState.trendEnd = months[months.length - 1];
+        if (
+          !laborFilterState.deptStart ||
+          !months.includes(laborFilterState.deptStart)
+        )
+          laborFilterState.deptStart = months[0];
+        if (
+          !laborFilterState.deptEnd ||
+          !months.includes(laborFilterState.deptEnd)
+        )
+          laborFilterState.deptEnd = months[months.length - 1];
+
+        const mainRange = normalizeRange(
+          laborFilterState.mainStart,
+          laborFilterState.mainEnd,
+          months
+        );
+        laborFilterState.mainStart = mainRange.start;
+        laborFilterState.mainEnd = mainRange.end;
+        const trendRange = normalizeRange(
+          laborFilterState.trendStart,
+          laborFilterState.trendEnd,
+          months
+        );
+        laborFilterState.trendStart = trendRange.start;
+        laborFilterState.trendEnd = trendRange.end;
+        const deptRange = normalizeRange(
+          laborFilterState.deptStart,
+          laborFilterState.deptEnd,
+          months
+        );
+        laborFilterState.deptStart = deptRange.start;
+        laborFilterState.deptEnd = deptRange.end;
+
+        renderMonthRangeOptions(
+          "labor-main-range-start",
+          months,
+          laborFilterState.mainStart
+        );
+        renderMonthRangeOptions(
+          "labor-main-range-end",
+          months,
+          laborFilterState.mainEnd
+        );
+        renderMonthRangeOptions(
+          "labor-range-start",
+          months,
+          laborFilterState.trendStart
+        );
+        renderMonthRangeOptions(
+          "labor-range-end",
+          months,
+          laborFilterState.trendEnd
+        );
+        renderMonthRangeOptions(
+          "dept-range-start",
+          months,
+          laborFilterState.deptStart
+        );
+        renderMonthRangeOptions(
+          "dept-range-end",
+          months,
+          laborFilterState.deptEnd
+        );
+
+        const selectedMainMonths = getSelectedMonths(
+          months,
+          laborFilterState.mainStart,
+          laborFilterState.mainEnd
+        );
+        const mainEndMonth =
+          selectedMainMonths.at(-1) ?? months[months.length - 1];
+        const endTrendItem =
+          project.cost.laborTrend.find((item) => item.month === mainEndMonth) ??
+          project.cost.laborTrend.at(-1);
+        if (endTrendItem) {
+          setText("labor-month-cost", formatCurrency(endTrendItem.amountValue));
+          setText("labor-headcount", String(endTrendItem.headcount));
+          setText(
+            "labor-per-capita",
+            formatCurrency(
+              Math.round(
+                endTrendItem.amountValue / Math.max(endTrendItem.headcount, 1)
+              )
+            )
+          );
+          const latestAmount =
+            project.cost.laborTrend.at(-1)?.amountValue ??
+            endTrendItem.amountValue;
+          const factor = endTrendItem.amountValue / Math.max(latestAmount, 1);
+          latestTableData.labor = project.cost.laborRows.map((row) => ({
+            ...row,
+            hours: `${Math.max(
+              80,
+              Math.round(parseHoursValue(row.hours) * factor)
+            )}h`,
+            cost: formatCurrency(
+              Math.max(12000, Math.round(parseCurrencyValue(row.cost) * factor))
+            ),
+            month: mainEndMonth,
+          }));
+        }
+
+        const selectedTrendMonths = getSelectedMonths(
+          months,
+          laborFilterState.trendStart,
+          laborFilterState.trendEnd
+        );
+        const trendItems = project.cost.laborTrend.filter((item) =>
+          selectedTrendMonths.includes(item.month)
+        );
+        const totalCost = trendItems.reduce(
+          (sum, item) => sum + item.amountValue,
+          0
+        );
+        const totalHours = trendItems.reduce(
+          (sum, item) => sum + item.hoursValue,
+          0
+        );
+        const endHeadcount = trendItems.at(-1)?.headcount ?? 0;
+
+        setText("labor-alt-total-cost", formatCurrency(totalCost));
+        setText("labor-alt-total-hours", formatHours(totalHours));
+        setText("labor-alt-current-headcount", formatHeadcount(endHeadcount));
+        document.getElementById("labor-trend-chart").innerHTML =
+          renderLaborTrend(trendItems);
+
+        const selectedDeptMonths = getSelectedMonths(
+          months,
+          laborFilterState.deptStart,
+          laborFilterState.deptEnd
+        );
+        const deptMap = new Map();
+        project.cost.laborDeptMonthly
+          .filter((item) => selectedDeptMonths.includes(item.month))
+          .forEach((monthly) => {
+            monthly.departments.forEach((dept) => {
+              const current = deptMap.get(dept.dept) ?? {
+                dept: dept.dept,
+                headcount: 0,
+                hoursValue: 0,
+                costValue: 0,
+                cls: dept.cls,
+              };
+              current.headcount += dept.headcount;
+              current.hoursValue += dept.hoursValue;
+              current.costValue += dept.costValue;
+              deptMap.set(dept.dept, current);
+            });
+          });
+
+        const deptSource = Array.from(deptMap.values()).sort(
+          (a, b) => b.costValue - a.costValue
+        );
+        const deptTotalCost = deptSource.reduce(
+          (sum, item) => sum + item.costValue,
+          0
+        );
+        const deptItems = deptSource.map((dept) => ({
+          dept: dept.dept,
+          headcount: formatHeadcount(dept.headcount),
+          hours: formatHours(dept.hoursValue),
+          cost: formatCurrency(dept.costValue),
+          percent: `${Math.round(
+            (dept.costValue / Math.max(deptTotalCost || 1, 1)) * 100
+          )}%`,
+          cls: dept.cls,
+        }));
+
+        document.getElementById("labor-dept-module").innerHTML =
+          renderLaborDeptModule(deptItems, formatCurrency(deptTotalCost));
+        renderAllTables();
+      }
+
+      function renderSupplierRows(rows) {
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="供应商名称"><div class="money">${row.name}</div></td>
+              <td data-label="状态"><span class="status ${row.statusClass}">${row.status}</span></td>
+              <td data-label="合同编号">${row.contractNo}</td>
+              <td data-label="合同金额"><div class="money">${row.contractAmount}</div></td>
+              <td data-label="成本金额"><div class="money">${row.costAmount}</div><div class="subtext">${row.costSub}</div></td>
+              <td data-label="含税金额">${row.taxAmount}</td>
+              <td data-label="签订日期">${row.signDate}</td>
+              <td data-label="操作"><div class="actions"><span class="btn link">上传发票</span><span class="divider"></span><span class="btn link">详情</span><span class="divider"></span><span class="btn link danger">删除</span></div></td>
+            </tr>`
+          )
+          .join("");
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 8);
+      }
+
+      function renderExpenseRows(rows) {
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="报销单号">${row.code}</td>
+              <td data-label="申请人">${row.user}</td>
+              <td data-label="费用类型"><span class="status ${row.typeClass}">${row.type}</span></td>
+              <td data-label="报销金额"><div class="money">${row.amount}</div></td>
+              <td data-label="申请日期">${row.date}</td>
+              <td data-label="状态"><span class="status ${row.statusClass}">${row.status}</span></td>
+              <td data-label="备注">${row.remark}</td>
+            </tr>`
+          )
+          .join("");
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 7);
+      }
+
+      function renderLaborRows(rows) {
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="员工姓名">${row.name}</td>
+              <td data-label="部门">${row.dept}</td>
+              <td data-label="职位">${row.role}</td>
+              <td data-label="工时">${row.hours}</td>
+              <td data-label="成本"><div class="money">${row.cost}</div></td>
+              <td data-label="月份">${row.month}</td>
+            </tr>`
+          )
+          .join("");
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 6);
+      }
+
+      function getRowsPerPage() {
+        return 5;
+      }
+
+      function renderPagination(
+        containerId,
+        key,
+        total,
+        currentPage,
+        pageSize
+      ) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+          const page = index + 1;
+          return `<button class="page-btn ${
+            page === currentPage ? "active" : ""
+          }" type="button" data-page-key="${key}" data-page="${page}">${page}</button>`;
+        }).join("");
+
+        container.innerHTML = `
+          <div class="pagination-info">共 ${total} 条</div>
+          <div class="pagination-controls">
+            <button class="page-btn" type="button" data-page-key="${key}" data-page="${Math.max(
+          1,
+          currentPage - 1
+        )}" ${currentPage === 1 ? "disabled" : ""}>上一页</button>
+            ${pageButtons}
+            <button class="page-btn" type="button" data-page-key="${key}" data-page="${Math.min(
+          totalPages,
+          currentPage + 1
+        )}" ${currentPage === totalPages ? "disabled" : ""}>下一页</button>
+          </div>
+        `;
+
+        container.querySelectorAll("[data-page-key]").forEach((button) => {
+          button.addEventListener("click", () => {
+            paginationState[key] = Number(button.getAttribute("data-page"));
+            renderAllTables();
+          });
+        });
+      }
+
+      function renderAllTables() {
+        const configs = [
+          {
+            key: "invoice",
+            bodyId: "invoice-table-body",
+            pagerId: "invoice-pagination",
+            render: renderInvoiceRows,
+          },
+          {
+            key: "collection",
+            bodyId: "collection-table-body",
+            pagerId: "collection-pagination",
+            render: renderCollectionRows,
+          },
+          {
+            key: "supplier",
+            bodyId: "supplier-table-body",
+            pagerId: "supplier-pagination",
+            render: renderSupplierRows,
+          },
+          {
+            key: "expense",
+            bodyId: "expense-table-body",
+            pagerId: "expense-pagination",
+            render: renderExpenseRows,
+          },
+          {
+            key: "labor",
+            bodyId: "labor-table-body",
+            pagerId: "labor-pagination",
+            render: renderLaborRows,
+          },
+        ];
+
+        configs.forEach((config) => {
+          const rows = latestTableData[config.key] ?? [];
+          const pageSize = getRowsPerPage(config.key);
+          const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+          if (paginationState[config.key] > totalPages)
+            paginationState[config.key] = totalPages;
+          const start = (paginationState[config.key] - 1) * pageSize;
+          const currentRows = rows.slice(start, start + pageSize);
+          document.getElementById(config.bodyId).innerHTML =
+            config.render(currentRows);
+          renderPagination(
+            config.pagerId,
+            config.key,
+            rows.length,
+            paginationState[config.key],
+            pageSize
+          );
+        });
+      }
+
+      function renderProject(projectId) {
+        const project = projectOptions.find((item) => item.id === projectId);
+        if (!project) return;
+
+        document
+          .querySelectorAll(
+            '[data-project-name="invoice"], [data-project-name="cost"]'
+          )
+          .forEach((node) => {
+            node.textContent = `${project.code} ${project.name}`;
+          });
+
+        setText("invoice-customer-name", project.invoice.customerName);
+        setText("invoice-contract-name", project.invoice.contractName);
+        setText("invoice-contract-amount", project.invoice.contractAmount);
+        document.getElementById("invoice-payment-terms").innerHTML =
+          renderPaymentTerms(project.invoice.paymentTerms);
+        setText("invoice-stat-contract", project.invoice.stats.contract);
+        setText("invoice-stat-invoiced", project.invoice.stats.invoiced);
+        setText("invoice-stat-collected", project.invoice.stats.collected);
+        setText("invoice-stat-uninvoiced", project.invoice.stats.uninvoiced);
+        setText("invoice-stat-uncollected", project.invoice.stats.uncollected);
+        latestTableData.invoice = project.invoice.invoices;
+        latestTableData.collection = project.invoice.collections;
+
+        setText("cost-stat-total", project.cost.total);
+        setText("cost-customer-name", project.cost.customerName);
+        setText("cost-contract-name", project.cost.contractName);
+        setText("cost-contract-amount", project.cost.contract);
+        document.getElementById("cost-payment-terms").innerHTML =
+          renderPaymentTerms(project.cost.paymentTerms);
+        setText("cost-stat-supplier", project.cost.supplier);
+        setText("cost-stat-labor", project.cost.labor);
+        setText("cost-stat-expense", project.cost.expense);
+        document.getElementById("cost-labor-note").innerHTML = renderLaborNote(
+          project.cost.laborNote
+        );
+        setText("cost-ring-percent", project.cost.ratio);
+        document.getElementById(
+          "cost-total-note"
+        ).innerHTML = `合同金额 ${project.cost.contract}<br />成本占比 ${project.cost.ratio}`;
+        document.querySelector(
+          ".mini-ring"
+        ).style.background = `radial-gradient(closest-side, #fff 70%, transparent 71% 100%), conic-gradient(var(--cyan) 0 ${project.cost.ratio}, #e5edf7 ${project.cost.ratio} 100%)`;
+        document.getElementById("expense-bars").innerHTML = renderExpenseBars(
+          project.cost.expenseBars,
+          project.cost.expense
+        );
+        renderLaborAnalytics(project);
+        latestTableData.supplier = project.cost.suppliers;
+        latestTableData.expense = project.cost.expenses;
+        Object.keys(paginationState).forEach((key) => {
+          paginationState[key] = 1;
+        });
+        renderAllTables();
+      }
+
+      const projectModal = document.getElementById("project-modal");
+      const projectSearchInput = document.getElementById(
+        "project-search-input"
+      );
+      const projectList = document.getElementById("project-list");
+      const projectEmptyState = document.getElementById("project-empty-state");
+
+      function renderProjectList(keyword = "") {
+        const text = keyword.trim().toLowerCase();
+        const filtered = projectOptions.filter((item) =>
+          [item.code, item.name, item.customer].some((part) =>
+            part.toLowerCase().includes(text)
+          )
+        );
+
+        projectList.innerHTML = filtered
+          .map(
+            (item) => `<button class="project-option ${
+              item.id === pendingProjectId ? "active" : ""
+            }" type="button" data-project-option="${item.id}">
+              <span class="project-radio" aria-hidden="true"></span>
+              <span>
+                <span class="project-option-name">${item.code} ${
+              item.name
+            }</span>
+                <span class="project-option-meta">客户：${item.customer}</span>
+              </span>
+            </button>`
+          )
+          .join("");
+
+        projectEmptyState.hidden = filtered.length !== 0;
+
+        projectList
+          .querySelectorAll("[data-project-option]")
+          .forEach((item) => {
+            item.addEventListener("click", () => {
+              pendingProjectId = item.getAttribute("data-project-option");
+              renderProjectList(projectSearchInput.value);
+            });
+          });
+      }
+
+      function openProjectModal() {
+        pendingProjectId = currentProjectId;
+        projectSearchInput.value = "";
+        renderProjectList();
+        projectModal.classList.add("open");
+      }
+
+      function closeProjectModal() {
+        projectModal.classList.remove("open");
+      }
+
+      document
+        .querySelectorAll("[data-open-project-modal]")
+        .forEach((trigger) => {
+          trigger.addEventListener("click", openProjectModal);
+        });
+
+      projectSearchInput.addEventListener("input", () => {
+        renderProjectList(projectSearchInput.value);
+      });
+
+      document
+        .getElementById("project-cancel-btn")
+        .addEventListener("click", closeProjectModal);
+      document
+        .getElementById("project-confirm-btn")
+        .addEventListener("click", () => {
+          currentProjectId = pendingProjectId;
+          renderProject(currentProjectId);
+          closeProjectModal();
+        });
+
+      projectModal.addEventListener("click", (event) => {
+        if (event.target === projectModal) {
+          closeProjectModal();
+        }
+      });
+
+      [
+        "labor-main-range-start",
+        "labor-main-range-end",
+        "labor-range-start",
+        "labor-range-end",
+        "dept-range-start",
+        "dept-range-end",
+      ].forEach((id) => {
+        document.getElementById(id).addEventListener("change", () => {
+          if (id === "labor-main-range-start")
+            laborFilterState.mainStart = document.getElementById(id).value;
+          if (id === "labor-main-range-end")
+            laborFilterState.mainEnd = document.getElementById(id).value;
+          if (id === "labor-range-start")
+            laborFilterState.trendStart = document.getElementById(id).value;
+          if (id === "labor-range-end")
+            laborFilterState.trendEnd = document.getElementById(id).value;
+          if (id === "dept-range-start")
+            laborFilterState.deptStart = document.getElementById(id).value;
+          if (id === "dept-range-end")
+            laborFilterState.deptEnd = document.getElementById(id).value;
+          const project = projectOptions.find(
+            (item) => item.id === currentProjectId
+          );
+          if (project) renderLaborAnalytics(project);
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        renderAllTables();
+      });
+
+      renderProject(currentProjectId);
+    </script>
+  </body>
+</html>
