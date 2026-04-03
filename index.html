@@ -1095,8 +1095,9 @@
 
       .cost-grid {
         display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 16px;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+        gap: 18px;
+        align-items: stretch;
       }
 
       .cost-grid > .page-card {
@@ -1110,6 +1111,28 @@
         flex-direction: column;
         justify-content: space-between;
         min-height: 320px;
+      }
+
+      .expense-overview-card .section-head {
+        margin-bottom: 20px;
+      }
+
+      .expense-overview-card .chart-bars {
+        padding: 6px 2px 2px;
+      }
+
+      .expense-detail-card {
+        padding-bottom: 18px;
+      }
+
+      .expense-detail-card .panel-toolbar {
+        margin-bottom: 0;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .expense-detail-card .table-wrap {
+        margin-top: 14px;
       }
 
       .bar-row {
@@ -2211,7 +2234,7 @@
             </div>
 
             <div class="cost-grid page-block">
-              <div class="page-card section-card">
+              <div class="page-card section-card expense-overview-card">
                 <div class="section-head">
                   <div>
                     <h2 class="section-title">报销费用</h2>
@@ -2222,7 +2245,7 @@
                 <div class="chart-bars" id="expense-bars"></div>
               </div>
 
-              <div class="page-card section-card">
+              <div class="page-card section-card expense-detail-card">
                 <div class="panel-toolbar">
                   <div>
                     <p class="panel-title">报销费用明细</p>
@@ -2256,8 +2279,7 @@
                         <th>费用类型</th>
                         <th>报销金额</th>
                         <th>申请日期</th>
-                        <th>状态</th>
-                        <th>备注</th>
+                        <th>操作</th>
                       </tr>
                     </thead>
                     <tbody id="expense-table-body"></tbody>
@@ -4097,12 +4119,11 @@
               <td data-label="费用类型"><span class="status ${row.typeClass}">${row.type}</span></td>
               <td data-label="报销金额"><div class="money">${row.amount}</div></td>
               <td data-label="申请日期">${row.date}</td>
-              <td data-label="状态"><span class="status ${row.statusClass}">${row.status}</span></td>
-              <td data-label="备注">${row.remark}</td>
+              <td data-label="操作"><span class="btn link">详情</span></td>
             </tr>`
           )
           .join("");
-        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 7);
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 6);
       }
 
       function renderLaborRows(rows) {
