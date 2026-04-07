@@ -3252,11 +3252,7 @@
                 <div class="section-head">
                   <div>
                     <h2 class="section-title">报销费用</h2>
-                    <p class="panel-desc">
-                      按费用类别统计项目报销成本，借款金额不计入报销统计总额。
-                    </p>
                   </div>
-                  <div class="tiny-tag gold">费用类型分析</div>
                 </div>
 
                 <div class="chart-bars" id="expense-bars"></div>
@@ -3266,9 +3262,6 @@
                 <div class="panel-toolbar">
                   <div>
                     <p class="panel-title">报销费用明细</p>
-                    <p class="panel-desc">
-                      按报销人维度汇总展示已归集报销数据。
-                    </p>
                   </div>
                 </div>
 
@@ -3388,9 +3381,6 @@
                     </div>
                   </div>
                 </div>
-                <p class="scheme-caption">
-                  适合在成本费用页先看项目月度人力成本走势，再决定是否下钻到员工明细。
-                </p>
                 <div class="labor-alt-summary">
                   <div class="labor-alt-kpi">
                     <div class="labor-alt-kpi-label">合计成本</div>
@@ -3437,9 +3427,6 @@
                     </div>
                   </div>
                 </div>
-                <p class="scheme-caption">
-                  同一项目下，按部门查看人员投入、工时和成本占比，更适合管理层横向比较。
-                </p>
                 <div id="labor-dept-module"></div>
               </div>
             </div>
@@ -3579,13 +3566,6 @@
                       </div>
                     </div>
                     <div class="toolbar-right">
-                      <button
-                        class="btn"
-                        id="supplier-catalog-edit-btn"
-                        type="button"
-                      >
-                        编辑供应商
-                      </button>
                       <button
                         class="btn primary"
                         id="supplier-catalog-add-btn"
@@ -7913,7 +7893,7 @@
           {
             title: "供应商总数",
             value: String(rows.length),
-            note: "当前筛选结果",
+            note: "",
             soft: "soft-blue",
             accent: "blue",
             icon: '<path d="M192 256h640v512H192V256zm64 64v384h512V320H256zm96 96h128v64H352v-64zm0 128h256v64H352v-64z"></path>',
@@ -7921,7 +7901,7 @@
           {
             title: "本月新增",
             value: String(monthlyNew),
-            note: "最近更新供应商",
+            note: "",
             soft: "soft-green",
             accent: "green",
             icon: '<path d="M480 224h64v256h256v64H544v256h-64V544H224v-64h256V224z"></path>',
@@ -7929,18 +7909,10 @@
           {
             title: "产品条目",
             value: String(productTotal),
-            note: "采购申请/合同可引用",
+            note: "",
             soft: "soft-gold",
             accent: "gold",
             icon: '<path d="M224 192h576v640H224V192zm64 64v512h448V256H288zm96 96h256v64H384v-64zm0 128h192v64H384v-64z"></path>',
-          },
-          {
-            title: "引用锁定",
-            value: String(referencedCount),
-            note: "删除前需校验",
-            soft: "soft-red",
-            accent: "red",
-            icon: '<path d="M512 128L96 896h832L512 128zm0 123.8L817.9 832H206.1L512 251.8z"></path><path d="M480 416h64v192h-64zm0 256h64v64h-64z"></path>',
           },
         ];
 
