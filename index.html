@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>开票回款 / 成本费用 UI 预览</title>
+    <title>财务管理 / 采购管理 页面效果</title>
     <style>
       :root {
         --bg: #f5f7fb;
@@ -594,6 +594,10 @@
         grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
       }
 
+      .page-header + .stats-grid {
+        padding-top: 18px;
+      }
+
       .stat-card {
         position: relative;
         overflow: hidden;
@@ -840,6 +844,22 @@
       .table-wrap {
         overflow: visible;
         background: transparent;
+      }
+
+      .table-wrap.inset {
+        padding: 8px 22px 22px;
+      }
+
+      .inline-table-area {
+        padding: 10px 22px 22px;
+      }
+
+      .inline-table-area .table-wrap {
+        padding-top: 10px;
+      }
+
+      .inline-table-area .pagination {
+        padding-top: 14px;
       }
 
       .pagination {
@@ -1564,6 +1584,720 @@
         margin-bottom: 14px;
       }
 
+      .procurement-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      .procurement-grid > .page-card {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .quote-cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .quote-card {
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .quote-card.recommended {
+        border-color: #b7eb8f;
+        background: #f6ffed;
+      }
+
+      .quote-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .quote-amount {
+        margin-top: 8px;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .quote-meta {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .detail-stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .detail-box {
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .detail-box-title {
+        margin: 0 0 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .detail-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .detail-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .detail-value {
+        color: #1f2937;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: right;
+        line-height: 1.6;
+      }
+
+      .flow-inline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .flow-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f5f7fb;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+        font-size: 12px;
+      }
+
+      .flow-chip.active {
+        border-color: #91caff;
+        background: #e8f3ff;
+        color: var(--blue);
+      }
+
+      .flow-chip.done {
+        border-color: #b7eb8f;
+        background: #f6ffed;
+        color: #389e0d;
+      }
+
+      .form-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .page-quiet-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .supplier-shell {
+        display: grid;
+        gap: 16px;
+      }
+
+      .supplier-view.hidden {
+        display: none;
+      }
+
+      .supplier-toolbar {
+        padding-bottom: 18px;
+      }
+
+      .supplier-stat-card {
+        overflow: hidden;
+      }
+
+      .supplier-stat-card::after {
+        content: "";
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 0;
+        height: 3px;
+        border-radius: 999px 999px 0 0;
+        opacity: 0.88;
+      }
+
+      .supplier-stat-card.blue::after {
+        background: linear-gradient(90deg, #69b1ff 0%, #1677ff 100%);
+      }
+
+      .supplier-stat-card.green::after {
+        background: linear-gradient(90deg, #95de64 0%, #52c41a 100%);
+      }
+
+      .supplier-stat-card.gold::after {
+        background: linear-gradient(90deg, #ffd666 0%, #faad14 100%);
+      }
+
+      .supplier-stat-card.red::after {
+        background: linear-gradient(90deg, #ff9c9c 0%, #ff4d4f 100%);
+      }
+
+      .stat-inline-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .table-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 10px;
+        border: 1px solid #d9e7ff;
+        border-radius: 999px;
+        background: #f7fbff;
+        color: #3b5ccc;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .subpage-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
+      .subpage-back {
+        min-height: 32px;
+        padding: 0 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        background: #fff;
+        color: var(--text);
+        font-size: 13px;
+        cursor: pointer;
+      }
+
+      .subpage-path {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .supplier-profile-banner {
+        display: grid;
+        gap: 14px;
+        padding: 18px 22px 22px;
+      }
+
+      .profile-banner-main {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 18px 20px;
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        background: radial-gradient(
+            circle at top right,
+            rgba(22, 119, 255, 0.14),
+            transparent 34%
+          ),
+          linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+      }
+
+      .profile-banner-title {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.2;
+      }
+
+      .profile-banner-meta {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .profile-banner-tags {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .supplier-mini-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .supplier-mini-card {
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .supplier-mini-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .supplier-mini-value {
+        margin-top: 8px;
+        color: #111827;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .empty-cell {
+        padding: 32px 16px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        background: #fff;
+        color: #667085;
+        cursor: pointer;
+      }
+
+      .modal-header.compact {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .modal.medium {
+        width: min(860px, 100%);
+      }
+
+      .modal.wide {
+        width: min(960px, 100%);
+      }
+
+      .modal-section + .modal-section {
+        margin-top: 18px;
+      }
+
+      .modal-section-title {
+        margin: 0 0 12px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .modal-kv-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .modal-kv-item {
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fafcff;
+      }
+
+      .modal-kv-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .modal-kv-value {
+        margin-top: 6px;
+        color: #111827;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.6;
+        word-break: break-all;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 16px;
+      }
+
+      .form-field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .form-field.span-2 {
+        grid-column: span 2;
+      }
+
+      .form-label {
+        color: #374151;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .control-textarea {
+        min-height: 112px;
+        padding: 10px 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        background: #fff;
+        color: #374151;
+        font-size: 13px;
+        line-height: 1.7;
+        outline: none;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .modal-inline-tip {
+        margin-top: 14px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #fafafa;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .ant-form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .ant-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .ant-form-item {
+        display: grid;
+        gap: 8px;
+      }
+
+      .ant-form-item.span-2 {
+        grid-column: span 2;
+      }
+
+      .ant-form-label {
+        color: rgba(0, 0, 0, 0.88);
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+
+      .ant-form-required::before {
+        content: "*";
+        margin-right: 4px;
+        color: var(--red);
+      }
+
+      .ant-form-help {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .ant-input-like,
+      .ant-textarea-like,
+      .ant-select-like,
+      .ant-readonly-box {
+        min-height: 40px;
+        padding: 8px 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        background: #fff;
+        color: rgba(0, 0, 0, 0.88);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .ant-textarea-like {
+        min-height: 88px;
+      }
+
+      .ant-readonly-box {
+        display: flex;
+        align-items: center;
+        min-height: 40px;
+        background: #fafafa;
+        color: #475467;
+      }
+
+      .ant-tag-list {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .date-range {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 8px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .date-range .control-date {
+        min-width: 148px;
+        border: 0;
+        padding: 0 4px;
+      }
+
+      .date-range-sep {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .invoice-upload-stack {
+        display: grid;
+        gap: 14px;
+      }
+
+      .invoice-upload-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .invoice-upload-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, #fafcff 0%, #ffffff 100%);
+      }
+
+      .invoice-upload-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .invoice-upload-body {
+        padding: 16px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .invoice-upload-section {
+        display: grid;
+        gap: 10px;
+      }
+
+      .invoice-upload-section-title {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .upload-dropzone {
+        display: grid;
+        place-items: center;
+        min-height: 108px;
+        padding: 16px;
+        border: 1px dashed #91caff;
+        border-radius: 12px;
+        background: #f7fbff;
+        color: #3b5ccc;
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .upload-file-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .upload-file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fafafa;
+        font-size: 13px;
+      }
+
+      .mini-table-wrap {
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+
+      .mini-table-wrap table {
+        min-width: 100%;
+      }
+
+      .expense-dialog-summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .expense-summary-card {
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fafcff;
+      }
+
+      .expense-summary-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .expense-summary-value {
+        margin-top: 6px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .expense-report-stack {
+        display: grid;
+        gap: 14px;
+      }
+
+      .expense-report-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+      }
+
+      .expense-report-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px 12px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, #fafcff 0%, #ffffff 100%);
+      }
+
+      .expense-report-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .expense-report-subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .expense-report-meta {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        padding: 14px 16px;
+      }
+
+      .expense-report-meta-item {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fafafa;
+      }
+
+      .expense-report-meta-item span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .expense-report-meta-item strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .expense-report-table {
+        padding: 0 16px 16px;
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        min-width: 240px;
+        max-width: 360px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(17, 24, 39, 0.92);
+        color: #fff;
+        font-size: 13px;
+        line-height: 1.6;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px);
+        transition: opacity 0.22s ease, transform 0.22s ease;
+        z-index: 1200;
+      }
+
+      .toast.open {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast.error {
+        background: rgba(183, 28, 28, 0.92);
+      }
+
+      .toast.success {
+        background: rgba(19, 98, 7, 0.92);
+      }
+
       .footer-note {
         margin-top: 14px;
         color: var(--muted);
@@ -1577,12 +2311,19 @@
         .summary-grid,
         .steps,
         .mini-cards,
-        .labor-alt-summary {
+        .labor-alt-summary,
+        .quote-cards,
+        .supplier-mini-stats,
+        .form-grid,
+        .modal-kv-grid,
+        .ant-form-grid,
+        .expense-dialog-summary {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         .cost-grid,
-        .labor-alt-grid {
+        .labor-alt-grid,
+        .procurement-grid {
           grid-template-columns: 1fr;
         }
 
@@ -1605,7 +2346,13 @@
         .summary-grid,
         .steps,
         .mini-cards,
-        .labor-alt-summary {
+        .labor-alt-summary,
+        .quote-cards,
+        .supplier-mini-stats,
+        .form-grid,
+        .modal-kv-grid,
+        .ant-form-grid,
+        .expense-dialog-summary {
           grid-template-columns: 1fr;
         }
 
@@ -1624,6 +2371,14 @@
 
         .panel-toolbar {
           align-items: flex-start;
+        }
+
+        .form-field.span-2 {
+          grid-column: span 1;
+        }
+
+        .ant-form-item.span-2 {
+          grid-column: span 1;
         }
 
         table,
@@ -1655,6 +2410,14 @@
         .actions {
           padding-top: 4px;
         }
+
+        .profile-banner-main {
+          padding: 16px;
+        }
+
+        .supplier-profile-banner {
+          padding: 16px;
+        }
       }
     </style>
   </head>
@@ -1662,7 +2425,7 @@
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand">
-          <p class="brand-title">财务管理中台</p>
+          <p class="brand-title">财务与采购管理中台</p>
           <p class="brand-subtitle">OA Next.js Demo</p>
         </div>
 
@@ -1675,7 +2438,13 @@
           >
             开票回款
           </button>
-          <button class="menu-item muted" type="button">收入确认</button>
+          <button
+            class="menu-item"
+            data-screen-target="revenue-screen"
+            type="button"
+          >
+            收入确认
+          </button>
           <button
             class="menu-item"
             data-screen-target="cost-screen"
@@ -1685,22 +2454,68 @@
           </button>
         </div>
 
+        <div class="menu-group">
+          <div class="menu-label">采购管理</div>
+          <button
+            class="menu-item"
+            data-screen-target="supplier-screen"
+            type="button"
+          >
+            供应商管理
+          </button>
+          <button
+            class="menu-item"
+            data-screen-target="plan-screen"
+            type="button"
+          >
+            采购计划
+          </button>
+          <button
+            class="menu-item"
+            data-screen-target="request-screen"
+            type="button"
+          >
+            采购申请
+          </button>
+          <button
+            class="menu-item"
+            data-screen-target="inquiry-screen"
+            type="button"
+          >
+            比价询价
+          </button>
+          <button
+            class="menu-item"
+            data-screen-target="contract-screen"
+            type="button"
+          >
+            采购合同签订
+          </button>
+          <button
+            class="menu-item"
+            data-screen-target="stock-screen"
+            type="button"
+          >
+            出入库登记
+          </button>
+        </div>
+
         <div class="sidebar-footer">
-          这个文件是静态高保真预览。
+          当前页面已按详细需求文档重排。
           <br />
-          主体内容按照语雀文档的信息结构重排，控件语言尽量贴近 Ant Design
-          的后台页面风格。
+          保留现有侧边菜单和顶部 header 结构，控件语言贴近 Ant Design
+          后台页面风格，并补充关键弹窗与页面交互。
         </div>
       </aside>
 
       <main class="workspace">
         <header class="header">
           <div class="breadcrumbs">
-            <span>财务管理</span>
+            <span id="current-module-name">财务管理</span>
             <span>/</span>
             <span id="current-page-name">开票回款</span>
             <span>/</span>
-            <span class="current">页面效果预览</span>
+            <span class="current">页面效果</span>
           </div>
 
           <div class="user-chip">
@@ -1776,6 +2591,15 @@
                       class="summary-item-value"
                       id="invoice-payment-terms"
                     ></div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">合同签订日期</div>
+                    <div
+                      class="summary-item-value"
+                      id="invoice-contract-sign-date"
+                    >
+                      2026-01-08
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1913,21 +2737,20 @@
                       <input
                         class="control-input"
                         type="text"
-                        placeholder="搜索发票编号 / 备注"
+                        placeholder="搜索发票编号 / 客户名称 / 备注"
                       />
                       <select class="control-select">
-                        <option>开票类型</option>
-                        <option>专票</option>
-                        <option>普票</option>
+                        <option>发票类型</option>
+                        <option>增值税专用发票</option>
+                        <option>增值税普通发票</option>
                       </select>
-                      <input class="control-date" type="date" />
-                      <select class="control-select">
-                        <option>状态</option>
-                        <option>待审核</option>
-                        <option>财务办理中</option>
-                        <option>已开票</option>
-                      </select>
+                      <div class="date-range">
+                        <input class="control-date" type="date" />
+                        <span class="date-range-sep">至</span>
+                        <input class="control-date" type="date" />
+                      </div>
                       <div class="btn primary">查询</div>
+                      <div class="btn">重置</div>
                     </div>
                   </div>
 
@@ -1935,13 +2758,15 @@
                     <table>
                       <thead>
                         <tr>
-                          <th style="width: 16%">发票编号</th>
-                          <th style="width: 13%">开票日期</th>
-                          <th style="width: 14%">开票金额</th>
-                          <th style="width: 11%">开票类型</th>
-                          <th style="width: 12%">状态</th>
-                          <th style="width: 22%">备注</th>
-                          <th style="width: 12%">操作</th>
+                          <th style="width: 11%">开票编号</th>
+                          <th style="width: 13%">纳税人识别号</th>
+                          <th style="width: 10%">开票日期</th>
+                          <th style="width: 10%">本次开票金额</th>
+                          <th style="width: 8%">税额</th>
+                          <th style="width: 10%">发票类型</th>
+                          <th style="width: 10%">开票内容</th>
+                          <th style="width: 12%">发票备注信息</th>
+                          <th style="width: 10%">操作</th>
                         </tr>
                       </thead>
                       <tbody id="invoice-table-body"></tbody>
@@ -1958,9 +2783,20 @@
                         type="text"
                         placeholder="搜索回款编号 / 备注"
                       />
-                      <input class="control-date" type="date" />
+                      <div class="date-range">
+                        <input class="control-date" type="date" />
+                        <span class="date-range-sep">至</span>
+                        <input class="control-date" type="date" />
+                      </div>
                       <div class="btn primary">查询</div>
-                      <div class="btn primary">新增回款</div>
+                      <div class="btn">重置</div>
+                      <button
+                        class="btn primary"
+                        id="invoice-add-collection-btn"
+                        type="button"
+                      >
+                        新增回款
+                      </button>
                     </div>
                   </div>
 
@@ -1968,9 +2804,9 @@
                     <table>
                       <thead>
                         <tr>
-                          <th style="width: 16%">回款编号</th>
+                          <th style="width: 14%">回款编号</th>
                           <th style="width: 16%">回款日期</th>
-                          <th style="width: 16%">回款金额</th>
+                          <th style="width: 18%">回款金额</th>
                           <th style="width: 14%">回款方式</th>
                           <th style="width: 24%">备注</th>
                           <th style="width: 14%">操作</th>
@@ -1979,6 +2815,191 @@
                       <tbody id="collection-table-body"></tbody>
                     </table>
                     <div class="pagination" id="collection-pagination"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="revenue-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">收入确认</h1>
+              </div>
+
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="toolbar-filters">
+                    <select class="control-select">
+                      <option>项目筛选</option>
+                      <option>城市交通数据中台建设一期</option>
+                      <option>园区数字底座二期</option>
+                    </select>
+                    <select class="control-select">
+                      <option>月份</option>
+                      <option>2026-04</option>
+                      <option>2026-03</option>
+                    </select>
+                    <div class="btn primary">查询</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stats-grid four">
+                <div class="stat-card soft-blue">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">合同收入</div>
+                      <div class="stat-value">¥ 8,620,000</div>
+                    </div>
+                    <div class="stat-icon blue">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M192 224h640v576H192V224zm64 64v448h512V288H256zm96 96h320v64H352v-64zm0 128h224v64H352v-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">未来与合同、验收、开票回款联动</div>
+                </div>
+                <div class="stat-card soft-gold">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">已确认收入</div>
+                      <div class="stat-value">¥ 5,780,000</div>
+                    </div>
+                    <div class="stat-icon gold">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M512 128c212 0 384 172 384 384S724 896 512 896 128 724 128 512s172-384 384-384zm0 64c-176.7 0-320 143.3-320 320s143.3 320 320 320 320-143.3 320-320S688.7 192 512 192z"
+                        ></path>
+                        <path d="M480 320h64v224h160v64H480V320z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">当前为占位原型，不做流程展开</div>
+                </div>
+                <div class="stat-card soft-green">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">待确认收入</div>
+                      <div class="stat-value">¥ 2,840,000</div>
+                    </div>
+                    <div class="stat-icon green">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M160 224h704v576H160V224zm64 64v448h576V288H224zm96 96h384v64H320v-64zm0 128h256v64H320v-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">后续承接验收节点与确认规则</div>
+                </div>
+                <div class="stat-card soft-purple">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">页面状态</div>
+                      <div class="stat-value">预留中</div>
+                    </div>
+                    <div class="stat-icon purple">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M512 96l352 160v240c0 216.8-145.7 416-352 472C305.7 912 160 712.8 160 496V256L512 96zm0 70.1L224 301v195c0 184.3 117.1 354.9 288 409.6 170.9-54.7 288-225.3 288-409.6V301L512 166.1z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">
+                    符合需求文档中的菜单与页面占位约束
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="procurement-grid page-block">
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div>
+                    <h2 class="section-title">未来联动口径</h2>
+                    <p class="section-subtitle">
+                      收入确认菜单当前仅保留入口和汇总口径，为下一阶段做结构预留。
+                    </p>
+                  </div>
+                </div>
+
+                <div class="steps">
+                  <div class="step">
+                    <div class="step-index">01</div>
+                    <div class="step-title">合同主数据</div>
+                    <div class="step-text">
+                      从项目合同读取收入总额与约定支付节点。
+                    </div>
+                  </div>
+                  <div class="step">
+                    <div class="step-index">02</div>
+                    <div class="step-title">验收状态</div>
+                    <div class="step-text">
+                      未来与项目管理中的验收、里程碑计划联动。
+                    </div>
+                  </div>
+                  <div class="step">
+                    <div class="step-index">03</div>
+                    <div class="step-title">开票回款</div>
+                    <div class="step-text">
+                      按已开票、已回款、未回款状态形成确认参考。
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hint">
+                  当前页面只做高保真占位，不放完整表格和审批流，避免在本期产生错误实现预期。
+                </div>
+              </div>
+
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div>
+                    <h2 class="section-title">占位说明</h2>
+                  </div>
+                </div>
+                <div class="detail-stack">
+                  <div class="detail-box">
+                    <p class="detail-box-title">保留字段</p>
+                    <div class="detail-list">
+                      <div class="detail-item">
+                        <span class="detail-label">项目维度</span>
+                        <span class="detail-value"
+                          >项目名称 / 客户 / 合同编号</span
+                        >
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-label">收入维度</span>
+                        <span class="detail-value"
+                          >合同收入 / 已确认 / 待确认</span
+                        >
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-label">联动来源</span>
+                        <span class="detail-value"
+                          >合同、开票回款、验收状态</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="detail-box">
+                    <p class="detail-box-title">交付建议</p>
+                    <div class="detail-list">
+                      <div class="detail-item">
+                        <span class="detail-label">本期</span>
+                        <span class="detail-value">仅放占位页与导航入口</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-label">下期</span>
+                        <span class="detail-value"
+                          >扩展规则引擎与收入确认台账</span
+                        >
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2066,13 +3087,6 @@
                           <div class="stat-value" id="cost-stat-total">
                             ¥ 4,180,000
                           </div>
-                        </div>
-                        <div class="stat-icon cyan">
-                          <svg viewBox="0 0 1024 1024" fill="currentColor">
-                            <path
-                              d="M512 128c212.1 0 384 171.9 384 384S724.1 896 512 896 128 724.1 128 512 299.9 128 512 128zm0 64c-176.7 0-320 143.3-320 320s143.3 320 320 320 320-143.3 320-320S688.7 192 512 192zm-32 96v256h224v64H416V288h64z"
-                            ></path>
-                          </svg>
                         </div>
                       </div>
                       <div class="stat-note" id="cost-total-note">
@@ -2208,8 +3222,8 @@
                     <option>专票</option>
                     <option>普票</option>
                   </select>
-                  <div class="btn primary">查询</div>
-                  <div class="btn primary">上传发票</div>
+                  <button class="btn primary" type="button">查询</button>
+                  <button class="btn primary" type="button">上传发票</button>
                 </div>
               </div>
 
@@ -2238,6 +3252,9 @@
                 <div class="section-head">
                   <div>
                     <h2 class="section-title">报销费用</h2>
+                    <p class="panel-desc">
+                      按费用类别统计项目报销成本，借款金额不计入报销统计总额。
+                    </p>
                   </div>
                   <div class="tiny-tag gold">费用类型分析</div>
                 </div>
@@ -2249,24 +3266,9 @@
                 <div class="panel-toolbar">
                   <div>
                     <p class="panel-title">报销费用明细</p>
-                  </div>
-
-                  <div class="toolbar-filters">
-                    <input class="control-date" type="date" />
-                    <select class="control-select">
-                      <option>费用类型</option>
-                      <option>差旅费</option>
-                      <option>业务招待</option>
-                      <option>交通费</option>
-                      <option>办公用品</option>
-                    </select>
-                    <select class="control-select">
-                      <option>申请人</option>
-                      <option>张晨</option>
-                      <option>李岚</option>
-                      <option>王晟</option>
-                    </select>
-                    <div class="btn primary">查询</div>
+                    <p class="panel-desc">
+                      按报销人维度汇总展示已归集报销数据。
+                    </p>
                   </div>
                 </div>
 
@@ -2274,11 +3276,12 @@
                   <table>
                     <thead>
                       <tr>
-                        <th>报销单号</th>
-                        <th>申请人</th>
-                        <th>费用类型</th>
+                        <th>报销人</th>
+                        <th>部门</th>
                         <th>报销金额</th>
-                        <th>申请日期</th>
+                        <th>成本金额</th>
+                        <th>报销笔数</th>
+                        <th>借款笔数</th>
                         <th>操作</th>
                       </tr>
                     </thead>
@@ -2442,8 +3445,748 @@
             </div>
           </section>
 
+          <section class="screen" id="supplier-screen">
+            <div class="supplier-shell">
+              <div class="supplier-view" id="supplier-list-view">
+                <div class="page-card page-block">
+                  <div class="page-header">
+                    <h1 class="page-title">供应商管理</h1>
+                  </div>
+
+                  <div class="stats-grid four" id="supplier-stats-grid"></div>
+
+                  <div class="toolbar supplier-toolbar">
+                    <div class="toolbar-left">
+                      <div class="toolbar-filters">
+                        <input
+                          class="control-input"
+                          id="supplier-search-company"
+                          type="text"
+                          placeholder="搜索公司名称"
+                        />
+                        <select
+                          class="control-select"
+                          id="supplier-search-tax-type"
+                        >
+                          <option value="">税务类型</option>
+                          <option value="一般纳税人">一般纳税人</option>
+                          <option value="小规模纳税人">小规模纳税人</option>
+                        </select>
+                        <input
+                          class="control-input"
+                          id="supplier-search-contact"
+                          type="text"
+                          placeholder="搜索联系人"
+                        />
+                        <button
+                          class="btn primary"
+                          id="supplier-search-btn"
+                          type="button"
+                        >
+                          查询
+                        </button>
+                        <button
+                          class="btn"
+                          id="supplier-reset-btn"
+                          type="button"
+                        >
+                          重置
+                        </button>
+                      </div>
+                    </div>
+                    <div class="toolbar-right">
+                      <button
+                        class="btn primary"
+                        id="supplier-create-btn"
+                        type="button"
+                      >
+                        新增供应商
+                      </button>
+                    </div>
+                  </div>
+                  <div class="table-wrap inset">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width: 8%">序号</th>
+                          <th style="width: 20%">公司名称</th>
+                          <th style="width: 18%">税号</th>
+                          <th style="width: 10%">联系人</th>
+                          <th style="width: 14%">联系方式</th>
+                          <th style="width: 12%">税务类型</th>
+                          <th style="width: 8%">产品数</th>
+                          <th style="width: 14%">更新时间</th>
+                          <th style="width: 16%">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody id="supplier-library-body"></tbody>
+                    </table>
+                    <div
+                      class="pagination"
+                      id="supplier-library-pagination"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="supplier-view hidden" id="supplier-catalog-view">
+                <div class="page-card page-block">
+                  <div class="page-header">
+                    <div class="subpage-nav">
+                      <button
+                        class="subpage-back"
+                        id="supplier-back-btn"
+                        type="button"
+                      >
+                        返回供应商列表
+                      </button>
+                    </div>
+                    <h1 class="page-title" id="supplier-catalog-title">
+                      产品清单
+                    </h1>
+                  </div>
+
+                  <div class="toolbar supplier-toolbar">
+                    <div class="toolbar-left">
+                      <div class="toolbar-filters">
+                        <input
+                          class="control-input"
+                          id="catalog-search-keyword"
+                          type="text"
+                          placeholder="搜索产品/服务名称 / 规格"
+                        />
+                        <select class="control-select" id="catalog-search-unit">
+                          <option value="">单位</option>
+                          <option value="台">台</option>
+                          <option value="套">套</option>
+                          <option value="人天">人天</option>
+                          <option value="次">次</option>
+                        </select>
+                        <button
+                          class="btn primary"
+                          id="catalog-search-btn"
+                          type="button"
+                        >
+                          查询
+                        </button>
+                        <button
+                          class="btn"
+                          id="catalog-reset-btn"
+                          type="button"
+                        >
+                          重置
+                        </button>
+                      </div>
+                    </div>
+                    <div class="toolbar-right">
+                      <button
+                        class="btn"
+                        id="supplier-catalog-edit-btn"
+                        type="button"
+                      >
+                        编辑供应商
+                      </button>
+                      <button
+                        class="btn primary"
+                        id="supplier-catalog-add-btn"
+                        type="button"
+                      >
+                        新增产品
+                      </button>
+                    </div>
+                  </div>
+                  <div class="table-wrap inset">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width: 8%">序号</th>
+                          <th style="width: 22%">产品/服务名称</th>
+                          <th style="width: 28%">规格/要求</th>
+                          <th style="width: 10%">单位</th>
+                          <th style="width: 16%">参考单价</th>
+                          <th style="width: 16%">备注</th>
+                        </tr>
+                      </thead>
+                      <tbody id="supplier-catalog-body"></tbody>
+                    </table>
+                    <div
+                      class="pagination"
+                      id="supplier-catalog-pagination"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="plan-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">采购计划</h1>
+              </div>
+
+              <div class="stats-grid four" id="plan-stats-grid"></div>
+
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="toolbar-filters">
+                    <select class="control-select" id="plan-filter-project">
+                      <option value="">全部项目</option>
+                      <option value="城市交通数据中台建设一期">
+                        城市交通数据中台建设一期
+                      </option>
+                      <option value="园区数字底座二期">园区数字底座二期</option>
+                      <option value="智慧水务平台升级">智慧水务平台升级</option>
+                      <option value="客服运营系统重构">客服运营系统重构</option>
+                      <option value="总部协同办公升级">总部协同办公升级</option>
+                      <option value="西南交付中心扩容">西南交付中心扩容</option>
+                      <option value="低空监管平台试点">低空监管平台试点</option>
+                      <option value="数据治理平台三期">数据治理平台三期</option>
+                    </select>
+                    <select class="control-select" id="plan-filter-category">
+                      <option value="">全部类别</option>
+                      <option value="设备采购">设备采购</option>
+                      <option value="软件采购">软件采购</option>
+                      <option value="服务采购">服务采购</option>
+                      <option value="材料采购">材料采购</option>
+                      <option value="办公采购">办公采购</option>
+                      <option value="行政采购">行政采购</option>
+                    </select>
+                    <select class="control-select" id="plan-filter-status">
+                      <option value="">全部状态</option>
+                      <option value="待申请">待申请</option>
+                      <option value="执行中">执行中</option>
+                      <option value="已完成">已完成</option>
+                    </select>
+                    <input
+                      id="plan-filter-keyword"
+                      class="control-input"
+                      type="text"
+                      placeholder="关键字搜索采购事由 / 单号"
+                    />
+                    <div class="btn primary" id="plan-search-btn">查询</div>
+                    <div class="btn" id="plan-reset-btn">重置</div>
+                  </div>
+                </div>
+              </div>
+              <div class="inline-table-area">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="width: 14%">计划单号</th>
+                        <th style="width: 16%">项目名称</th>
+                        <th style="width: 18%">采购事由</th>
+                        <th style="width: 10%">采购类别</th>
+                        <th style="width: 14%">采购商品摘要</th>
+                        <th style="width: 12%">预计金额</th>
+                        <th style="width: 10%">当前流程状态</th>
+                        <th style="width: 8%">申请人</th>
+                        <th style="width: 10%">申请日期</th>
+                        <th style="width: 8%">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="plan-table-body"></tbody>
+                  </table>
+                </div>
+                <div class="pagination" id="plan-pagination"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="request-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">采购申请</h1>
+              </div>
+
+              <div class="stats-grid four" id="request-stats-grid"></div>
+
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="toolbar-filters">
+                    <select class="control-select" id="request-filter-project">
+                      <option value="">全部项目</option>
+                      <option value="城市交通数据中台建设一期">
+                        城市交通数据中台建设一期
+                      </option>
+                      <option value="园区数字底座二期">园区数字底座二期</option>
+                      <option value="智慧水务平台升级">智慧水务平台升级</option>
+                      <option value="客服运营系统重构">客服运营系统重构</option>
+                      <option value="总部协同办公升级">总部协同办公升级</option>
+                      <option value="西南交付中心扩容">西南交付中心扩容</option>
+                      <option value="低空监管平台试点">低空监管平台试点</option>
+                      <option value="数据治理平台三期">数据治理平台三期</option>
+                    </select>
+                    <select class="control-select" id="request-filter-category">
+                      <option value="">全部类别</option>
+                      <option value="设备采购">设备采购</option>
+                      <option value="软件采购">软件采购</option>
+                      <option value="服务采购">服务采购</option>
+                      <option value="材料采购">材料采购</option>
+                      <option value="办公采购">办公采购</option>
+                    </select>
+                    <select class="control-select" id="request-filter-status">
+                      <option value="">全部状态</option>
+                      <option value="待询价">待询价</option>
+                      <option value="待签约">待签约</option>
+                      <option value="已完成">已完成</option>
+                    </select>
+                    <input
+                      id="request-filter-keyword"
+                      class="control-input"
+                      type="text"
+                      placeholder="搜索申请单号 / 采购事由"
+                    />
+                    <div class="btn primary" id="request-search-btn">查询</div>
+                    <div class="btn" id="request-reset-btn">重置</div>
+                  </div>
+                </div>
+              </div>
+              <div class="inline-table-area">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="width: 14%">申请单号</th>
+                        <th style="width: 16%">项目名称</th>
+                        <th style="width: 18%">采购事由</th>
+                        <th style="width: 10%">采购类别</th>
+                        <th style="width: 12%">汇总金额</th>
+                        <th style="width: 12%">当前流程状态</th>
+                        <th style="width: 12%">采购专员办理状态</th>
+                        <th style="width: 8%">申请人</th>
+                        <th style="width: 10%">申请日期</th>
+                        <th style="width: 8%">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="request-table-body"></tbody>
+                  </table>
+                </div>
+                <div class="pagination" id="request-pagination"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="inquiry-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">比价询价</h1>
+              </div>
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="toolbar-filters">
+                    <select class="control-select">
+                      <option>项目筛选</option>
+                      <option>城市交通数据中台建设一期</option>
+                    </select>
+                    <select class="control-select">
+                      <option>状态</option>
+                      <option>询价审批中</option>
+                      <option>待签约</option>
+                    </select>
+                    <input
+                      class="control-input"
+                      type="text"
+                      placeholder="搜索询价单号 / 采购申请"
+                    />
+                    <div class="btn primary">查询</div>
+                  </div>
+                </div>
+                <div class="toolbar-right">
+                  <div class="btn primary">发起比价询价</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="page-card page-block section-card">
+              <div class="section-head">
+                <div>
+                  <h2 class="section-title">推荐供应商对比</h2>
+                  <p class="section-subtitle">
+                    若业务线关闭此菜单，可由采购申请直接进入采购合同签订。
+                  </p>
+                </div>
+              </div>
+              <div class="quote-cards">
+                <div class="quote-card recommended">
+                  <div class="quote-name">成都天擎科技</div>
+                  <div class="quote-amount">¥ 712,000</div>
+                  <div class="quote-meta">
+                    税务类型：一般纳税人<br />交付周期：15 天<br />付款条件：30%
+                    / 50% / 20%
+                  </div>
+                </div>
+                <div class="quote-card">
+                  <div class="quote-name">云图集成服务</div>
+                  <div class="quote-amount">¥ 748,000</div>
+                  <div class="quote-meta">
+                    税务类型：一般纳税人<br />交付周期：12 天<br />付款条件：40%
+                    / 60%
+                  </div>
+                </div>
+                <div class="quote-card">
+                  <div class="quote-name">星联系统集成</div>
+                  <div class="quote-amount">¥ 769,000</div>
+                  <div class="quote-meta">
+                    税务类型：一般纳税人<br />交付周期：18 天<br />付款条件：20%
+                    / 70% / 10%
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 14%">询价单号</th>
+                      <th style="width: 16%">项目名称</th>
+                      <th style="width: 16%">关联采购申请</th>
+                      <th style="width: 12%">参与供应商数</th>
+                      <th style="width: 14%">推荐供应商</th>
+                      <th style="width: 12%">推荐金额</th>
+                      <th style="width: 10%">状态</th>
+                      <th style="width: 6%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td data-label="询价单号">BJXJ-202604-002</td>
+                      <td data-label="项目名称">城市交通数据中台建设一期</td>
+                      <td data-label="关联采购申请">CGSQ-202604-006</td>
+                      <td data-label="参与供应商数">3</td>
+                      <td data-label="推荐供应商">成都天擎科技</td>
+                      <td data-label="推荐金额">¥ 712,000</td>
+                      <td data-label="状态">
+                        <span class="status green">待签约</span>
+                      </td>
+                      <td data-label="操作">
+                        <span class="btn link">详情</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="procurement-grid page-block">
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div><h2 class="section-title">询价审批表字段预览</h2></div>
+                </div>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-item-label">选择项目</div>
+                    <div class="summary-item-value">
+                      城市交通数据中台建设一期
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">关联审批表</div>
+                    <div class="summary-item-value">CGSQ-202604-006</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">采购类别</div>
+                    <div class="summary-item-value">设备采购</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">数量摘要</div>
+                    <div class="summary-item-value">6 台 / 2 批</div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div><h2 class="section-title">关键规则</h2></div>
+                </div>
+                <div class="detail-list">
+                  <div class="detail-item">
+                    <span class="detail-label">启用方式</span
+                    ><span class="detail-value">支持关闭菜单的简化模式</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">合同来源</span
+                    ><span class="detail-value"
+                      >启用时采购合同优先关联询价结果</span
+                    >
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">供应商比价表</span
+                    ><span class="detail-value"
+                      >展示报价、税务类型、交付周期、付款条件、质保要求</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="contract-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">采购合同签订</h1>
+              </div>
+
+              <div class="stats-grid four" id="contract-stats-grid"></div>
+
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="toolbar-filters">
+                    <select class="control-select" id="contract-filter-project">
+                      <option value="">全部项目</option>
+                      <option value="城市交通数据中台建设一期">
+                        城市交通数据中台建设一期
+                      </option>
+                      <option value="园区数字底座二期">园区数字底座二期</option>
+                      <option value="智慧水务平台升级">智慧水务平台升级</option>
+                      <option value="客服运营系统重构">客服运营系统重构</option>
+                      <option value="西南交付中心扩容">西南交付中心扩容</option>
+                      <option value="低空监管平台试点">低空监管平台试点</option>
+                      <option value="总部协同办公升级">总部协同办公升级</option>
+                      <option value="数据治理平台三期">数据治理平台三期</option>
+                    </select>
+                    <select class="control-select" id="contract-filter-status">
+                      <option value="">全部状态</option>
+                      <option value="审批中">审批中</option>
+                      <option value="待收票">待收票</option>
+                      <option value="待支付">待支付</option>
+                      <option value="已完成">已完成</option>
+                    </select>
+                    <input
+                      id="contract-filter-keyword"
+                      class="control-input"
+                      type="text"
+                      placeholder="搜索合同编号 / 合同名称 / 供应商"
+                    />
+                    <div class="btn primary" id="contract-search-btn">查询</div>
+                    <div class="btn" id="contract-reset-btn">重置</div>
+                  </div>
+                </div>
+              </div>
+              <div class="inline-table-area">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="width: 14%">合同编号</th>
+                        <th style="width: 16%">项目名称</th>
+                        <th style="width: 18%">合同名称</th>
+                        <th style="width: 14%">供应商名称</th>
+                        <th style="width: 12%">合同金额</th>
+                        <th style="width: 10%">状态</th>
+                        <th style="width: 10%">签订日期</th>
+                        <th style="width: 6%">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="contract-table-body"></tbody>
+                  </table>
+                </div>
+                <div class="pagination" id="contract-pagination"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="stock-screen">
+            <div class="page-card page-block">
+              <div class="page-header">
+                <h1 class="page-title">出入库登记</h1>
+              </div>
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <div class="toolbar-filters">
+                    <select class="control-select">
+                      <option>项目筛选</option>
+                      <option>城市交通数据中台建设一期</option>
+                    </select>
+                    <select class="control-select">
+                      <option>合同筛选</option>
+                      <option>CGHT-202604-002</option>
+                    </select>
+                    <select class="control-select">
+                      <option>单据类型</option>
+                      <option>入库</option>
+                      <option>出库</option>
+                    </select>
+                    <input class="control-date" type="date" />
+                    <div class="btn primary">查询</div>
+                  </div>
+                </div>
+                <div class="toolbar-right">
+                  <div class="btn primary">新增登记</div>
+                </div>
+              </div>
+
+              <div class="stats-grid four">
+                <div class="stat-card soft-blue">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">入库次数</div>
+                      <div class="stat-value">28</div>
+                    </div>
+                    <div class="stat-icon blue">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M512 128l320 192v384L512 896 192 704V320l320-192zm0 74.7L256 352v320l256 149.3L768 672V352L512 202.7z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">支持部分入库、多次入库</div>
+                </div>
+                <div class="stat-card soft-green">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">入库数量</div>
+                      <div class="stat-value">186</div>
+                    </div>
+                    <div class="stat-icon green">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M480 224h64v352h192v64H544v160h-64V640H288v-64h192V224z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">含设备、辅材、备件</div>
+                </div>
+                <div class="stat-card soft-gold">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">出库数量</div>
+                      <div class="stat-value">94</div>
+                    </div>
+                    <div class="stat-icon gold">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M544 224h64v576h-64V224zm-256 256h384v64H288v-64z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">出库需保留去向记录</div>
+                </div>
+                <div class="stat-card soft-red">
+                  <div class="stat-head">
+                    <div>
+                      <div class="stat-label">待入库</div>
+                      <div class="stat-value">2</div>
+                    </div>
+                    <div class="stat-icon red">
+                      <svg viewBox="0 0 1024 1024" fill="currentColor">
+                        <path
+                          d="M512 128L96 896h832L512 128zm0 123.8L817.9 832H206.1L512 251.8z"
+                        ></path>
+                        <path d="M480 416h64v192h-64zm0 256h64v64h-64z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="stat-note">采购合同已通过，但执行登记未完成</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="page-card page-block section-card">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 14%">登记单号</th>
+                      <th style="width: 10%">登记类型</th>
+                      <th style="width: 16%">项目名称</th>
+                      <th style="width: 14%">采购合同编号</th>
+                      <th style="width: 14%">供应商</th>
+                      <th style="width: 10%">数量合计</th>
+                      <th style="width: 12%">登记日期</th>
+                      <th style="width: 10%">经办人</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td data-label="登记单号">RKCK-202604-005</td>
+                      <td data-label="登记类型">
+                        <span class="status green">入库</span>
+                      </td>
+                      <td data-label="项目名称">城市交通数据中台建设一期</td>
+                      <td data-label="采购合同编号">CGHT-202604-002</td>
+                      <td data-label="供应商">成都天擎科技</td>
+                      <td data-label="数量合计">32</td>
+                      <td data-label="登记日期">2026-04-05</td>
+                      <td data-label="经办人">张晨</td>
+                    </tr>
+                    <tr>
+                      <td data-label="登记单号">RKCK-202604-006</td>
+                      <td data-label="登记类型">
+                        <span class="status gold">出库</span>
+                      </td>
+                      <td data-label="项目名称">城市交通数据中台建设一期</td>
+                      <td data-label="采购合同编号">CGHT-202604-002</td>
+                      <td data-label="供应商">成都天擎科技</td>
+                      <td data-label="数量合计">8</td>
+                      <td data-label="登记日期">2026-04-06</td>
+                      <td data-label="经办人">王晟</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="procurement-grid page-block">
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div><h2 class="section-title">新增登记弹窗预览</h2></div>
+                </div>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-item-label">登记类型</div>
+                    <div class="summary-item-value">入库</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">关联采购合同</div>
+                    <div class="summary-item-value">CGHT-202604-002</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">选择项目</div>
+                    <div class="summary-item-value">
+                      城市交通数据中台建设一期
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-item-label">供应商</div>
+                    <div class="summary-item-value">成都天擎科技有限公司</div>
+                  </div>
+                </div>
+                <div class="form-note">
+                  明细表字段为商品名称、规格型号、单位、数量、存放位置/领用去向。
+                </div>
+              </div>
+              <div class="page-card section-card">
+                <div class="section-head">
+                  <div><h2 class="section-title">业务规则</h2></div>
+                </div>
+                <div class="detail-list">
+                  <div class="detail-item">
+                    <span class="detail-label">前置条件</span
+                    ><span class="detail-value"
+                      >采购合同审批通过后方可发起入库登记</span
+                    >
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">入库策略</span
+                    ><span class="detail-value">支持部分入库、多次入库</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">出库控制</span
+                    ><span class="detail-value"
+                      >必须保留去向记录与经办人信息</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <div class="footer-note">
-            静态 HTML 高保真预览，可直接用浏览器打开查看。
+            单文件演示版，可直接用浏览器打开查看当前页面效果与主要交互。
           </div>
         </div>
       </main>
@@ -2485,14 +4228,440 @@
       </div>
     </div>
 
+    <div class="modal-mask" id="supplier-detail-modal">
+      <div
+        class="modal medium"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="supplier-detail-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="supplier-detail-title">供应商详情</h2>
+            <p class="modal-subtitle" id="supplier-detail-subtitle"></p>
+          </div>
+          <button
+            class="icon-btn"
+            id="supplier-detail-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body" id="supplier-detail-body"></div>
+        <div class="modal-footer">
+          <button class="btn" id="supplier-detail-close-btn" type="button">
+            关闭
+          </button>
+          <button
+            class="btn primary"
+            id="supplier-detail-open-catalog"
+            type="button"
+          >
+            编辑供应商
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="supplier-form-modal">
+      <div
+        class="modal wide"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="supplier-form-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="supplier-form-title">新增供应商</h2>
+            <p class="modal-subtitle" id="supplier-form-subtitle">
+              按需求文档的字段布局录入供应商主数据。
+            </p>
+          </div>
+          <button
+            class="icon-btn"
+            id="supplier-form-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="ant-form">
+            <div class="ant-form-grid">
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">公司名称</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-company"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">税号</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-tax-no"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">联系人</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-contact"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">联系方式</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-phone"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">税务类型</span>
+                <select class="control-select" id="supplier-form-tax-type">
+                  <option value="一般纳税人">一般纳税人</option>
+                  <option value="小规模纳税人">小规模纳税人</option>
+                </select>
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label">地址</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-address"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label">开户银行</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-bank"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label">银行账户</span>
+                <input
+                  class="control-input"
+                  id="supplier-form-bank-account"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label">备注</span>
+                <textarea
+                  class="control-textarea"
+                  id="supplier-form-remark"
+                ></textarea>
+              </label>
+            </div>
+          </div>
+          <div class="modal-inline-tip">
+            税号需唯一，新增/编辑弹窗采用 `maskClosable=false`
+            逻辑，需通过按钮主动关闭。
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="supplier-form-cancel-btn" type="button">
+            取消
+          </button>
+          <button class="btn primary" id="supplier-form-save-btn" type="button">
+            保存
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="business-detail-modal">
+      <div
+        class="modal medium"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="business-detail-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="business-detail-title">详情</h2>
+            <p class="modal-subtitle" id="business-detail-subtitle"></p>
+          </div>
+          <button
+            class="icon-btn"
+            id="business-detail-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body" id="business-detail-body"></div>
+        <div class="modal-footer">
+          <button class="btn" id="business-detail-close-btn" type="button">
+            关闭
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="collection-form-modal">
+      <div
+        class="modal"
+        style="width: min(720px, 100%)"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="collection-form-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="collection-form-title">新增回款</h2>
+            <p class="modal-subtitle">直接在业务页登记回款，无需审批。</p>
+          </div>
+          <button
+            class="icon-btn"
+            id="collection-form-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="ant-form">
+            <div class="ant-form-grid">
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label">回款方式</span>
+                <select class="control-select" id="collection-form-method">
+                  <option value="银行转账">银行转账</option>
+                  <option value="现金">现金</option>
+                  <option value="承兑">承兑</option>
+                  <option value="其他">其他</option>
+                </select>
+              </label>
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label ant-form-required">回款金额</span>
+                <input
+                  class="control-input"
+                  id="collection-form-amount"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label ant-form-required">回款日期</span>
+                <input
+                  class="control-date"
+                  id="collection-form-date"
+                  type="date"
+                />
+              </label>
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label">收款账户</span>
+                <input
+                  class="control-input"
+                  id="collection-form-account"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label">回款备注</span>
+                <textarea
+                  class="control-textarea"
+                  id="collection-form-remark"
+                ></textarea>
+              </label>
+              <div class="ant-form-item span-2">
+                <span class="ant-form-label">回单附件</span>
+                <div class="upload-dropzone">
+                  上传图片 / PDF 回单文件<br />支持拖拽或点击上传
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="collection-form-cancel-btn" type="button">
+            取消
+          </button>
+          <button
+            class="btn primary"
+            id="collection-form-save-btn"
+            type="button"
+          >
+            保存
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="supplier-invoice-modal">
+      <div
+        class="modal wide"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="supplier-invoice-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="supplier-invoice-title">上传发票</h2>
+            <p class="modal-subtitle" id="supplier-invoice-subtitle"></p>
+          </div>
+          <button
+            class="icon-btn"
+            id="supplier-invoice-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="invoice-upload-stack" id="supplier-invoice-stack"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="supplier-invoice-cancel-btn" type="button">
+            关闭
+          </button>
+          <button
+            class="btn primary"
+            id="supplier-invoice-save-btn"
+            type="button"
+          >
+            确认入账
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="expense-detail-modal">
+      <div
+        class="modal wide"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="expense-detail-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="expense-detail-title">报销费用详情</h2>
+            <p class="modal-subtitle" id="expense-detail-subtitle"></p>
+          </div>
+          <button
+            class="icon-btn"
+            id="expense-detail-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body" id="expense-detail-body"></div>
+        <div class="modal-footer">
+          <button class="btn" id="expense-detail-close-btn" type="button">
+            关闭
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-mask" id="catalog-form-modal">
+      <div
+        class="modal medium"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="catalog-form-title"
+      >
+        <div class="modal-header compact">
+          <div>
+            <h2 class="modal-title" id="catalog-form-title">新增产品清单</h2>
+            <p class="modal-subtitle" id="catalog-form-subtitle">
+              按需求文档维护供应商产品/服务清单。
+            </p>
+          </div>
+          <button
+            class="icon-btn"
+            id="catalog-form-close-icon"
+            type="button"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="ant-form">
+            <div class="ant-form-grid">
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required"
+                  >产品/服务名称</span
+                >
+                <input
+                  class="control-input"
+                  id="catalog-form-name"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">单位</span>
+                <select class="control-select" id="catalog-form-unit">
+                  <option value="台">台</option>
+                  <option value="套">套</option>
+                  <option value="人天">人天</option>
+                  <option value="次">次</option>
+                </select>
+              </label>
+              <label class="ant-form-item span-2">
+                <span class="ant-form-label ant-form-required">规格/要求</span>
+                <textarea
+                  class="control-textarea"
+                  id="catalog-form-spec"
+                ></textarea>
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label ant-form-required">参考单价</span>
+                <input
+                  class="control-input"
+                  id="catalog-form-price"
+                  type="text"
+                />
+              </label>
+              <label class="ant-form-item">
+                <span class="ant-form-label">备注</span>
+                <input
+                  class="control-input"
+                  id="catalog-form-remark"
+                  type="text"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="catalog-form-cancel-btn" type="button">
+            取消
+          </button>
+          <button class="btn primary" id="catalog-form-save-btn" type="button">
+            保存
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="app-toast"></div>
+
     <script>
       const menuItems = document.querySelectorAll("[data-screen-target]");
       const screens = document.querySelectorAll(".screen");
       const pageName = document.getElementById("current-page-name");
+      const moduleName = document.getElementById("current-module-name");
 
       menuItems.forEach((button) => {
         button.addEventListener("click", () => {
           const targetId = button.getAttribute("data-screen-target");
+          const menuGroup = button.closest(".menu-group");
+          const groupLabel = menuGroup?.querySelector(".menu-label");
 
           menuItems.forEach((item) => item.classList.remove("active"));
           screens.forEach((screen) => screen.classList.remove("active"));
@@ -2500,6 +4669,8 @@
           button.classList.add("active");
           document.getElementById(targetId).classList.add("active");
           pageName.textContent = button.textContent.trim();
+          if (groupLabel)
+            moduleName.textContent = groupLabel.textContent.trim();
         });
       });
 
@@ -2530,6 +4701,7 @@
             customerName: "成都数智交通集团",
             contractName: "城市交通数据中台建设一期",
             contractAmount: "¥ 8,620,000",
+            signDate: "2026-01-08",
             paymentTerms: ["预付款 30%", "里程碑验收 50%", "质保尾款 20%"],
             stats: {
               contract: "¥ 8,620,000",
@@ -2715,14 +4887,14 @@
                 percent: "40%",
               },
               {
-                label: "业务招待",
+                label: "业务招待费",
                 width: "25%",
                 cls: "green",
                 amount: "¥ 116,000",
                 percent: "25%",
               },
               {
-                label: "办公用品",
+                label: "办公费",
                 width: "11%",
                 cls: "purple",
                 amount: "¥ 50,000",
@@ -2736,7 +4908,7 @@
                 percent: "16%",
               },
               {
-                label: "通讯费",
+                label: "采购垫付款",
                 width: "8%",
                 cls: "red",
                 amount: "¥ 40,000",
@@ -2747,39 +4919,85 @@
               {
                 code: "BX-2026-084",
                 user: "张晨",
+                reimbursementType: "项目报销",
+                reason: "成都驻场阶段实施费用报销",
+                relatedApproval: "CCSQ-2026-041",
+                hasSpecialInvoice: "是",
                 type: "差旅费",
                 typeClass: "gold",
-                amount: "¥ 28,400",
+                amount: "¥ 18,600",
                 date: "2026-04-01",
                 status: "已归集",
                 statusClass: "green",
-                remark: "成都驻场交通及住宿",
+                remark: "成都驻场住宿费用",
+              },
+              {
+                code: "BX-2026-084",
+                user: "张晨",
+                reimbursementType: "项目报销",
+                reason: "成都驻场阶段实施费用报销",
+                relatedApproval: "CCSQ-2026-041",
+                hasSpecialInvoice: "是",
+                type: "交通费",
+                typeClass: "green",
+                amount: "¥ 9,800",
+                date: "2026-04-01",
+                status: "已归集",
+                statusClass: "green",
+                remark: "成都驻场往返交通费",
               },
               {
                 code: "BX-2026-077",
                 user: "李岚",
-                type: "办公用品",
+                reimbursementType: "项目报销",
+                reason: "测试环境采购及办公支出报销",
+                relatedApproval: "CGSQ-2026-019",
+                hasSpecialInvoice: "否",
+                type: "办公费",
                 typeClass: "blue",
                 amount: "¥ 6,200",
                 date: "2026-03-25",
-                status: "待归集",
-                statusClass: "gold",
+                status: "已归集",
+                statusClass: "green",
                 remark: "项目测试设备采购",
               },
               {
                 code: "BX-2026-072",
                 user: "王晟",
-                type: "业务招待",
+                reimbursementType: "项目报销",
+                reason: "客户汇报会接待及交通报销",
+                relatedApproval: "JDSQ-2026-012",
+                hasSpecialInvoice: "否",
+                type: "业务招待费",
                 typeClass: "red",
-                amount: "¥ 14,800",
+                amount: "¥ 11,200",
                 date: "2026-03-19",
                 status: "已归集",
                 statusClass: "green",
                 remark: "客户汇报会接待",
               },
               {
+                code: "BX-2026-072",
+                user: "王晟",
+                reimbursementType: "项目报销",
+                reason: "客户汇报会接待及交通报销",
+                relatedApproval: "JDSQ-2026-012",
+                hasSpecialInvoice: "否",
+                type: "交通费",
+                typeClass: "green",
+                amount: "¥ 3,600",
+                date: "2026-03-19",
+                status: "已归集",
+                statusClass: "green",
+                remark: "客户汇报会现场交通",
+              },
+              {
                 code: "BX-2026-069",
                 user: "陈果",
+                reimbursementType: "项目报销",
+                reason: "测试阶段现场交通报销",
+                relatedApproval: "YCSQ-2026-007",
+                hasSpecialInvoice: "否",
                 type: "交通费",
                 typeClass: "green",
                 amount: "¥ 3,680",
@@ -2791,6 +5009,10 @@
               {
                 code: "BX-2026-061",
                 user: "刘畅",
+                reimbursementType: "项目报销",
+                reason: "阶段验收驻场报销",
+                relatedApproval: "CCSQ-2026-028",
+                hasSpecialInvoice: "是",
                 type: "差旅费",
                 typeClass: "gold",
                 amount: "¥ 9,200",
@@ -3077,6 +5299,7 @@
             customerName: "贵州交投建设集团",
             contractName: "智慧工地综合监管平台二期",
             contractAmount: "¥ 6,480,000",
+            signDate: "2026-01-16",
             paymentTerms: ["预付款 40%", "阶段验收 40%", "尾款 20%"],
             stats: {
               contract: "¥ 6,480,000",
@@ -3262,14 +5485,14 @@
                 percent: "35%",
               },
               {
-                label: "业务招待",
+                label: "业务招待费",
                 width: "26%",
                 cls: "green",
                 amount: "¥ 94,000",
                 percent: "26%",
               },
               {
-                label: "办公用品",
+                label: "办公费",
                 width: "13%",
                 cls: "purple",
                 amount: "¥ 46,000",
@@ -3283,7 +5506,7 @@
                 percent: "16%",
               },
               {
-                label: "通讯费",
+                label: "其他",
                 width: "10%",
                 cls: "red",
                 amount: "¥ 36,000",
@@ -3294,29 +5517,56 @@
               {
                 code: "BX-2026-091",
                 user: "赵宁",
+                reimbursementType: "项目报销",
+                reason: "贵阳驻场实施费用报销",
+                relatedApproval: "CCSQ-2026-052",
+                hasSpecialInvoice: "是",
                 type: "差旅费",
                 typeClass: "gold",
-                amount: "¥ 18,200",
+                amount: "¥ 12,800",
                 date: "2026-04-07",
                 status: "已归集",
                 statusClass: "green",
                 remark: "贵阳驻场差旅",
               },
               {
+                code: "BX-2026-091",
+                user: "赵宁",
+                reimbursementType: "项目报销",
+                reason: "贵阳驻场实施费用报销",
+                relatedApproval: "CCSQ-2026-052",
+                hasSpecialInvoice: "是",
+                type: "住宿费",
+                typeClass: "gold",
+                amount: "¥ 5,400",
+                date: "2026-04-07",
+                status: "已归集",
+                statusClass: "green",
+                remark: "贵阳驻场住宿费",
+              },
+              {
                 code: "BX-2026-083",
                 user: "周芸",
+                reimbursementType: "项目报销",
+                reason: "项目调研与现场交通报销",
+                relatedApproval: "CCSQ-2026-047",
+                hasSpecialInvoice: "否",
                 type: "交通费",
                 typeClass: "green",
                 amount: "¥ 5,600",
                 date: "2026-03-31",
-                status: "待归集",
-                statusClass: "gold",
+                status: "已归集",
+                statusClass: "green",
                 remark: "项目现场交通",
               },
               {
                 code: "BX-2026-079",
                 user: "何磊",
-                type: "业务招待",
+                reimbursementType: "项目报销",
+                reason: "客户例会接待报销",
+                relatedApproval: "JDSQ-2026-021",
+                hasSpecialInvoice: "否",
+                type: "业务招待费",
                 typeClass: "red",
                 amount: "¥ 12,000",
                 date: "2026-03-24",
@@ -3327,7 +5577,11 @@
               {
                 code: "BX-2026-073",
                 user: "孙珂",
-                type: "办公用品",
+                reimbursementType: "项目报销",
+                reason: "现场办公耗材报销",
+                relatedApproval: "CGSQ-2026-017",
+                hasSpecialInvoice: "否",
+                type: "办公费",
                 typeClass: "blue",
                 amount: "¥ 4,260",
                 date: "2026-03-17",
@@ -3338,6 +5592,10 @@
               {
                 code: "BX-2026-066",
                 user: "陈禾",
+                reimbursementType: "项目报销",
+                reason: "验收阶段驻场费用报销",
+                relatedApproval: "CCSQ-2026-033",
+                hasSpecialInvoice: "是",
                 type: "差旅费",
                 typeClass: "gold",
                 amount: "¥ 8,900",
@@ -3617,21 +5875,663 @@
         },
       ];
 
+      const supplierLibrary = [
+        {
+          id: "supplier-001",
+          code: "GYS-001",
+          companyName: "成都天擎科技有限公司",
+          taxNo: "91510100MA6A13XQ21",
+          contact: "周启",
+          phone: "138-0000-2181",
+          taxType: "一般纳税人",
+          address: "四川省成都市高新区天府四街 66 号",
+          bank: "招商银行成都高新支行",
+          bankAccount: "6225 8888 2000 1201",
+          remark: "长期合作设备供应商，支持现场实施配合。",
+          updatedAt: "2026-04-07 16:20",
+          referenced: true,
+          products: [
+            {
+              name: "边缘采集网关",
+              spec: "工业级 8 路接口，支持 MQTT/Modbus",
+              unit: "台",
+              price: "¥ 12,800",
+              remark: "适用于路口数据采集",
+            },
+            {
+              name: "驻场实施服务",
+              spec: "实施顾问按人天计费",
+              unit: "人天",
+              price: "¥ 1,600",
+              remark: "含安装调试与培训",
+            },
+            {
+              name: "运维巡检服务",
+              spec: "月度巡检 + 故障闭环",
+              unit: "次",
+              price: "¥ 4,200",
+              remark: "适用于交付后维护期",
+            },
+          ],
+        },
+        {
+          id: "supplier-002",
+          code: "GYS-002",
+          companyName: "云图集成服务有限公司",
+          taxNo: "91510100MA6C992M8P",
+          contact: "罗敏",
+          phone: "139-0000-7612",
+          taxType: "一般纳税人",
+          address: "四川省成都市武侯区益州大道 188 号",
+          bank: "建设银行成都软件园支行",
+          bankAccount: "6217 0012 8899 1023",
+          remark: "软件集成和接口联调经验充足。",
+          updatedAt: "2026-04-06 19:15",
+          referenced: true,
+          products: [
+            {
+              name: "平台接口开发服务",
+              spec: "按模块交付，含联调测试",
+              unit: "套",
+              price: "¥ 68,000",
+              remark: "适用于平台二开项目",
+            },
+            {
+              name: "数据治理服务",
+              spec: "按主题域实施",
+              unit: "套",
+              price: "¥ 92,000",
+              remark: "含数据标准与清洗规则",
+            },
+            {
+              name: "现场交付支持",
+              spec: "驻场支持 2 人 / 周",
+              unit: "次",
+              price: "¥ 9,800",
+              remark: "含周报与问题闭环",
+            },
+          ],
+        },
+        {
+          id: "supplier-003",
+          code: "GYS-003",
+          companyName: "川维设备服务有限公司",
+          taxNo: "91510100MA6X810A7M",
+          contact: "宋远",
+          phone: "137-0000-5624",
+          taxType: "小规模纳税人",
+          address: "四川省成都市双流区空港四路 29 号",
+          bank: "工商银行成都空港支行",
+          bankAccount: "6222 0802 9988 2310",
+          remark: "设备到货周期短，支持小批量多次采购。",
+          updatedAt: "2026-04-05 10:48",
+          referenced: false,
+          products: [
+            {
+              name: "工业交换机",
+              spec: "千兆 16 口，支持环网",
+              unit: "台",
+              price: "¥ 3,860",
+              remark: "支持室外弱电箱安装",
+            },
+            {
+              name: "电源防雷模块",
+              spec: "DC 24V，带浪涌保护",
+              unit: "套",
+              price: "¥ 680",
+              remark: "按站点配套供货",
+            },
+          ],
+        },
+        {
+          id: "supplier-004",
+          code: "GYS-004",
+          companyName: "星联系统集成有限公司",
+          taxNo: "91510100MA66T2026G",
+          contact: "高岑",
+          phone: "136-0000-9965",
+          taxType: "一般纳税人",
+          address: "四川省成都市锦江区东大街 118 号",
+          bank: "中国银行成都春熙支行",
+          bankAccount: "6216 6000 2210 8801",
+          remark: "系统集成总包合作方，可提供软硬件一体交付。",
+          updatedAt: "2026-04-04 09:32",
+          referenced: false,
+          products: [
+            {
+              name: "综合布线实施",
+              spec: "含线缆、标签、测试",
+              unit: "次",
+              price: "¥ 18,600",
+              remark: "按楼层或区域计费",
+            },
+            {
+              name: "机柜集成服务",
+              spec: "含设备上架和标准化接线",
+              unit: "套",
+              price: "¥ 7,200",
+              remark: "适用于边缘节点建设",
+            },
+            {
+              name: "网络调优服务",
+              spec: "含现场压测和优化建议",
+              unit: "次",
+              price: "¥ 6,500",
+              remark: "支持验收阶段保障",
+            },
+          ],
+        },
+        {
+          id: "supplier-005",
+          code: "GYS-005",
+          companyName: "山河软件技术有限公司",
+          taxNo: "91510100MA6M77Q92L",
+          contact: "赵莹",
+          phone: "135-0000-3042",
+          taxType: "一般纳税人",
+          address: "四川省成都市高新区交子大道 333 号",
+          bank: "浦发银行成都分行",
+          bankAccount: "6221 5555 0023 1198",
+          remark: "擅长平台能力模块和移动端功能配套开发。",
+          updatedAt: "2026-04-02 18:06",
+          referenced: false,
+          products: [
+            {
+              name: "移动端巡检模块",
+              spec: "含 Android 与 H5 双端适配",
+              unit: "套",
+              price: "¥ 56,000",
+              remark: "适合项目二期扩展",
+            },
+            {
+              name: "报表大屏开发",
+              spec: "含 3 张场景驾驶舱",
+              unit: "套",
+              price: "¥ 88,000",
+              remark: "支持按主题定制",
+            },
+          ],
+        },
+      ];
+
+      const supplierState = {
+        companyKeyword: "",
+        contactKeyword: "",
+        taxType: "",
+        activeSupplierId: supplierLibrary[0].id,
+        catalogKeyword: "",
+        catalogUnit: "",
+      };
+
+      const supplierInvoiceRegistry = {
+        "CG-2026-018-01": [
+          {
+            attachment: "fp_tianqing_01.pdf",
+            invoiceCode: "510026413210",
+            invoiceNo: "06892117",
+            issueDate: "2026-03-18",
+            seller: "成都天擎科技有限公司",
+            buyer: "成都数智交通集团",
+            amount: "¥ 1,113,274.34",
+            tax: "¥ 146,725.66",
+            total: "¥ 1,260,000.00",
+            invoiceType: "增值税专用发票",
+            special: "是",
+            bookedAmount: "¥ 1,113,274.34",
+            inputTax: "¥ 146,725.66",
+            costAmount: "¥ 1,113,274.34",
+          },
+          {
+            attachment: "fp_tianqing_02.pdf",
+            invoiceCode: "510026413211",
+            invoiceNo: "06892118",
+            issueDate: "2026-03-20",
+            seller: "成都天擎科技有限公司",
+            buyer: "成都数智交通集团",
+            amount: "¥ 86,725.66",
+            tax: "¥ 11,274.34",
+            total: "¥ 98,000.00",
+            invoiceType: "增值税专用发票",
+            special: "是",
+            bookedAmount: "¥ 86,725.66",
+            inputTax: "¥ 11,274.34",
+            costAmount: "¥ 86,725.66",
+          },
+        ],
+        "CG-2026-018-04": [
+          {
+            attachment: "fp_chuanwei_01.jpg",
+            invoiceCode: "510026521100",
+            invoiceNo: "12009311",
+            issueDate: "2026-03-29",
+            seller: "川维设备服务有限公司",
+            buyer: "成都数智交通集团",
+            amount: "¥ 520,000.00",
+            tax: "¥ 0.00",
+            total: "¥ 520,000.00",
+            invoiceType: "增值税普通发票",
+            special: "否",
+            bookedAmount: "¥ 520,000.00",
+            inputTax: "¥ 0.00",
+            costAmount: "¥ 520,000.00",
+          },
+        ],
+        "CG-2026-018-06": [
+          {
+            attachment: "fp_yuntu_01.pdf",
+            invoiceCode: "510026443520",
+            invoiceNo: "09018026",
+            issueDate: "2026-04-02",
+            seller: "云图集成服务有限公司",
+            buyer: "成都数智交通集团",
+            amount: "¥ 654,867.26",
+            tax: "¥ 85,132.74",
+            total: "¥ 740,000.00",
+            invoiceType: "增值税专用发票",
+            special: "是",
+            bookedAmount: "¥ 654,867.26",
+            inputTax: "¥ 85,132.74",
+            costAmount: "¥ 654,867.26",
+          },
+        ],
+      };
+
+      const expenseLoanRegistry = {
+        "project-a": {
+          张晨: [
+            {
+              code: "JK-2026-013",
+              amount: "¥ 8,000",
+              date: "2026-03-20",
+              status: "已核销",
+              remark: "成都驻场住宿周转",
+            },
+          ],
+          李岚: [
+            {
+              code: "JK-2026-017",
+              amount: "¥ 5,000",
+              date: "2026-03-27",
+              status: "部分核销",
+              remark: "测试设备采购垫付",
+            },
+          ],
+          王晟: [],
+          陈果: [],
+          刘畅: [],
+        },
+        "project-b": {
+          赵宁: [
+            {
+              code: "JK-2026-022",
+              amount: "¥ 6,000",
+              date: "2026-03-26",
+              status: "待核销",
+              remark: "贵阳驻场交通预支",
+            },
+          ],
+          周芸: [],
+          何磊: [],
+          孙珂: [],
+          陈禾: [],
+        },
+      };
+
+      const procurementPlanRows = [
+        {
+          code: "CGJH-202604-001",
+          projectName: "城市交通数据中台建设一期",
+          reason: "采购边缘采集设备与安装辅材",
+          category: "设备采购",
+          categoryClass: "blue",
+          summary: "边缘网关等 6 项",
+          amount: "¥ 680,000",
+          flowStatus: "待申请",
+          flowStatusClass: "green",
+          applicant: "张晨",
+          date: "2026-04-01",
+        },
+        {
+          code: "CGJH-202604-002",
+          projectName: "园区数字底座二期",
+          reason: "驻场集成服务资源规划",
+          category: "服务采购",
+          categoryClass: "gold",
+          summary: "实施顾问 120 人天",
+          amount: "¥ 192,000",
+          flowStatus: "执行中",
+          flowStatusClass: "cyan",
+          applicant: "李岚",
+          date: "2026-04-02",
+        },
+        {
+          code: "CGJH-202604-003",
+          projectName: "智慧水务平台升级",
+          reason: "采集模组备件储备",
+          category: "材料采购",
+          categoryClass: "cyan",
+          summary: "传感模组等 12 项",
+          amount: "¥ 248,000",
+          flowStatus: "待申请",
+          flowStatusClass: "green",
+          applicant: "王晟",
+          date: "2026-04-03",
+        },
+        {
+          code: "CGJH-202604-004",
+          projectName: "客服运营系统重构",
+          reason: "软件授权与测试工具采购",
+          category: "软件采购",
+          categoryClass: "purple",
+          summary: "测试平台授权 8 套",
+          amount: "¥ 156,000",
+          flowStatus: "执行中",
+          flowStatusClass: "cyan",
+          applicant: "陈果",
+          date: "2026-04-03",
+        },
+        {
+          code: "CGJH-202604-005",
+          projectName: "总部协同办公升级",
+          reason: "办公终端更新",
+          category: "办公采购",
+          categoryClass: "blue",
+          summary: "笔记本电脑等 18 项",
+          amount: "¥ 234,000",
+          flowStatus: "已完成",
+          flowStatusClass: "blue",
+          applicant: "刘畅",
+          date: "2026-04-04",
+        },
+        {
+          code: "CGJH-202604-006",
+          projectName: "西南交付中心扩容",
+          reason: "机柜与网络配件补充",
+          category: "设备采购",
+          categoryClass: "blue",
+          summary: "交换机等 9 项",
+          amount: "¥ 318,000",
+          flowStatus: "执行中",
+          flowStatusClass: "cyan",
+          applicant: "赵宁",
+          date: "2026-04-05",
+        },
+        {
+          code: "CGJH-202604-007",
+          projectName: "低空监管平台试点",
+          reason: "专项实施服务外采",
+          category: "服务采购",
+          categoryClass: "gold",
+          summary: "算法调优服务 60 人天",
+          amount: "¥ 126,000",
+          flowStatus: "待申请",
+          flowStatusClass: "green",
+          applicant: "周芸",
+          date: "2026-04-06",
+        },
+        {
+          code: "CGJH-202604-008",
+          projectName: "数据治理平台三期",
+          reason: "机房辅材集中采购",
+          category: "材料采购",
+          categoryClass: "cyan",
+          summary: "线缆与配电辅材 24 项",
+          amount: "¥ 96,000",
+          flowStatus: "待申请",
+          flowStatusClass: "green",
+          applicant: "孙珂",
+          date: "2026-04-07",
+        },
+      ];
+
+      const procurementRequestRows = [
+        {
+          code: "CGSQ-202604-006",
+          projectName: "城市交通数据中台建设一期",
+          reason: "边缘采集设备采购执行",
+          category: "设备采购",
+          categoryClass: "blue",
+          amount: "¥ 725,000",
+          flowStatus: "待询价",
+          flowStatusClass: "green",
+          clerkStatus: "采购专员待办",
+          clerkStatusClass: "gold",
+          applicant: "张晨",
+          date: "2026-04-02",
+        },
+        {
+          code: "CGSQ-202604-007",
+          projectName: "智慧水务平台升级",
+          reason: "采集模组备件正式采购",
+          category: "材料采购",
+          categoryClass: "cyan",
+          amount: "¥ 264,000",
+          flowStatus: "待询价",
+          flowStatusClass: "green",
+          clerkStatus: "办理中",
+          clerkStatusClass: "cyan",
+          applicant: "王晟",
+          date: "2026-04-03",
+        },
+        {
+          code: "CGSQ-202604-008",
+          projectName: "客服运营系统重构",
+          reason: "测试平台授权采购",
+          category: "软件采购",
+          categoryClass: "purple",
+          amount: "¥ 168,000",
+          flowStatus: "待签约",
+          flowStatusClass: "cyan",
+          clerkStatus: "已完成",
+          clerkStatusClass: "green",
+          applicant: "陈果",
+          date: "2026-04-03",
+        },
+        {
+          code: "CGSQ-202604-009",
+          projectName: "园区数字底座二期",
+          reason: "驻场实施顾问采购",
+          category: "服务采购",
+          categoryClass: "gold",
+          amount: "¥ 268,000",
+          flowStatus: "待签约",
+          flowStatusClass: "cyan",
+          clerkStatus: "已完成",
+          clerkStatusClass: "green",
+          applicant: "李岚",
+          date: "2026-04-04",
+        },
+        {
+          code: "CGSQ-202604-010",
+          projectName: "西南交付中心扩容",
+          reason: "交换机与机柜配件采购",
+          category: "设备采购",
+          categoryClass: "blue",
+          amount: "¥ 332,000",
+          flowStatus: "待签约",
+          flowStatusClass: "cyan",
+          clerkStatus: "采购专员待办",
+          clerkStatusClass: "gold",
+          applicant: "赵宁",
+          date: "2026-04-05",
+        },
+        {
+          code: "CGSQ-202604-011",
+          projectName: "低空监管平台试点",
+          reason: "算法调优服务采购",
+          category: "服务采购",
+          categoryClass: "gold",
+          amount: "¥ 138,000",
+          flowStatus: "待询价",
+          flowStatusClass: "green",
+          clerkStatus: "办理中",
+          clerkStatusClass: "cyan",
+          applicant: "周芸",
+          date: "2026-04-05",
+        },
+        {
+          code: "CGSQ-202604-012",
+          projectName: "总部协同办公升级",
+          reason: "办公终端采购",
+          category: "办公采购",
+          categoryClass: "blue",
+          amount: "¥ 246,000",
+          flowStatus: "已完成",
+          flowStatusClass: "blue",
+          clerkStatus: "已完成",
+          clerkStatusClass: "green",
+          applicant: "刘畅",
+          date: "2026-04-06",
+        },
+        {
+          code: "CGSQ-202604-013",
+          projectName: "数据治理平台三期",
+          reason: "机房辅材正式采购",
+          category: "材料采购",
+          categoryClass: "cyan",
+          amount: "¥ 109,000",
+          flowStatus: "待询价",
+          flowStatusClass: "green",
+          clerkStatus: "采购专员待办",
+          clerkStatusClass: "gold",
+          applicant: "孙珂",
+          date: "2026-04-07",
+        },
+      ];
+
+      const procurementContractRows = [
+        {
+          code: "CGHT-202604-001",
+          projectName: "城市交通数据中台建设一期",
+          contractName: "边缘采集设备采购合同",
+          supplierName: "成都天擎科技",
+          amount: "¥ 712,000",
+          status: "待收票",
+          statusClass: "gold",
+          signDate: "2026-04-03",
+        },
+        {
+          code: "CGHT-202604-002",
+          projectName: "园区数字底座二期",
+          contractName: "驻场集成服务合同",
+          supplierName: "云图集成服务",
+          amount: "¥ 268,000",
+          status: "待支付",
+          statusClass: "cyan",
+          signDate: "2026-04-04",
+        },
+        {
+          code: "CGHT-202604-003",
+          projectName: "智慧水务平台升级",
+          contractName: "采集模组备件采购合同",
+          supplierName: "川渝智感科技",
+          amount: "¥ 254,000",
+          status: "已完成",
+          statusClass: "green",
+          signDate: "2026-04-04",
+        },
+        {
+          code: "CGHT-202604-004",
+          projectName: "客服运营系统重构",
+          contractName: "测试平台授权采购合同",
+          supplierName: "杭州易测软件",
+          amount: "¥ 168,000",
+          status: "审批中",
+          statusClass: "blue",
+          signDate: "待签订",
+        },
+        {
+          code: "CGHT-202604-005",
+          projectName: "西南交付中心扩容",
+          contractName: "机柜与网络配件采购合同",
+          supplierName: "成都锐联设备",
+          amount: "¥ 332,000",
+          status: "待收票",
+          statusClass: "gold",
+          signDate: "2026-04-05",
+        },
+        {
+          code: "CGHT-202604-006",
+          projectName: "低空监管平台试点",
+          contractName: "算法调优服务合同",
+          supplierName: "星联数智服务",
+          amount: "¥ 138,000",
+          status: "审批中",
+          statusClass: "blue",
+          signDate: "待签订",
+        },
+        {
+          code: "CGHT-202604-007",
+          projectName: "总部协同办公升级",
+          contractName: "办公终端采购合同",
+          supplierName: "深蓝办公集成",
+          amount: "¥ 246,000",
+          status: "待支付",
+          statusClass: "cyan",
+          signDate: "2026-04-06",
+        },
+        {
+          code: "CGHT-202604-008",
+          projectName: "数据治理平台三期",
+          contractName: "机房辅材采购合同",
+          supplierName: "成渝机电材料",
+          amount: "¥ 109,000",
+          status: "已完成",
+          statusClass: "green",
+          signDate: "2026-04-07",
+        },
+      ];
+
+      let supplierEditingId = "";
+      let supplierDetailId = "";
+      let currentProjectExpenseDetails = {};
+      let currentProjectLoanDetails = {};
+      let currentSupplierInvoiceContractNo = "";
+
       let currentProjectId = projectOptions[0].id;
       let pendingProjectId = currentProjectId;
       const paginationState = {
         invoice: 1,
         collection: 1,
         supplier: 1,
+        supplierLibrary: 1,
+        supplierCatalog: 1,
         expense: 1,
         labor: 1,
+        plan: 1,
+        request: 1,
+        contract: 1,
       };
       let latestTableData = {
         invoice: [],
         collection: [],
         supplier: [],
+        supplierLibrary: [],
+        supplierCatalog: [],
         expense: [],
         labor: [],
+        plan: [],
+        request: [],
+        contract: [],
+      };
+      const procurementFilterState = {
+        plan: {
+          project: "",
+          category: "",
+          status: "",
+          keyword: "",
+        },
+        request: {
+          project: "",
+          category: "",
+          status: "",
+          keyword: "",
+        },
+        contract: {
+          project: "",
+          status: "",
+          keyword: "",
+        },
       };
       const laborFilterState = {
         mainStart: "",
@@ -3680,6 +6580,200 @@
         );
       }
 
+      function formatProjectTaxNo(projectId) {
+        return projectId === "project-a"
+          ? "91510100MA8K2026X1"
+          : "91520100MA7G2026T6";
+      }
+
+      function normalizeInvoiceRows(project) {
+        const contents = [
+          "系统集成服务费",
+          "技术服务费",
+          "软件开发费",
+          "运维服务费",
+          "设备款",
+        ];
+
+        return project.invoice.invoices.map((row, index) => ({
+          code: row.code,
+          projectName: `${project.code} ${project.name}`,
+          customerName: project.invoice.customerName,
+          taxpayerNo: formatProjectTaxNo(project.id),
+          date: row.date,
+          amount: row.amount,
+          tax: row.sub.includes("¥")
+            ? row.sub.replace("税额 ", "")
+            : index % 2 === 0
+            ? "¥ 0.00"
+            : "待确认",
+          type: row.type === "专票" ? "增值税专用发票" : "增值税普通发票",
+          typeClass: row.typeClass,
+          content: contents[index % contents.length],
+          status:
+            row.status === "已开票" && index === 0
+              ? "部分回款"
+              : row.status === "已开票" && index === 2
+              ? "已回款"
+              : row.status === "财务办理中"
+              ? "待开票"
+              : row.status,
+          statusClass:
+            row.status === "已开票" && index === 2
+              ? "green"
+              : row.status === "已开票" && index === 0
+              ? "cyan"
+              : row.statusClass,
+          remark: row.remark,
+        }));
+      }
+
+      function normalizeCollectionRows(project) {
+        return project.invoice.collections.map((row, index) => ({
+          code: row.code,
+          date: row.date,
+          amount: row.amount,
+          method: row.method,
+          remark: row.remark,
+        }));
+      }
+
+      function normalizeSupplierCostRows(project) {
+        return project.cost.suppliers.map((row) => ({
+          supplierName: row.name,
+          status: row.status,
+          statusClass: row.statusClass,
+          contractNo: row.contractNo,
+          contractAmount: row.contractAmount,
+          costAmount: row.costAmount,
+          costSub: row.costSub,
+          taxAmount: row.taxAmount,
+          signDate: row.signDate,
+        }));
+      }
+
+      function normalizeExpenseUsers(project) {
+        const detailsByUser = {};
+        const userRows = [];
+        const deptMap = Object.fromEntries(
+          (project.cost.laborRows ?? []).map((row) => [row.name, row.dept])
+        );
+        const loanRegistry = expenseLoanRegistry[project.id] ?? {};
+
+        project.cost.expenses
+          .filter((row) => row.status === "已归集")
+          .forEach((row, index) => {
+            const userKey = row.user;
+            const receiptCount = String(2 + (index % 3));
+            const taxValue = row.hasSpecialInvoice === "是" ? 1200 : 0;
+            const detail = {
+              code: row.code,
+              type: row.type,
+              amount: row.amount,
+              detail: row.remark,
+              receipts: receiptCount,
+              invoiceResult:
+                index % 2 === 0
+                  ? `OCR 已识别，${receiptCount} 张票据`
+                  : `人工补录，${receiptCount} 张票据`,
+              bookedAmount: formatCurrency(
+                Math.max(parseCurrencyValue(row.amount) - taxValue, 0)
+              ),
+              tax: formatCurrency(taxValue),
+              costAmount: formatCurrency(
+                Math.max(parseCurrencyValue(row.amount) - taxValue, 0)
+              ),
+              applyDate: row.date,
+            };
+            if (!detailsByUser[userKey]) {
+              detailsByUser[userKey] = {
+                dept: deptMap[userKey] ?? "未分配部门",
+                reports: {},
+              };
+            }
+            if (!detailsByUser[userKey].reports[row.code]) {
+              detailsByUser[userKey].reports[row.code] = {
+                code: row.code,
+                reason: row.reason ?? row.remark,
+                reimbursementType: row.reimbursementType ?? "项目报销",
+                applyDate: row.date,
+                relatedApproval: row.relatedApproval ?? "-",
+                hasSpecialInvoice: row.hasSpecialInvoice ?? "否",
+                details: [],
+              };
+            }
+            detailsByUser[userKey].reports[row.code].details.push(detail);
+          });
+
+        Object.entries(detailsByUser).forEach(([user, payload]) => {
+          const reports = Object.values(payload.reports)
+            .map((report) => {
+              const totalAmountValue = report.details.reduce(
+                (sum, item) => sum + parseCurrencyValue(item.amount),
+                0
+              );
+              const totalCostValue = report.details.reduce(
+                (sum, item) => sum + parseCurrencyValue(item.costAmount),
+                0
+              );
+              return {
+                ...report,
+                totalAmount: formatCurrency(totalAmountValue),
+                totalAmountValue,
+                totalCost: formatCurrency(totalCostValue),
+                totalCostValue,
+              };
+            })
+            .sort((a, b) => (a.applyDate < b.applyDate ? 1 : -1));
+          const totalAmount = reports.reduce(
+            (sum, item) => sum + item.totalAmountValue,
+            0
+          );
+          const totalCost = reports.reduce(
+            (sum, item) => sum + item.totalCostValue,
+            0
+          );
+          userRows.push({
+            user,
+            dept: payload.dept,
+            amount: formatCurrency(totalAmount),
+            costAmount: formatCurrency(totalCost),
+            reportCount: reports.length,
+            loanCount: (loanRegistry[user] ?? []).length,
+          });
+          detailsByUser[user] = {
+            dept: payload.dept,
+            reports,
+          };
+        });
+
+        userRows.sort(
+          (a, b) => parseCurrencyValue(b.amount) - parseCurrencyValue(a.amount)
+        );
+
+        return { userRows, detailsByUser };
+      }
+
+      function getInvoiceApprovalProfile(projectId) {
+        if (projectId === "project-b") {
+          return {
+            taxpayerNo: "91520100MA7G2026T6",
+            address: "贵州省贵阳市观山湖区林城西路 88 号",
+            phone: "0851-8866 2301",
+            bank: "工商银行贵阳观山湖支行",
+            bankAccount: "6222 0300 9988 6612",
+          };
+        }
+
+        return {
+          taxpayerNo: "91510100MA8K2026X1",
+          address: "四川省成都市高新区天府大道北段 1480 号",
+          phone: "028-8512 6638",
+          bank: "建设银行成都天府新城支行",
+          bankAccount: "6217 0012 8899 1011",
+        };
+      }
+
       function actionsHtml() {
         return `<div class="actions"><span class="btn link">详情</span><span class="divider"></span><span class="btn link">编辑</span><span class="divider"></span><span class="btn link danger">删除</span></div>`;
       }
@@ -3700,43 +6794,33 @@
         const content = rows
           .map(
             (row) => `<tr>
-              <td data-label="发票编号"><div class="money">${
-                row.code
-              }</div></td>
+              <td data-label="开票编号"><div class="money">${row.code}</div></td>
+              <td data-label="纳税人识别号">${row.taxpayerNo}</td>
               <td data-label="开票日期">${row.date}</td>
-              <td data-label="开票金额"><div class="money">${
-                row.amount
-              }</div><div class="subtext">${row.sub}</div></td>
-              <td data-label="开票类型"><span class="status ${row.typeClass}">${
-              row.type
-            }</span></td>
-              <td data-label="状态"><span class="status ${row.statusClass}">${
-              row.status
-            }</span></td>
-              <td data-label="备注">${row.remark}</td>
-              <td data-label="操作">${actionsHtml()}</td>
+              <td data-label="本次开票金额"><div class="money">${row.amount}</div></td>
+              <td data-label="税额">${row.tax}</td>
+              <td data-label="发票类型"><span class="status ${row.typeClass}">${row.type}</span></td>
+              <td data-label="开票内容">${row.content}</td>
+              <td data-label="发票备注信息">${row.remark}</td>
+              <td data-label="操作"><div class="actions"><span class="btn link">详情</span></div></td>
             </tr>`
           )
           .join("");
-        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 7);
+        return (
+          content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 11)
+        );
       }
 
       function renderCollectionRows(rows) {
         const content = rows
           .map(
             (row) => `<tr>
-              <td data-label="回款编号"><div class="money">${
-                row.code
-              }</div><div class="subtext">${row.sub}</div></td>
+              <td data-label="回款编号"><div class="money">${row.code}</div></td>
               <td data-label="回款日期">${row.date}</td>
-              <td data-label="回款金额"><div class="money">${
-                row.amount
-              }</div></td>
-              <td data-label="回款方式"><span class="status cyan">${
-                row.method
-              }</span></td>
+              <td data-label="回款金额"><div class="money">${row.amount}</div></td>
+              <td data-label="回款方式"><span class="status cyan">${row.method}</span></td>
               <td data-label="备注">${row.remark}</td>
-              <td data-label="操作">${actionsHtml()}</td>
+              <td data-label="操作"><div class="actions"><span class="btn link">详情</span><span class="divider"></span><span class="btn link">编辑</span><span class="divider"></span><span class="btn link danger">删除</span></div></td>
             </tr>`
           )
           .join("");
@@ -4096,14 +7180,14 @@
         const content = rows
           .map(
             (row) => `<tr>
-              <td data-label="供应商名称"><div class="money">${row.name}</div></td>
+              <td data-label="供应商名称"><div class="money">${row.supplierName}</div></td>
               <td data-label="状态"><span class="status ${row.statusClass}">${row.status}</span></td>
               <td data-label="合同编号">${row.contractNo}</td>
               <td data-label="合同金额"><div class="money">${row.contractAmount}</div></td>
               <td data-label="成本金额"><div class="money">${row.costAmount}</div><div class="subtext">${row.costSub}</div></td>
               <td data-label="含税金额">${row.taxAmount}</td>
               <td data-label="签订日期">${row.signDate}</td>
-              <td data-label="操作"><div class="actions"><span class="btn link">上传发票</span><span class="divider"></span><span class="btn link">详情</span><span class="divider"></span><span class="btn link danger">删除</span></div></td>
+              <td data-label="操作"><div class="actions"><button class="btn link" type="button" data-supplier-cost-action="upload" data-contract-no="${row.contractNo}">上传发票</button><span class="divider"></span><button class="btn link" type="button">详情</button><span class="divider"></span><button class="btn link danger" type="button">删除</button></div></td>
             </tr>`
           )
           .join("");
@@ -4114,16 +7198,17 @@
         const content = rows
           .map(
             (row) => `<tr>
-              <td data-label="报销单号">${row.code}</td>
-              <td data-label="申请人">${row.user}</td>
-              <td data-label="费用类型"><span class="status ${row.typeClass}">${row.type}</span></td>
+              <td data-label="报销人">${row.user}</td>
+              <td data-label="部门">${row.dept}</td>
               <td data-label="报销金额"><div class="money">${row.amount}</div></td>
-              <td data-label="申请日期">${row.date}</td>
-              <td data-label="操作"><span class="btn link">详情</span></td>
+              <td data-label="成本金额"><div class="money">${row.costAmount}</div></td>
+              <td data-label="报销笔数">${row.reportCount} 笔</td>
+              <td data-label="借款笔数">${row.loanCount} 笔</td>
+              <td data-label="操作"><button class="btn link" type="button" data-expense-user="${row.user}">详情</button></td>
             </tr>`
           )
           .join("");
-        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 6);
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 7);
       }
 
       function renderLaborRows(rows) {
@@ -4140,6 +7225,353 @@
           )
           .join("");
         return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 6);
+      }
+
+      function renderMetricCards(containerId, cards) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = cards
+          .map(
+            (item) => `<div class="stat-card ${item.soft}">
+              <div class="stat-head">
+                <div>
+                  <div class="stat-label">${item.label}</div>
+                  <div class="stat-value">${item.value}</div>
+                </div>
+                <div class="stat-icon ${item.accent}">
+                  <svg viewBox="0 0 1024 1024" fill="currentColor">
+                    <path d="${item.icon}"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-note">${item.note}</div>
+            </div>`
+          )
+          .join("");
+      }
+
+      function renderEmptyTable(colspan, message) {
+        return `<tr><td class="empty-cell" colspan="${colspan}">${message}</td></tr>`;
+      }
+
+      function renderPlanRows(rows) {
+        if (!rows.length) {
+          return renderEmptyTable(10, "没有匹配的采购计划，请调整筛选条件。");
+        }
+
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="计划单号"><div class="money">${row.code}</div></td>
+              <td data-label="项目名称">${row.projectName}</td>
+              <td data-label="采购事由">${row.reason}</td>
+              <td data-label="采购类别"><span class="status ${row.categoryClass}">${row.category}</span></td>
+              <td data-label="采购商品摘要">${row.summary}</td>
+              <td data-label="预计金额"><div class="money">${row.amount}</div></td>
+              <td data-label="当前流程状态"><span class="status ${row.flowStatusClass}">${row.flowStatus}</span></td>
+              <td data-label="申请人">${row.applicant}</td>
+              <td data-label="申请日期">${row.date}</td>
+              <td data-label="操作"><div class="actions"><span class="btn link">详情</span></div></td>
+            </tr>`
+          )
+          .join("");
+
+        return (
+          content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 10)
+        );
+      }
+
+      function renderRequestRows(rows) {
+        if (!rows.length) {
+          return renderEmptyTable(10, "没有匹配的采购申请，请调整筛选条件。");
+        }
+
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="申请单号"><div class="money">${row.code}</div></td>
+              <td data-label="项目名称">${row.projectName}</td>
+              <td data-label="采购事由">${row.reason}</td>
+              <td data-label="采购类别"><span class="status ${row.categoryClass}">${row.category}</span></td>
+              <td data-label="汇总金额"><div class="money">${row.amount}</div></td>
+              <td data-label="当前流程状态"><span class="status ${row.flowStatusClass}">${row.flowStatus}</span></td>
+              <td data-label="采购专员办理状态"><span class="status ${row.clerkStatusClass}">${row.clerkStatus}</span></td>
+              <td data-label="申请人">${row.applicant}</td>
+              <td data-label="申请日期">${row.date}</td>
+              <td data-label="操作"><div class="actions"><span class="btn link">详情</span></div></td>
+            </tr>`
+          )
+          .join("");
+
+        return (
+          content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 10)
+        );
+      }
+
+      function renderContractRows(rows) {
+        if (!rows.length) {
+          return renderEmptyTable(8, "没有匹配的采购合同，请调整筛选条件。");
+        }
+
+        const content = rows
+          .map(
+            (row) => `<tr>
+              <td data-label="合同编号"><div class="money">${row.code}</div></td>
+              <td data-label="项目名称">${row.projectName}</td>
+              <td data-label="合同名称">${row.contractName}</td>
+              <td data-label="供应商名称">${row.supplierName}</td>
+              <td data-label="合同金额"><div class="money">${row.amount}</div></td>
+              <td data-label="状态"><span class="status ${row.statusClass}">${row.status}</span></td>
+              <td data-label="签订日期">${row.signDate}</td>
+              <td data-label="操作"><div class="actions"><span class="btn link">详情</span></div></td>
+            </tr>`
+          )
+          .join("");
+
+        return content + renderPlaceholderRows(Math.max(0, 5 - rows.length), 8);
+      }
+
+      function getFilteredPlanRows() {
+        const state = procurementFilterState.plan;
+        const keyword = state.keyword.trim().toLowerCase();
+
+        return procurementPlanRows.filter((row) => {
+          const projectMatched =
+            !state.project || row.projectName === state.project;
+          const categoryMatched =
+            !state.category || row.category === state.category;
+          const statusMatched =
+            !state.status || row.flowStatus === state.status;
+          const keywordMatched =
+            !keyword ||
+            [
+              row.code,
+              row.projectName,
+              row.reason,
+              row.summary,
+              row.applicant,
+            ].some((item) => item.toLowerCase().includes(keyword));
+
+          return (
+            projectMatched && categoryMatched && statusMatched && keywordMatched
+          );
+        });
+      }
+
+      function getFilteredRequestRows() {
+        const state = procurementFilterState.request;
+        const keyword = state.keyword.trim().toLowerCase();
+
+        return procurementRequestRows.filter((row) => {
+          const projectMatched =
+            !state.project || row.projectName === state.project;
+          const categoryMatched =
+            !state.category || row.category === state.category;
+          const statusMatched =
+            !state.status || row.flowStatus === state.status;
+          const keywordMatched =
+            !keyword ||
+            [
+              row.code,
+              row.projectName,
+              row.reason,
+              row.applicant,
+              row.clerkStatus,
+            ].some((item) => item.toLowerCase().includes(keyword));
+
+          return (
+            projectMatched && categoryMatched && statusMatched && keywordMatched
+          );
+        });
+      }
+
+      function getFilteredContractRows() {
+        const state = procurementFilterState.contract;
+        const keyword = state.keyword.trim().toLowerCase();
+
+        return procurementContractRows.filter((row) => {
+          const projectMatched =
+            !state.project || row.projectName === state.project;
+          const statusMatched = !state.status || row.status === state.status;
+          const keywordMatched =
+            !keyword ||
+            [
+              row.code,
+              row.projectName,
+              row.contractName,
+              row.supplierName,
+            ].some((item) => item.toLowerCase().includes(keyword));
+
+          return projectMatched && statusMatched && keywordMatched;
+        });
+      }
+
+      function renderPlanStats(rows) {
+        const totalAmount = rows.reduce(
+          (sum, row) => sum + parseCurrencyValue(row.amount),
+          0
+        );
+        const waitingCount = rows.filter(
+          (row) => row.flowStatus === "待申请"
+        ).length;
+        const runningCount = rows.filter(
+          (row) => row.flowStatus === "执行中"
+        ).length;
+
+        renderMetricCards("plan-stats-grid", [
+          {
+            label: "计划单数",
+            value: String(rows.length),
+            note: "仅统计审批通过后同步的正式计划",
+            soft: "soft-blue",
+            accent: "blue",
+            icon: "M224 160h576v704H224V160zm64 64v576h448V224H288zm96 96h256v64H384v-64zm0 128h256v64H384v-64zm0 128h192v64H384v-64z",
+          },
+          {
+            label: "预计总金额",
+            value: formatCurrency(totalAmount),
+            note: "按列表预计金额实时汇总",
+            soft: "soft-gold",
+            accent: "gold",
+            icon: "M512 128c212.1 0 384 171.9 384 384S724.1 896 512 896 128 724.1 128 512 299.9 128 512 128zm0 128l-160 96v320l160 96 160-96V352L512 256z",
+          },
+          {
+            label: "待申请",
+            value: String(waitingCount),
+            note: "计划已通过，待转采购申请",
+            soft: "soft-green",
+            accent: "green",
+            icon: "M480 224h64v256h256v64H544v256h-64V544H224v-64h256V224z",
+          },
+          {
+            label: "执行中",
+            value: String(runningCount),
+            note: "已进入申请或合同等后续链路",
+            soft: "soft-purple",
+            accent: "purple",
+            icon: "M192 320h640v384H192V320zm64 64v256h512V384H256zm96 64h128v64H352v-64z",
+          },
+        ]);
+      }
+
+      function renderRequestStats(rows) {
+        const totalAmount = rows.reduce(
+          (sum, row) => sum + parseCurrencyValue(row.amount),
+          0
+        );
+        const inquiryCount = rows.filter(
+          (row) => row.flowStatus === "待询价"
+        ).length;
+        const clerkTodoCount = rows.filter(
+          (row) => row.clerkStatus === "采购专员待办"
+        ).length;
+
+        renderMetricCards("request-stats-grid", [
+          {
+            label: "申请单数",
+            value: String(rows.length),
+            note: "仅展示审批通过后的采购申请",
+            soft: "soft-blue",
+            accent: "blue",
+            icon: "M224 160h576v704H224V160zm64 64v576h448V224H288zm96 96h256v64H384v-64zm0 128h256v64H384v-64z",
+          },
+          {
+            label: "汇总金额",
+            value: formatCurrency(totalAmount),
+            note: "由采购明细自动汇总生成",
+            soft: "soft-gold",
+            accent: "gold",
+            icon: "M192 256h640v512H192V256zm64 64v384h512V320H256zm96 96h128v64H352v-64z",
+          },
+          {
+            label: "待询价",
+            value: String(inquiryCount),
+            note: "等待进入比价询价或直签流程",
+            soft: "soft-green",
+            accent: "green",
+            icon: "M320 192h384v64H320zm-64 128h512v448H256V320zm64 64v320h384V384H320z",
+          },
+          {
+            label: "采购专员待办",
+            value: String(clerkTodoCount),
+            note: "展示办理节点当前待处理数量",
+            soft: "soft-purple",
+            accent: "purple",
+            icon: "M512 128l352 160v224c0 201.4-128.4 386.8-320 448-191.6-61.2-320-246.6-320-448V288l288-160zm0 70.1L256 318.4V512c0 164.6 100.7 317.3 256 375.2 155.3-57.9 256-210.6 256-375.2V318.4L512 198.1z",
+          },
+        ]);
+      }
+
+      function renderContractStats(rows) {
+        const totalAmount = rows.reduce(
+          (sum, row) => sum + parseCurrencyValue(row.amount),
+          0
+        );
+        const invoiceCount = rows.filter(
+          (row) => row.status === "待收票"
+        ).length;
+        const paymentCount = rows.filter(
+          (row) => row.status === "待支付"
+        ).length;
+
+        renderMetricCards("contract-stats-grid", [
+          {
+            label: "合同数",
+            value: String(rows.length),
+            note: "含审批中与已签订的合同单据",
+            soft: "soft-blue",
+            accent: "blue",
+            icon: "M224 160h576v704H224V160zm64 64v576h448V224H288zm96 96h256v64H384v-64zm0 128h256v64H384v-64z",
+          },
+          {
+            label: "合同金额",
+            value: formatCurrency(totalAmount),
+            note: "按采购合同金额实时汇总",
+            soft: "soft-gold",
+            accent: "gold",
+            icon: "M192 256h640v512H192V256zm64 64v384h512V320H256zm96 96h128v64H352v-64z",
+          },
+          {
+            label: "待收票",
+            value: String(invoiceCount),
+            note: "合同已签订，等待发票归集",
+            soft: "soft-green",
+            accent: "green",
+            icon: "M160 224h704v576H160V224zm64 64v448h576V288H224zm96 96h384v64H320v-64z",
+          },
+          {
+            label: "待支付",
+            value: String(paymentCount),
+            note: "已完成签约与收票，待进入支付",
+            soft: "soft-purple",
+            accent: "purple",
+            icon: "M128 256h768v512H128V256zm64 64v384h640V320H192zm96 96h160v64H288v-64z",
+          },
+        ]);
+      }
+
+      function applyProcurementFilters(type, resetPage = true) {
+        if (resetPage) paginationState[type] = 1;
+
+        if (type === "plan") {
+          const rows = getFilteredPlanRows();
+          latestTableData.plan = rows;
+          renderPlanStats(rows);
+        }
+
+        if (type === "request") {
+          const rows = getFilteredRequestRows();
+          latestTableData.request = rows;
+          renderRequestStats(rows);
+        }
+
+        if (type === "contract") {
+          const rows = getFilteredContractRows();
+          latestTableData.contract = rows;
+          renderContractStats(rows);
+        }
+
+        renderAllTables();
       }
 
       function getRowsPerPage() {
@@ -4207,6 +7639,18 @@
             render: renderSupplierRows,
           },
           {
+            key: "supplierLibrary",
+            bodyId: "supplier-library-body",
+            pagerId: "supplier-library-pagination",
+            render: renderSupplierLibraryRows,
+          },
+          {
+            key: "supplierCatalog",
+            bodyId: "supplier-catalog-body",
+            pagerId: "supplier-catalog-pagination",
+            render: renderSupplierCatalogRows,
+          },
+          {
             key: "expense",
             bodyId: "expense-table-body",
             pagerId: "expense-pagination",
@@ -4218,6 +7662,24 @@
             pagerId: "labor-pagination",
             render: renderLaborRows,
           },
+          {
+            key: "plan",
+            bodyId: "plan-table-body",
+            pagerId: "plan-pagination",
+            render: renderPlanRows,
+          },
+          {
+            key: "request",
+            bodyId: "request-table-body",
+            pagerId: "request-pagination",
+            render: renderRequestRows,
+          },
+          {
+            key: "contract",
+            bodyId: "contract-table-body",
+            pagerId: "contract-pagination",
+            render: renderContractRows,
+          },
         ];
 
         configs.forEach((config) => {
@@ -4228,8 +7690,10 @@
             paginationState[config.key] = totalPages;
           const start = (paginationState[config.key] - 1) * pageSize;
           const currentRows = rows.slice(start, start + pageSize);
-          document.getElementById(config.bodyId).innerHTML =
-            config.render(currentRows);
+          document.getElementById(config.bodyId).innerHTML = config.render(
+            currentRows,
+            start
+          );
           renderPagination(
             config.pagerId,
             config.key,
@@ -4238,6 +7702,1316 @@
             pageSize
           );
         });
+      }
+
+      const supplierListView = document.getElementById("supplier-list-view");
+      const supplierCatalogView = document.getElementById(
+        "supplier-catalog-view"
+      );
+      const supplierStatsGrid = document.getElementById("supplier-stats-grid");
+      const supplierLibraryBody = document.getElementById(
+        "supplier-library-body"
+      );
+      const supplierSearchCompany = document.getElementById(
+        "supplier-search-company"
+      );
+      const supplierSearchContact = document.getElementById(
+        "supplier-search-contact"
+      );
+      const supplierSearchTaxType = document.getElementById(
+        "supplier-search-tax-type"
+      );
+      const catalogSearchKeyword = document.getElementById(
+        "catalog-search-keyword"
+      );
+      const catalogSearchUnit = document.getElementById("catalog-search-unit");
+      const supplierCatalogBody = document.getElementById(
+        "supplier-catalog-body"
+      );
+      const supplierCatalogTitle = document.getElementById(
+        "supplier-catalog-title"
+      );
+      const supplierDetailModal = document.getElementById(
+        "supplier-detail-modal"
+      );
+      const supplierDetailTitle = document.getElementById(
+        "supplier-detail-title"
+      );
+      const supplierDetailSubtitle = document.getElementById(
+        "supplier-detail-subtitle"
+      );
+      const supplierDetailBody = document.getElementById(
+        "supplier-detail-body"
+      );
+      const supplierFormModal = document.getElementById("supplier-form-modal");
+      const supplierFormTitle = document.getElementById("supplier-form-title");
+      const supplierFormSubtitle = document.getElementById(
+        "supplier-form-subtitle"
+      );
+      const collectionFormModal = document.getElementById(
+        "collection-form-modal"
+      );
+      const supplierInvoiceModal = document.getElementById(
+        "supplier-invoice-modal"
+      );
+      const supplierInvoiceSubtitle = document.getElementById(
+        "supplier-invoice-subtitle"
+      );
+      const supplierInvoiceStack = document.getElementById(
+        "supplier-invoice-stack"
+      );
+      const expenseDetailModal = document.getElementById(
+        "expense-detail-modal"
+      );
+      const expenseDetailSubtitle = document.getElementById(
+        "expense-detail-subtitle"
+      );
+      const expenseDetailBody = document.getElementById("expense-detail-body");
+      const catalogFormModal = document.getElementById("catalog-form-modal");
+      const businessDetailModal = document.getElementById(
+        "business-detail-modal"
+      );
+      const businessDetailTitle = document.getElementById(
+        "business-detail-title"
+      );
+      const businessDetailSubtitle = document.getElementById(
+        "business-detail-subtitle"
+      );
+      const businessDetailBody = document.getElementById(
+        "business-detail-body"
+      );
+      const appToast = document.getElementById("app-toast");
+      const procurementFilterFields = {
+        plan: {
+          project: document.getElementById("plan-filter-project"),
+          category: document.getElementById("plan-filter-category"),
+          status: document.getElementById("plan-filter-status"),
+          keyword: document.getElementById("plan-filter-keyword"),
+        },
+        request: {
+          project: document.getElementById("request-filter-project"),
+          category: document.getElementById("request-filter-category"),
+          status: document.getElementById("request-filter-status"),
+          keyword: document.getElementById("request-filter-keyword"),
+        },
+        contract: {
+          project: document.getElementById("contract-filter-project"),
+          status: document.getElementById("contract-filter-status"),
+          keyword: document.getElementById("contract-filter-keyword"),
+        },
+      };
+
+      const supplierFormFields = {
+        companyName: document.getElementById("supplier-form-company"),
+        taxNo: document.getElementById("supplier-form-tax-no"),
+        contact: document.getElementById("supplier-form-contact"),
+        phone: document.getElementById("supplier-form-phone"),
+        taxType: document.getElementById("supplier-form-tax-type"),
+        address: document.getElementById("supplier-form-address"),
+        bank: document.getElementById("supplier-form-bank"),
+        bankAccount: document.getElementById("supplier-form-bank-account"),
+        remark: document.getElementById("supplier-form-remark"),
+      };
+
+      const collectionFormFields = {
+        method: document.getElementById("collection-form-method"),
+        amount: document.getElementById("collection-form-amount"),
+        date: document.getElementById("collection-form-date"),
+        account: document.getElementById("collection-form-account"),
+        remark: document.getElementById("collection-form-remark"),
+      };
+
+      const catalogFormFields = {
+        name: document.getElementById("catalog-form-name"),
+        spec: document.getElementById("catalog-form-spec"),
+        unit: document.getElementById("catalog-form-unit"),
+        price: document.getElementById("catalog-form-price"),
+        remark: document.getElementById("catalog-form-remark"),
+      };
+
+      let toastTimer = 0;
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function showToast(message, type = "success") {
+        if (!appToast) return;
+        appToast.textContent = message;
+        appToast.className = `toast open ${type}`;
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+          appToast.className = "toast";
+        }, 2200);
+      }
+
+      function getSupplierById(supplierId) {
+        return supplierLibrary.find((item) => item.id === supplierId);
+      }
+
+      function getSupplierTaxClass(taxType) {
+        return taxType === "一般纳税人" ? "blue" : "gold";
+      }
+
+      function getFilteredSuppliers() {
+        const companyKeyword = supplierState.companyKeyword
+          .trim()
+          .toLowerCase();
+        const contactKeyword = supplierState.contactKeyword
+          .trim()
+          .toLowerCase();
+
+        return supplierLibrary.filter((supplier) => {
+          const companyMatched =
+            !companyKeyword ||
+            supplier.companyName.toLowerCase().includes(companyKeyword);
+          const contactMatched =
+            !contactKeyword ||
+            supplier.contact.toLowerCase().includes(contactKeyword);
+          const taxMatched =
+            !supplierState.taxType ||
+            supplier.taxType === supplierState.taxType;
+
+          return companyMatched && contactMatched && taxMatched;
+        });
+      }
+
+      function getFilteredCatalogItems() {
+        const activeSupplier = getSupplierById(supplierState.activeSupplierId);
+        if (!activeSupplier) return [];
+        const keyword = supplierState.catalogKeyword.trim().toLowerCase();
+
+        return activeSupplier.products.filter((item) => {
+          const keywordMatched =
+            !keyword ||
+            [item.name, item.spec, item.remark].some((part) =>
+              part.toLowerCase().includes(keyword)
+            );
+          const unitMatched =
+            !supplierState.catalogUnit ||
+            item.unit === supplierState.catalogUnit;
+          return keywordMatched && unitMatched;
+        });
+      }
+
+      function renderSupplierStats() {
+        const rows = getFilteredSuppliers();
+        const monthlyNew = rows.filter((item) =>
+          item.updatedAt.startsWith("2026-04")
+        ).length;
+        const productTotal = rows.reduce(
+          (sum, item) => sum + item.products.length,
+          0
+        );
+        const referencedCount = rows.filter((item) => item.referenced).length;
+        const cards = [
+          {
+            title: "供应商总数",
+            value: String(rows.length),
+            note: "当前筛选结果",
+            soft: "soft-blue",
+            accent: "blue",
+            icon: '<path d="M192 256h640v512H192V256zm64 64v384h512V320H256zm96 96h128v64H352v-64zm0 128h256v64H352v-64z"></path>',
+          },
+          {
+            title: "本月新增",
+            value: String(monthlyNew),
+            note: "最近更新供应商",
+            soft: "soft-green",
+            accent: "green",
+            icon: '<path d="M480 224h64v256h256v64H544v256h-64V544H224v-64h256V224z"></path>',
+          },
+          {
+            title: "产品条目",
+            value: String(productTotal),
+            note: "采购申请/合同可引用",
+            soft: "soft-gold",
+            accent: "gold",
+            icon: '<path d="M224 192h576v640H224V192zm64 64v512h448V256H288zm96 96h256v64H384v-64zm0 128h192v64H384v-64z"></path>',
+          },
+          {
+            title: "引用锁定",
+            value: String(referencedCount),
+            note: "删除前需校验",
+            soft: "soft-red",
+            accent: "red",
+            icon: '<path d="M512 128L96 896h832L512 128zm0 123.8L817.9 832H206.1L512 251.8z"></path><path d="M480 416h64v192h-64zm0 256h64v64h-64z"></path>',
+          },
+        ];
+
+        supplierStatsGrid.innerHTML = cards
+          .map(
+            (
+              item
+            ) => `<div class="stat-card ${item.soft} supplier-stat-card ${item.accent}">
+              <div class="stat-head">
+                <div>
+                  <div class="stat-label">${item.title}</div>
+                  <div class="stat-value">${item.value}</div>
+                  <div class="stat-inline-note">${item.note}</div>
+                </div>
+                <div class="stat-icon ${item.accent}">
+                  <svg viewBox="0 0 1024 1024" fill="currentColor">${item.icon}</svg>
+                </div>
+              </div>
+            </div>`
+          )
+          .join("");
+      }
+
+      function renderSupplierTable() {
+        latestTableData.supplierLibrary = getFilteredSuppliers();
+        paginationState.supplierLibrary = 1;
+        renderAllTables();
+      }
+
+      function renderSupplierLibraryRows(rows, start = 0) {
+        if (!rows.length) {
+          return renderEmptyTable(9, "没有匹配的供应商，请调整筛选条件。");
+        }
+
+        return rows
+          .map(
+            (supplier, index) => `<tr>
+              <td data-label="序号">${String(start + index + 1).padStart(
+                2,
+                "0"
+              )}</td>
+              <td data-label="公司名称">
+                <div class="money">${escapeHtml(supplier.companyName)}</div>
+                <div class="subtext">${escapeHtml(supplier.code)}</div>
+              </td>
+              <td data-label="税号">${escapeHtml(supplier.taxNo)}</td>
+              <td data-label="联系人">${escapeHtml(supplier.contact)}</td>
+              <td data-label="联系方式">${escapeHtml(supplier.phone)}</td>
+              <td data-label="税务类型">
+                <span class="status ${getSupplierTaxClass(
+                  supplier.taxType
+                )}">${escapeHtml(supplier.taxType)}</span>
+              </td>
+              <td data-label="产品数">${supplier.products.length}</td>
+              <td data-label="更新时间">${escapeHtml(supplier.updatedAt)}</td>
+              <td data-label="操作">
+                <div class="actions">
+                  <button class="btn link" type="button" data-supplier-action="detail" data-supplier-id="${
+                    supplier.id
+                  }">详情</button>
+                  <span class="divider"></span>
+                  <button class="btn link" type="button" data-supplier-action="catalog" data-supplier-id="${
+                    supplier.id
+                  }">产品清单</button>
+                  <span class="divider"></span>
+                  <button class="btn link" type="button" data-supplier-action="edit" data-supplier-id="${
+                    supplier.id
+                  }">编辑</button>
+                  <span class="divider"></span>
+                  <button class="btn link danger" type="button" data-supplier-action="delete" data-supplier-id="${
+                    supplier.id
+                  }">删除</button>
+                </div>
+              </td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      function renderSupplierCatalog() {
+        const activeSupplier = getSupplierById(supplierState.activeSupplierId);
+        supplierCatalogTitle.textContent = "产品清单";
+        latestTableData.supplierCatalog = activeSupplier
+          ? getFilteredCatalogItems()
+          : [];
+        paginationState.supplierCatalog = 1;
+        renderAllTables();
+      }
+
+      function renderSupplierCatalogRows(rows, start = 0) {
+        if (!rows.length) {
+          return renderEmptyTable(6, "当前筛选下没有产品/服务条目。");
+        }
+
+        return rows
+          .map(
+            (item, index) => `<tr>
+              <td data-label="序号">${String(start + index + 1).padStart(
+                2,
+                "0"
+              )}</td>
+              <td data-label="产品/服务名称"><div class="money">${escapeHtml(
+                item.name
+              )}</div></td>
+              <td data-label="规格/要求">${escapeHtml(item.spec)}</td>
+              <td data-label="单位">${escapeHtml(item.unit)}</td>
+              <td data-label="参考单价"><div class="money">${escapeHtml(
+                item.price
+              )}</div></td>
+              <td data-label="备注">${escapeHtml(item.remark)}</td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      function renderSupplierDetail(supplierId) {
+        const supplier = getSupplierById(supplierId);
+        if (!supplier) return;
+
+        supplierDetailId = supplierId;
+        supplierDetailTitle.textContent = supplier.companyName;
+        supplierDetailSubtitle.textContent = `${supplier.code} ｜ 最后更新 ${supplier.updatedAt}`;
+        supplierDetailBody.innerHTML = `
+          <div class="ant-form">
+            <div class="ant-form-grid">
+              <div class="ant-form-item">
+                <span class="ant-form-label">公司名称</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.companyName
+                )}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">税号</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.taxNo
+                )}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">联系人</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.contact
+                )}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">联系方式</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.phone
+                )}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">税务类型</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.taxType
+                )}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">地址</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.address
+                )}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">开户银行</span>
+                <div class="ant-readonly-box">${escapeHtml(supplier.bank)}</div>
+              </div>
+              <div class="ant-form-item">
+                <span class="ant-form-label">银行账户</span>
+                <div class="ant-readonly-box">${escapeHtml(
+                  supplier.bankAccount
+                )}</div>
+              </div>
+              <div class="ant-form-item span-2">
+                <span class="ant-form-label">备注</span>
+                <div class="ant-textarea-like">${escapeHtml(
+                  supplier.remark || "-"
+                )}</div>
+              </div>
+            </div>
+          </div>
+        `;
+        supplierDetailModal.classList.add("open");
+      }
+
+      function closeSupplierDetail() {
+        supplierDetailModal.classList.remove("open");
+      }
+
+      function openSupplierForm(mode, supplierId = "") {
+        const isEdit = mode === "edit";
+        const supplier = supplierId ? getSupplierById(supplierId) : null;
+        supplierEditingId = supplierId;
+        supplierFormTitle.textContent = isEdit ? "编辑供应商" : "新增供应商";
+        supplierFormSubtitle.textContent = isEdit
+          ? "按需求文档字段编辑供应商主数据。"
+          : "按需求文档字段新增供应商主数据。";
+
+        Object.entries(supplierFormFields).forEach(([key, field]) => {
+          field.value = supplier ? supplier[key] ?? "" : "";
+        });
+
+        if (!supplier) {
+          supplierFormFields.taxType.value = "一般纳税人";
+        }
+
+        supplierFormModal.classList.add("open");
+      }
+
+      function closeSupplierForm() {
+        supplierFormModal.classList.remove("open");
+        supplierEditingId = "";
+      }
+
+      function openCollectionForm() {
+        collectionFormFields.method.value = "银行转账";
+        collectionFormFields.amount.value = "";
+        collectionFormFields.date.value = "2026-04-07";
+        collectionFormFields.account.value =
+          "招商银行成都高新支行 6225 8888 3000 0021";
+        collectionFormFields.remark.value = "";
+        collectionFormModal.classList.add("open");
+      }
+
+      function closeCollectionForm() {
+        collectionFormModal.classList.remove("open");
+      }
+
+      function saveCollectionForm() {
+        if (
+          !collectionFormFields.amount.value.trim() ||
+          !collectionFormFields.date.value
+        ) {
+          showToast("请填写回款金额和回款日期。", "error");
+          return;
+        }
+        latestTableData.collection.unshift({
+          code: `HK-202604-${String(
+            latestTableData.collection.length + 1
+          ).padStart(3, "0")}`,
+          date: collectionFormFields.date.value,
+          amount: collectionFormFields.amount.value.startsWith("¥")
+            ? collectionFormFields.amount.value
+            : `¥ ${collectionFormFields.amount.value}`,
+          method: collectionFormFields.method.value,
+          remark: collectionFormFields.remark.value || "新登记回款",
+        });
+        paginationState.collection = 1;
+        renderAllTables();
+        showToast("回款记录已登记。", "success");
+        closeCollectionForm();
+      }
+
+      function renderInvoiceUploadCards(contractNo) {
+        const records = supplierInvoiceRegistry[contractNo] ?? [
+          {
+            attachment: `${contractNo}_invoice_01.pdf`,
+            invoiceCode: "510026000001",
+            invoiceNo: "00000001",
+            issueDate: "2026-04-07",
+            seller: "供应商待补录",
+            buyer: "项目客户",
+            amount: "¥ 100,000.00",
+            tax: "¥ 0.00",
+            total: "¥ 100,000.00",
+            invoiceType: "增值税普通发票",
+            special: "否",
+            bookedAmount: "¥ 100,000.00",
+            inputTax: "¥ 0.00",
+            costAmount: "¥ 100,000.00",
+          },
+        ];
+
+        supplierInvoiceStack.innerHTML = records
+          .map(
+            (item, index) => `<div class="invoice-upload-card">
+              <div class="invoice-upload-head">
+                <div>
+                  <p class="invoice-upload-title">发票 ${String(
+                    index + 1
+                  ).padStart(2, "0")}</p>
+                  <div class="ant-form-help">${escapeHtml(
+                    item.invoiceNo
+                  )} ｜ ${escapeHtml(item.invoiceType)}</div>
+                </div>
+                <div class="ant-tag-list">
+                  <span class="tiny-tag ${
+                    item.special === "是" ? "blue" : "gold"
+                  }">${item.special === "是" ? "专票" : "普票"}</span>
+                  <span class="tiny-tag green">已识别</span>
+                </div>
+              </div>
+              <div class="invoice-upload-body">
+                <div class="invoice-upload-section">
+                  <h3 class="invoice-upload-section-title">原始发票附件</h3>
+                  <div class="upload-file-list">
+                    <div class="upload-file-item"><span>${escapeHtml(
+                      item.attachment
+                    )}</span><span class="tiny-tag blue">PDF/图片</span></div>
+                  </div>
+                </div>
+                <div class="invoice-upload-section">
+                  <h3 class="invoice-upload-section-title">OCR 识别结果</h3>
+                  <div class="ant-form-grid">
+                    <div class="ant-form-item"><span class="ant-form-label">发票代码</span><div class="ant-readonly-box">${escapeHtml(
+                      item.invoiceCode
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">发票号码</span><div class="ant-readonly-box">${escapeHtml(
+                      item.invoiceNo
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">开票日期</span><div class="ant-readonly-box">${escapeHtml(
+                      item.issueDate
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">销方名称</span><div class="ant-readonly-box">${escapeHtml(
+                      item.seller
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">购方名称</span><div class="ant-readonly-box">${escapeHtml(
+                      item.buyer
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">价税合计</span><div class="ant-readonly-box">${escapeHtml(
+                      item.total
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">金额</span><div class="ant-readonly-box">${escapeHtml(
+                      item.amount
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">税额</span><div class="ant-readonly-box">${escapeHtml(
+                      item.tax
+                    )}</div></div>
+                  </div>
+                </div>
+                <div class="invoice-upload-section">
+                  <h3 class="invoice-upload-section-title">人工确认结果</h3>
+                  <div class="ant-form-grid">
+                    <div class="ant-form-item"><span class="ant-form-label">入账金额</span><div class="ant-readonly-box">${escapeHtml(
+                      item.bookedAmount
+                    )}</div></div>
+                    <div class="ant-form-item"><span class="ant-form-label">进项税额</span><div class="ant-readonly-box">${escapeHtml(
+                      item.inputTax
+                    )}</div></div>
+                    <div class="ant-form-item span-2"><span class="ant-form-label">最终成本金额</span><div class="ant-readonly-box">${escapeHtml(
+                      item.costAmount
+                    )}</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>`
+          )
+          .join("");
+      }
+
+      function openSupplierInvoiceModal(contractNo) {
+        currentSupplierInvoiceContractNo = contractNo;
+        supplierInvoiceSubtitle.textContent = `${contractNo} ｜ 支持一次上传多张发票并展示 OCR / 人工确认 / 最终成本金额`;
+        renderInvoiceUploadCards(contractNo);
+        supplierInvoiceModal.classList.add("open");
+      }
+
+      function closeSupplierInvoiceModal() {
+        supplierInvoiceModal.classList.remove("open");
+      }
+
+      function openExpenseDetail(user) {
+        const expensePayload = currentProjectExpenseDetails[user] ?? {
+          dept: "-",
+          reports: [],
+        };
+        const expenseReports = expensePayload.reports ?? [];
+        const loanRows = currentProjectLoanDetails[user] ?? [];
+        const totalAmount = expenseReports.reduce(
+          (sum, item) => sum + parseCurrencyValue(item.totalAmount),
+          0
+        );
+        const dept = expensePayload.dept ?? "-";
+
+        expenseDetailSubtitle.textContent = `${user} ｜ 当前项目报销与借款明细`;
+        expenseDetailBody.innerHTML = `
+          <div class="modal-section">
+            <div class="expense-dialog-summary">
+              <div class="expense-summary-card">
+                <div class="expense-summary-label">报销人</div>
+                <div class="expense-summary-value">${escapeHtml(user)}</div>
+              </div>
+              <div class="expense-summary-card">
+                <div class="expense-summary-label">部门</div>
+                <div class="expense-summary-value">${escapeHtml(dept)}</div>
+              </div>
+              <div class="expense-summary-card">
+                <div class="expense-summary-label">报销总额</div>
+                <div class="expense-summary-value">${formatCurrency(
+                  totalAmount
+                )}</div>
+              </div>
+              <div class="expense-summary-card">
+                <div class="expense-summary-label">报销笔数</div>
+                <div class="expense-summary-value">${
+                  expenseReports.length
+                } 笔</div>
+              </div>
+              <div class="expense-summary-card">
+                <div class="expense-summary-label">借款笔数</div>
+                <div class="expense-summary-value">${loanRows.length} 笔</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-section">
+            <h3 class="modal-section-title">按报销单分组展示</h3>
+            <div class="expense-report-stack">
+              ${
+                expenseReports.length
+                  ? expenseReports
+                      .map(
+                        (report) => `<div class="expense-report-card">
+                <div class="expense-report-head">
+                  <div>
+                    <p class="expense-report-title">${escapeHtml(
+                      report.code
+                    )}</p>
+                    <p class="expense-report-subtitle">${escapeHtml(
+                      report.reason
+                    )}</p>
+                  </div>
+                  <div class="ant-tag-list">
+                    <span class="tiny-tag blue">${escapeHtml(
+                      report.reimbursementType
+                    )}</span>
+                    <span class="tiny-tag ${
+                      report.hasSpecialInvoice === "是" ? "green" : "gold"
+                    }">含专票：${escapeHtml(report.hasSpecialInvoice)}</span>
+                  </div>
+                </div>
+                <div class="expense-report-meta">
+                  <div class="expense-report-meta-item">
+                    <span>申请日期</span>
+                    <strong>${escapeHtml(report.applyDate)}</strong>
+                  </div>
+                  <div class="expense-report-meta-item">
+                    <span>费用汇总额</span>
+                    <strong>${escapeHtml(report.totalAmount)}</strong>
+                  </div>
+                  <div class="expense-report-meta-item">
+                    <span>关联审批单</span>
+                    <strong>${escapeHtml(report.relatedApproval)}</strong>
+                  </div>
+                  <div class="expense-report-meta-item">
+                    <span>明细条数</span>
+                    <strong>${report.details.length} 条</strong>
+                  </div>
+                </div>
+                <div class="expense-report-table">
+                  <div class="mini-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>报销类别</th>
+                          <th>单项报销金额</th>
+                          <th>费用详情</th>
+                          <th>单据张数</th>
+                          <th>税额</th>
+                          <th>成本金额</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${report.details
+                          .map(
+                            (item) => `<tr>
+                          <td data-label="报销类别">${escapeHtml(
+                            item.type
+                          )}</td>
+                          <td data-label="单项报销金额">${escapeHtml(
+                            item.amount
+                          )}</td>
+                          <td data-label="费用详情">${escapeHtml(
+                            item.detail
+                          )}</td>
+                          <td data-label="单据张数">${escapeHtml(
+                            item.receipts
+                          )}</td>
+                          <td data-label="税额">${escapeHtml(item.tax)}</td>
+                          <td data-label="成本金额">${escapeHtml(
+                            item.costAmount
+                          )}</td>
+                        </tr>`
+                          )
+                          .join("")}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>`
+                      )
+                      .join("")
+                  : '<div class="empty-state">暂无报销单分组数据。</div>'
+              }
+            </div>
+          </div>
+          <div class="modal-section">
+            <h3 class="modal-section-title">借款信息表</h3>
+            <div class="mini-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>借款单号</th>
+                    <th>借款金额</th>
+                    <th>借款日期</th>
+                    <th>借款状态</th>
+                    <th>备注</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${
+                    loanRows.length
+                      ? loanRows
+                          .map(
+                            (item) => `<tr>
+                    <td data-label="借款单号">${escapeHtml(item.code)}</td>
+                    <td data-label="借款金额">${escapeHtml(item.amount)}</td>
+                    <td data-label="借款日期">${escapeHtml(item.date)}</td>
+                    <td data-label="借款状态">${escapeHtml(item.status)}</td>
+                    <td data-label="备注">${escapeHtml(item.remark)}</td>
+                  </tr>`
+                          )
+                          .join("")
+                      : '<tr><td class="empty-cell" colspan="5">暂无借款记录。</td></tr>'
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        expenseDetailModal.classList.add("open");
+      }
+
+      function closeExpenseDetail() {
+        expenseDetailModal.classList.remove("open");
+      }
+
+      function openCatalogForm() {
+        Object.values(catalogFormFields).forEach((field) => {
+          field.value = "";
+        });
+        catalogFormFields.unit.value = "台";
+        catalogFormModal.classList.add("open");
+      }
+
+      function closeCatalogForm() {
+        catalogFormModal.classList.remove("open");
+      }
+
+      function saveCatalogForm() {
+        const supplier = getSupplierById(supplierState.activeSupplierId);
+        if (!supplier) return;
+        const payload = Object.fromEntries(
+          Object.entries(catalogFormFields).map(([key, field]) => [
+            key,
+            field.value.trim(),
+          ])
+        );
+
+        if (!payload.name || !payload.spec || !payload.unit || !payload.price) {
+          showToast("请补全产品/服务名称、规格、单位和参考单价。", "error");
+          return;
+        }
+
+        supplier.products.unshift({
+          name: payload.name,
+          spec: payload.spec,
+          unit: payload.unit,
+          price: payload.price,
+          remark: payload.remark,
+        });
+        supplier.updatedAt = "2026-04-07 19:10";
+        renderSupplierStats();
+        renderSupplierTable();
+        renderSupplierCatalog();
+        closeCatalogForm();
+        showToast("产品清单已新增。", "success");
+      }
+
+      function openBusinessDetail(trigger) {
+        const row = trigger.closest("tr");
+        if (!row) return;
+        const screen = trigger.closest(".screen");
+        const screenTitle =
+          screen?.querySelector(".page-title")?.textContent.trim() ||
+          "业务单据";
+        const panelTitle =
+          trigger
+            .closest(".page-card")
+            ?.querySelector(".panel-title")
+            ?.textContent.trim() || "列表详情";
+        const shouldShowFlowHint =
+          screenTitle === "开票回款" && panelTitle.includes("开票");
+        const items = Array.from(row.querySelectorAll("td"))
+          .map((cell) => ({
+            label: cell.getAttribute("data-label"),
+            value: cell.innerText.replace(/\s+/g, " ").trim(),
+          }))
+          .filter((item) => item.label && item.value);
+
+        if (shouldShowFlowHint) {
+          const currentProject =
+            projectOptions.find((item) => item.id === currentProjectId) ??
+            projectOptions[0];
+          const profile = getInvoiceApprovalProfile(currentProject.id);
+          const itemMap = new Map(
+            items.map((item) => [item.label, item.value])
+          );
+          const formRows = [
+            {
+              label: "选择项目",
+              value:
+                itemMap.get("选择项目") ??
+                `${currentProject.code} ${currentProject.name}`,
+            },
+            {
+              label: "支付条件",
+              value: currentProject.invoice.paymentTerms.join(" / "),
+            },
+            {
+              label: "客户名称（业主）",
+              value:
+                itemMap.get("客户名称") ?? currentProject.invoice.customerName,
+            },
+            {
+              label: "纳税人识别号",
+              value: itemMap.get("纳税人识别号") ?? profile.taxpayerNo,
+            },
+            {
+              label: "企业地址",
+              value: profile.address,
+            },
+            {
+              label: "企业电话",
+              value: profile.phone,
+            },
+            {
+              label: "开户银行",
+              value: profile.bank,
+            },
+            {
+              label: "银行账户",
+              value: profile.bankAccount,
+            },
+            {
+              label: "合同总金额",
+              value: currentProject.invoice.contractAmount,
+            },
+            {
+              label: "本次开票金额",
+              value: itemMap.get("本次开票金额") ?? "-",
+            },
+            {
+              label: "发票类型",
+              value: itemMap.get("发票类型") ?? "-",
+            },
+            {
+              label: "开票内容",
+              value: itemMap.get("开票内容") ?? "-",
+            },
+            {
+              label: "发票备注信息",
+              value: itemMap.get("发票备注信息") ?? "-",
+            },
+          ];
+
+          businessDetailTitle.textContent = "开票详情";
+          businessDetailSubtitle.textContent = "开票审批表字段";
+          businessDetailBody.innerHTML = `
+            <div class="ant-form">
+              ${formRows
+                .map(
+                  (item) => `<div class="ant-form-item">
+                    <span class="ant-form-label">${escapeHtml(
+                      item.label
+                    )}</span>
+                    <div class="${
+                      item.label === "企业地址" || item.label === "发票备注信息"
+                        ? "ant-textarea-like"
+                        : "ant-readonly-box"
+                    }">${escapeHtml(item.value)}</div>
+                  </div>`
+                )
+                .join("")}
+              <div class="modal-inline-tip">流程历史占位：发起开票申请 -> 一级审批通过 -> 部门负责人审批通过 -> 财务开票节点上传发票附件并完成办理。</div>
+            </div>
+          `;
+          businessDetailModal.classList.add("open");
+          return;
+        }
+
+        businessDetailTitle.textContent = `${screenTitle}详情`;
+        businessDetailSubtitle.textContent = `来源：${panelTitle}`;
+        businessDetailBody.innerHTML = `
+          <div class="ant-form">
+            <div class="ant-form-grid">
+              ${items
+                .map(
+                  (item) => `<div class="ant-form-item">
+                    <span class="ant-form-label">${escapeHtml(
+                      item.label
+                    )}</span>
+                    <div class="ant-readonly-box">${escapeHtml(
+                      item.value
+                    )}</div>
+                  </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+        businessDetailModal.classList.add("open");
+      }
+
+      function closeBusinessDetail() {
+        businessDetailModal.classList.remove("open");
+      }
+
+      function openSupplierCatalog(supplierId) {
+        supplierState.activeSupplierId = supplierId;
+        renderSupplierCatalog();
+        supplierListView.classList.add("hidden");
+        supplierCatalogView.classList.remove("hidden");
+      }
+
+      function backToSupplierList() {
+        supplierCatalogView.classList.add("hidden");
+        supplierListView.classList.remove("hidden");
+      }
+
+      function resetSupplierFilters() {
+        supplierState.companyKeyword = "";
+        supplierState.contactKeyword = "";
+        supplierState.taxType = "";
+        supplierSearchCompany.value = "";
+        supplierSearchContact.value = "";
+        supplierSearchTaxType.value = "";
+        renderSupplierStats();
+        renderSupplierTable();
+      }
+
+      function resetCatalogFilters() {
+        supplierState.catalogKeyword = "";
+        supplierState.catalogUnit = "";
+        catalogSearchKeyword.value = "";
+        catalogSearchUnit.value = "";
+        renderSupplierCatalog();
+      }
+
+      function saveSupplierForm() {
+        const payload = Object.fromEntries(
+          Object.entries(supplierFormFields).map(([key, field]) => [
+            key,
+            field.value.trim(),
+          ])
+        );
+
+        if (
+          !payload.companyName ||
+          !payload.taxNo ||
+          !payload.contact ||
+          !payload.phone ||
+          !payload.taxType
+        ) {
+          showToast(
+            "请先补全公司名称、税号、联系人、联系方式和税务类型。",
+            "error"
+          );
+          return;
+        }
+
+        const taxNoExists = supplierLibrary.some(
+          (item) =>
+            item.taxNo === payload.taxNo && item.id !== supplierEditingId
+        );
+        if (taxNoExists) {
+          showToast("税号已存在，请检查后再保存。", "error");
+          return;
+        }
+
+        const now = "2026-04-07 18:30";
+        if (supplierEditingId) {
+          const target = getSupplierById(supplierEditingId);
+          if (!target) return;
+          Object.assign(target, payload, { updatedAt: now });
+          showToast("供应商信息已更新。", "success");
+        } else {
+          supplierLibrary.unshift({
+            id: `supplier-${Date.now()}`,
+            code: `GYS-${String(supplierLibrary.length + 1).padStart(3, "0")}`,
+            ...payload,
+            updatedAt: now,
+            referenced: false,
+            products: [],
+          });
+          showToast("供应商已新增。", "success");
+        }
+
+        renderSupplierStats();
+        renderSupplierTable();
+        if (!supplierCatalogView.classList.contains("hidden")) {
+          if (!getSupplierById(supplierState.activeSupplierId)) {
+            supplierState.activeSupplierId = supplierLibrary[0]?.id ?? "";
+          }
+          if (supplierState.activeSupplierId) renderSupplierCatalog();
+        }
+        closeSupplierForm();
+      }
+
+      function handleSupplierDelete(supplierId) {
+        const supplier = getSupplierById(supplierId);
+        if (!supplier) return;
+        if (supplier.referenced) {
+          showToast("该供应商已被采购单据引用，当前不可删除。", "error");
+          return;
+        }
+
+        const targetIndex = supplierLibrary.findIndex(
+          (item) => item.id === supplierId
+        );
+        if (targetIndex === -1) return;
+        supplierLibrary.splice(targetIndex, 1);
+        if (supplierState.activeSupplierId === supplierId) {
+          supplierState.activeSupplierId = supplierLibrary[0]?.id ?? "";
+          backToSupplierList();
+        }
+        renderSupplierStats();
+        renderSupplierTable();
+        showToast("供应商已删除。", "success");
+      }
+
+      function bindSupplierEvents() {
+        supplierLibraryBody.addEventListener("click", (event) => {
+          const actionButton = event.target.closest("[data-supplier-action]");
+          if (!actionButton) return;
+          const supplierId = actionButton.getAttribute("data-supplier-id");
+          const action = actionButton.getAttribute("data-supplier-action");
+
+          if (action === "detail") renderSupplierDetail(supplierId);
+          if (action === "catalog") openSupplierCatalog(supplierId);
+          if (action === "edit") openSupplierForm("edit", supplierId);
+          if (action === "delete") handleSupplierDelete(supplierId);
+        });
+
+        document
+          .getElementById("supplier-search-btn")
+          .addEventListener("click", () => {
+            supplierState.companyKeyword = supplierSearchCompany.value;
+            supplierState.contactKeyword = supplierSearchContact.value;
+            supplierState.taxType = supplierSearchTaxType.value;
+            renderSupplierStats();
+            renderSupplierTable();
+          });
+
+        document
+          .getElementById("supplier-reset-btn")
+          .addEventListener("click", resetSupplierFilters);
+
+        document
+          .getElementById("supplier-create-btn")
+          .addEventListener("click", () => openSupplierForm("create"));
+
+        document
+          .getElementById("supplier-back-btn")
+          .addEventListener("click", backToSupplierList);
+
+        document
+          .getElementById("catalog-search-btn")
+          .addEventListener("click", () => {
+            supplierState.catalogKeyword = catalogSearchKeyword.value;
+            supplierState.catalogUnit = catalogSearchUnit.value;
+            renderSupplierCatalog();
+          });
+
+        document
+          .getElementById("catalog-reset-btn")
+          .addEventListener("click", resetCatalogFilters);
+
+        document
+          .getElementById("supplier-catalog-edit-btn")
+          .addEventListener("click", () =>
+            openSupplierForm("edit", supplierState.activeSupplierId)
+          );
+        document
+          .getElementById("supplier-catalog-add-btn")
+          .addEventListener("click", openCatalogForm);
+
+        document
+          .getElementById("supplier-detail-close-icon")
+          .addEventListener("click", closeSupplierDetail);
+        document
+          .getElementById("supplier-detail-close-btn")
+          .addEventListener("click", closeSupplierDetail);
+        document
+          .getElementById("supplier-detail-open-catalog")
+          .addEventListener("click", () => {
+            closeSupplierDetail();
+            if (supplierDetailId) openSupplierForm("edit", supplierDetailId);
+          });
+
+        document
+          .getElementById("supplier-form-close-icon")
+          .addEventListener("click", closeSupplierForm);
+        document
+          .getElementById("supplier-form-cancel-btn")
+          .addEventListener("click", closeSupplierForm);
+        document
+          .getElementById("supplier-form-save-btn")
+          .addEventListener("click", saveSupplierForm);
+
+        document
+          .getElementById("catalog-form-close-icon")
+          .addEventListener("click", closeCatalogForm);
+        document
+          .getElementById("catalog-form-cancel-btn")
+          .addEventListener("click", closeCatalogForm);
+        document
+          .getElementById("catalog-form-save-btn")
+          .addEventListener("click", saveCatalogForm);
+
+        document
+          .getElementById("invoice-add-collection-btn")
+          .addEventListener("click", openCollectionForm);
+        document
+          .getElementById("collection-form-close-icon")
+          .addEventListener("click", closeCollectionForm);
+        document
+          .getElementById("collection-form-cancel-btn")
+          .addEventListener("click", closeCollectionForm);
+        document
+          .getElementById("collection-form-save-btn")
+          .addEventListener("click", saveCollectionForm);
+
+        document
+          .getElementById("supplier-invoice-close-icon")
+          .addEventListener("click", closeSupplierInvoiceModal);
+        document
+          .getElementById("supplier-invoice-cancel-btn")
+          .addEventListener("click", closeSupplierInvoiceModal);
+        document
+          .getElementById("supplier-invoice-save-btn")
+          .addEventListener("click", () => {
+            showToast("发票识别结果已确认入账。", "success");
+            closeSupplierInvoiceModal();
+          });
+
+        document
+          .getElementById("expense-detail-close-icon")
+          .addEventListener("click", closeExpenseDetail);
+        document
+          .getElementById("expense-detail-close-btn")
+          .addEventListener("click", closeExpenseDetail);
+
+        document.addEventListener("click", (event) => {
+          const supplierCostTrigger = event.target.closest(
+            "[data-supplier-cost-action]"
+          );
+          if (!supplierCostTrigger) return;
+          const action = supplierCostTrigger.getAttribute(
+            "data-supplier-cost-action"
+          );
+          const contractNo =
+            supplierCostTrigger.getAttribute("data-contract-no");
+          if (action === "upload") openSupplierInvoiceModal(contractNo);
+          if (action === "receipt" || action === "payment")
+            openBusinessDetail(supplierCostTrigger);
+        });
+
+        document.addEventListener("click", (event) => {
+          const expenseTrigger = event.target.closest("[data-expense-user]");
+          if (!expenseTrigger) return;
+          openExpenseDetail(expenseTrigger.getAttribute("data-expense-user"));
+        });
+
+        document.addEventListener("click", (event) => {
+          const detailTrigger = event.target.closest(".btn.link");
+          if (!detailTrigger) return;
+          if (detailTrigger.hasAttribute("data-supplier-action")) return;
+          if (detailTrigger.hasAttribute("data-supplier-cost-action")) return;
+          if (detailTrigger.hasAttribute("data-expense-user")) return;
+          if (detailTrigger.textContent.trim() !== "详情") return;
+          if (!detailTrigger.closest("tr")) return;
+          openBusinessDetail(detailTrigger);
+        });
+
+        document
+          .getElementById("business-detail-close-icon")
+          .addEventListener("click", closeBusinessDetail);
+        document
+          .getElementById("business-detail-close-btn")
+          .addEventListener("click", closeBusinessDetail);
+      }
+
+      function syncProcurementFilters(type) {
+        const fields = procurementFilterFields[type];
+        const state = procurementFilterState[type];
+        if (!fields || !state) return;
+
+        Object.keys(fields).forEach((key) => {
+          if (!fields[key]) return;
+          state[key] = fields[key].value.trim();
+        });
+      }
+
+      function resetProcurementFilters(type) {
+        const fields = procurementFilterFields[type];
+        const state = procurementFilterState[type];
+        if (!fields || !state) return;
+
+        Object.keys(fields).forEach((key) => {
+          if (!fields[key]) return;
+          fields[key].value = "";
+          state[key] = "";
+        });
+
+        applyProcurementFilters(type);
+      }
+
+      function bindProcurementEvents() {
+        document
+          .getElementById("plan-search-btn")
+          .addEventListener("click", () => {
+            syncProcurementFilters("plan");
+            applyProcurementFilters("plan");
+          });
+        document
+          .getElementById("plan-reset-btn")
+          .addEventListener("click", () => resetProcurementFilters("plan"));
+
+        document
+          .getElementById("request-search-btn")
+          .addEventListener("click", () => {
+            syncProcurementFilters("request");
+            applyProcurementFilters("request");
+          });
+        document
+          .getElementById("request-reset-btn")
+          .addEventListener("click", () => resetProcurementFilters("request"));
+
+        document
+          .getElementById("contract-search-btn")
+          .addEventListener("click", () => {
+            syncProcurementFilters("contract");
+            applyProcurementFilters("contract");
+          });
+        document
+          .getElementById("contract-reset-btn")
+          .addEventListener("click", () => resetProcurementFilters("contract"));
+
+        ["plan", "request", "contract"].forEach((type) => {
+          const fields = procurementFilterFields[type];
+          Object.values(fields).forEach((field) => {
+            if (!field) return;
+            field.addEventListener("keydown", (event) => {
+              if (event.key !== "Enter") return;
+              syncProcurementFilters(type);
+              applyProcurementFilters(type);
+            });
+          });
+        });
+      }
+
+      function initializeProcurementPages() {
+        applyProcurementFilters("plan", false);
+        applyProcurementFilters("request", false);
+        applyProcurementFilters("contract", false);
+        bindProcurementEvents();
+      }
+
+      function initializeSupplierLibrary() {
+        renderSupplierStats();
+        renderSupplierTable();
+        renderSupplierCatalog();
+        bindSupplierEvents();
       }
 
       function renderProject(projectId) {
@@ -4255,6 +9029,7 @@
         setText("invoice-customer-name", project.invoice.customerName);
         setText("invoice-contract-name", project.invoice.contractName);
         setText("invoice-contract-amount", project.invoice.contractAmount);
+        setText("invoice-contract-sign-date", project.invoice.signDate);
         document.getElementById("invoice-payment-terms").innerHTML =
           renderPaymentTerms(project.invoice.paymentTerms);
         setText("invoice-stat-contract", project.invoice.stats.contract);
@@ -4262,8 +9037,8 @@
         setText("invoice-stat-collected", project.invoice.stats.collected);
         setText("invoice-stat-uninvoiced", project.invoice.stats.uninvoiced);
         setText("invoice-stat-uncollected", project.invoice.stats.uncollected);
-        latestTableData.invoice = project.invoice.invoices;
-        latestTableData.collection = project.invoice.collections;
+        latestTableData.invoice = normalizeInvoiceRows(project);
+        latestTableData.collection = normalizeCollectionRows(project);
 
         setText("cost-stat-total", project.cost.total);
         setText("cost-customer-name", project.cost.customerName);
@@ -4289,8 +9064,11 @@
           project.cost.expense
         );
         renderLaborAnalytics(project);
-        latestTableData.supplier = project.cost.suppliers;
-        latestTableData.expense = project.cost.expenses;
+        latestTableData.supplier = normalizeSupplierCostRows(project);
+        const expenseData = normalizeExpenseUsers(project);
+        latestTableData.expense = expenseData.userRows;
+        currentProjectExpenseDetails = expenseData.detailsByUser;
+        currentProjectLoanDetails = expenseLoanRegistry[project.id] ?? {};
         Object.keys(paginationState).forEach((key) => {
           paginationState[key] = 1;
         });
@@ -4410,6 +9188,8 @@
         renderAllTables();
       });
 
+      initializeSupplierLibrary();
+      initializeProcurementPages();
       renderProject(currentProjectId);
     </script>
   </body>
