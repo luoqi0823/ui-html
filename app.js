@@ -13,6 +13,7 @@ const state = {
   currentProjectId: "project-a",
   pendingProjectId: "project-a",
   activeSupplierId: "supplier-1",
+  activeCustomerId: "customer-1",
   tabs: {
     invoice: "invoice",
     stock: "inbound",
@@ -990,6 +991,24 @@ const customersData = [
   },
 ];
 
+const customerContractDetails = {
+  "customer-1": [
+    { id: "HT-2026-001", contractNo: "HT-2026-001", projectName: "城市交通数据中台建设一期", contractAmount: "¥ 3,260,000", signDate: "2026-01-08", status: "执行中", statusTone: "green" },
+    { id: "HT-2026-008", contractNo: "HT-2026-008", projectName: "城市交通数据中台扩容项目", contractAmount: "¥ 2,740,000", signDate: "2026-02-16", status: "执行中", statusTone: "green" },
+    { id: "HT-2026-011", contractNo: "HT-2026-011", projectName: "交通专题分析平台建设", contractAmount: "¥ 2,620,000", signDate: "2026-03-04", status: "待验收", statusTone: "gold" },
+  ],
+  "customer-2": [
+    { id: "HT-2026-015", contractNo: "HT-2026-015", projectName: "智慧工地综合监管平台二期", contractAmount: "¥ 3,900,000", signDate: "2026-01-20", status: "执行中", statusTone: "green" },
+    { id: "HT-2026-019", contractNo: "HT-2026-019", projectName: "智慧工地移动巡检补充项目", contractAmount: "¥ 2,580,000", signDate: "2026-03-11", status: "待回款", statusTone: "purple" },
+  ],
+  "customer-3": [
+    { id: "HT-2026-028", contractNo: "HT-2026-028", projectName: "轨道交通数据治理试点项目", contractAmount: "¥ 1,860,000", signDate: "2026-02-28", status: "执行中", statusTone: "green" },
+  ],
+  "customer-4": [],
+  "customer-5": [],
+  "customer-6": [],
+};
+
 const plansData = [
   { id: "CGJH-202604-001", code: "CGJH-202604-001", projectName: "城市交通数据中台建设一期", reason: "补充边缘采集设备和接口实施服务", categories: "设备采购、服务采购", budget: "¥ 1,260,000", bidFlag: "是", bidTone: "gold", status: "草稿", statusTone: "blue", applicant: "张晨", date: "2026-04-08" },
   { id: "CGJH-202604-002", code: "CGJH-202604-002", projectName: "智慧工地综合监管平台二期", reason: "阶段二现场采集设备增补", categories: "设备采购", budget: "¥ 980,000", bidFlag: "否", bidTone: "green", status: "审批中", statusTone: "gold", applicant: "罗晴", date: "2026-04-07" },
@@ -1078,21 +1097,21 @@ const paymentManagementData = [
 ];
 
 const stockInboundData = [
-  { id: "RK-202604-001", code: "RK-202604-001", name: "边缘采集网关", spec: "TG-9000", unit: "台", qty: "12", place: "A-01 设备库", source: "采购合同 CGHT-202604-001", user: "张晨", time: "2026-04-08 16:20", remark: "设备齐套入库" },
-  { id: "RK-202604-002", code: "RK-202604-002", name: "可视化展示屏", spec: "55 寸壁挂", unit: "套", qty: "4", place: "A-02 展示库", source: "采购合同 CGHT-202603-003", user: "陈澈", time: "2026-04-07 11:10", remark: "现场调拨后入库" },
-  { id: "RK-202603-006", code: "RK-202603-006", name: "网络交换机", spec: "24 口千兆", unit: "台", qty: "6", place: "B-01 弱电库", source: "采购合同 CGHT-202603-006", user: "李岚", time: "2026-03-28 17:45", remark: "测试环境扩容" },
-  { id: "RK-202603-003", code: "RK-202603-003", name: "工地监管摄像头", spec: "4K 云台", unit: "台", qty: "10", place: "C-03 项目仓", source: "采购合同 CGHT-202604-002", user: "罗晴", time: "2026-03-22 09:20", remark: "分批入库" },
-  { id: "RK-202602-009", code: "RK-202602-009", name: "办公椅", spec: "人体工学", unit: "把", qty: "8", place: "行政库位", source: "行政采购", user: "杜言", time: "2026-02-20 15:08", remark: "现场办公配套" },
-  { id: "RK-202602-004", code: "RK-202602-004", name: "布线辅材", spec: "标准套件", unit: "箱", qty: "5", place: "B-02 综合库", source: "采购合同 CGHT-202602-008", user: "韩青", time: "2026-02-12 10:15", remark: "批量入库" },
+  { id: "RK-202604-001", code: "RK-202604-001", projectName: "城市交通数据中台建设一期", name: "边缘采集网关", spec: "TG-9000", unit: "台", qty: "12", place: "A-01 设备库", source: "采购合同 CGHT-202604-001", user: "张晨", time: "2026-04-08 16:20", remark: "设备齐套入库" },
+  { id: "RK-202604-002", code: "RK-202604-002", projectName: "智慧工地综合监管平台二期", name: "可视化展示屏", spec: "55 寸壁挂", unit: "套", qty: "4", place: "A-02 展示库", source: "采购合同 CGHT-202603-003", user: "陈澈", time: "2026-04-07 11:10", remark: "现场调拨后入库" },
+  { id: "RK-202603-006", code: "RK-202603-006", projectName: "城市交通数据中台建设一期", name: "网络交换机", spec: "24 口千兆", unit: "台", qty: "6", place: "B-01 弱电库", source: "采购合同 CGHT-202603-006", user: "李岚", time: "2026-03-28 17:45", remark: "测试环境扩容" },
+  { id: "RK-202603-003", code: "RK-202603-003", projectName: "智慧工地综合监管平台二期", name: "工地监管摄像头", spec: "4K 云台", unit: "台", qty: "10", place: "C-03 项目仓", source: "采购合同 CGHT-202604-002", user: "罗晴", time: "2026-03-22 09:20", remark: "分批入库" },
+  { id: "RK-202602-009", code: "RK-202602-009", projectName: "城市交通数据中台建设一期", name: "办公椅", spec: "人体工学", unit: "把", qty: "8", place: "行政库位", source: "行政采购", user: "杜言", time: "2026-02-20 15:08", remark: "现场办公配套" },
+  { id: "RK-202602-004", code: "RK-202602-004", projectName: "智慧工地综合监管平台二期", name: "布线辅材", spec: "标准套件", unit: "箱", qty: "5", place: "B-02 综合库", source: "采购合同 CGHT-202602-008", user: "韩青", time: "2026-02-12 10:15", remark: "批量入库" },
 ];
 
 const stockOutboundData = [
-  { id: "CK-202604-001", code: "CK-202604-001", name: "边缘采集网关", spec: "TG-9000", unit: "台", qty: "4", target: "一期项目现场安装", owner: "安装组 / 王晟", user: "张晨", time: "2026-04-09 09:30", remark: "首批发往现场" },
-  { id: "CK-202604-002", code: "CK-202604-002", name: "可视化展示屏", spec: "55 寸壁挂", unit: "套", qty: "2", target: "监管大厅展示墙", owner: "实施部 / 罗晴", user: "陈澈", time: "2026-04-08 14:00", remark: "现场安装使用" },
-  { id: "CK-202603-006", code: "CK-202603-006", name: "网络交换机", spec: "24 口千兆", unit: "台", qty: "2", target: "测试环境部署", owner: "研发中心 / 李岚", user: "李岚", time: "2026-03-29 16:45", remark: "测试机房使用" },
-  { id: "CK-202603-003", code: "CK-202603-003", name: "工地监管摄像头", spec: "4K 云台", unit: "台", qty: "6", target: "工地 2 号标段", owner: "项目部 / 罗晴", user: "罗晴", time: "2026-03-23 11:30", remark: "按批次发放" },
-  { id: "CK-202602-009", code: "CK-202602-009", name: "办公椅", spec: "人体工学", unit: "把", qty: "4", target: "现场项目办公室", owner: "行政部 / 杜言", user: "杜言", time: "2026-02-21 10:10", remark: "现场办公使用" },
-  { id: "CK-202602-004", code: "CK-202602-004", name: "布线辅材", spec: "标准套件", unit: "箱", qty: "2", target: "布线施工", owner: "实施组 / 韩青", user: "韩青", time: "2026-02-13 13:22", remark: "现场施工领用" },
+  { id: "CK-202604-001", code: "CK-202604-001", projectName: "城市交通数据中台建设一期", name: "边缘采集网关", spec: "TG-9000", unit: "台", qty: "4", target: "一期项目现场安装", owner: "安装组 / 王晟", user: "张晨", time: "2026-04-09 09:30", remark: "首批发往现场" },
+  { id: "CK-202604-002", code: "CK-202604-002", projectName: "智慧工地综合监管平台二期", name: "可视化展示屏", spec: "55 寸壁挂", unit: "套", qty: "2", target: "监管大厅展示墙", owner: "实施部 / 罗晴", user: "陈澈", time: "2026-04-08 14:00", remark: "现场安装使用" },
+  { id: "CK-202603-006", code: "CK-202603-006", projectName: "城市交通数据中台建设一期", name: "网络交换机", spec: "24 口千兆", unit: "台", qty: "2", target: "测试环境部署", owner: "研发中心 / 李岚", user: "李岚", time: "2026-03-29 16:45", remark: "测试机房使用" },
+  { id: "CK-202603-003", code: "CK-202603-003", projectName: "智慧工地综合监管平台二期", name: "工地监管摄像头", spec: "4K 云台", unit: "台", qty: "6", target: "工地 2 号标段", owner: "项目部 / 罗晴", user: "罗晴", time: "2026-03-23 11:30", remark: "按批次发放" },
+  { id: "CK-202602-009", code: "CK-202602-009", projectName: "城市交通数据中台建设一期", name: "办公椅", spec: "人体工学", unit: "把", qty: "4", target: "现场项目办公室", owner: "行政部 / 杜言", user: "杜言", time: "2026-02-21 10:10", remark: "现场办公使用" },
+  { id: "CK-202602-004", code: "CK-202602-004", projectName: "智慧工地综合监管平台二期", name: "布线辅材", spec: "标准套件", unit: "箱", qty: "2", target: "布线施工", owner: "实施组 / 韩青", user: "韩青", time: "2026-02-13 13:22", remark: "现场施工领用" },
 ];
 
 const pages = {
@@ -1107,8 +1126,9 @@ const pages = {
   inquiries: { group: "采购管理", title: "比价询价", render: renderInquiriesPage },
   contracts: { group: "采购管理", title: "采购合同签订", render: renderContractsPage },
   "payment-requests": { group: "采购管理", title: "付款申请", render: renderPaymentRequestsPage },
-  stock: { group: "采购管理", title: "出入库登记", render: renderStockPage },
+  stock: { group: "采购管理", title: "设备出入库", render: renderStockPage },
   customers: { group: "项目管理", title: "客户管理", render: renderCustomersPage },
+  "customer-detail": { group: "项目管理", title: "客户详情", render: renderCustomerDetailPage },
 };
 
 const hashPage = window.location.hash.replace(/^#/, "");
@@ -1122,6 +1142,14 @@ function getProject() {
 
 function getSupplier() {
   return suppliersData.find((item) => item.id === state.activeSupplierId) ?? suppliersData[0];
+}
+
+function getActiveCustomer() {
+  return customersData.find((item) => item.id === state.activeCustomerId) ?? customersData[0];
+}
+
+function getCustomerContracts(customerId) {
+  return customerContractDetails[customerId] ?? [];
 }
 
 function hasCustomerBillingProfile(customer) {
@@ -1143,6 +1171,15 @@ function getCustomerStats() {
     pendingCount: customersData.length - readyCount,
     totalContracts,
     latest,
+  };
+}
+
+function getCustomerContractStats(customerId) {
+  const rows = getCustomerContracts(customerId);
+  const totalAmount = rows.reduce((sum, item) => sum + parseCurrency(item.contractAmount), 0);
+  return {
+    totalAmount: `¥ ${totalAmount.toLocaleString("zh-CN")}`,
+    contractCount: `${rows.length} 份`,
   };
 }
 
@@ -1426,7 +1463,6 @@ function renderRevenuePage() {
       </div>
     </div>
     ${renderStats([
-      { label: "合同金额", value: project.revenueStats.contract, note: "来自项目合同主数据", cls: "soft-blue" },
       { label: "已确认收入金额", value: project.revenueStats.confirmed, note: "审批通过的收入确认金额汇总", cls: "soft-gold" },
       { label: "已确认收入比例", value: project.revenueStats.ratio, note: "勾选并完成确认的节点比例汇总", cls: "soft-green" },
       { label: "剩余待确认金额", value: project.revenueStats.pending, note: "待后续节点完成后再进入确认", cls: "soft-purple" },
@@ -1585,7 +1621,7 @@ function renderCostPage() {
         ${pageTable({
           key: "supplier-cost-table",
           title: "供应商成本列表",
-          desc: "仅展示采购合同审批通过后进入成本口径的数据，状态统一按支付状态展示。",
+          desc: "仅展示采购合同审批通过后进入成本口径的数据。",
           toolbarLeft: `${inputControl("搜索供应商名称")}${dateRangeControl()}${selectControl(["支付状态", "待支付", "部分支付", "已支付"])}`,
           toolbarRight: `<button class="btn primary" type="button">查询</button>`,
           rows: project.supplierCosts,
@@ -1595,11 +1631,10 @@ function renderCostPage() {
             { title: "供应商名称", width: "14%", render: (row) => row.supplier },
             { title: "成本合同金额", width: "10%", render: (row) => row.contractAmount },
             { title: "成本收票金额", width: "10%", render: (row) => row.ticketAmount },
-            { title: "已支付", width: "9%", render: (row) => row.paidAmount },
-            { title: "待支付", width: "9%", render: (row) => row.unpaidAmount },
-            { title: "欠票金额", width: "9%", render: (row) => row.unticketedAmount },
-            { title: "支付状态", width: "8%", render: (row) => statusTag(row.status, row.statusTone) },
-            { title: "操作", width: "12%", render: (row) => `<div class="actions">${actionLink("上传发票", "supplier-upload-invoice", row.id)}${divider()}${actionLink("详情", "supplier-cost-detail", row.id)}</div>` },
+            { title: "已支付", width: "10%", render: (row) => row.paidAmount },
+            { title: "待支付", width: "10%", render: (row) => row.unpaidAmount },
+            { title: "欠票金额", width: "10%", render: (row) => row.unticketedAmount },
+            { title: "操作", width: "13%", render: (row) => `<div class="actions">${actionLink("上传发票", "supplier-upload-invoice", row.id)}${divider()}${actionLink("详情", "supplier-cost-detail", row.id)}</div>` },
           ],
         })}
       </div>
@@ -1939,10 +1974,60 @@ function renderCustomersPage() {
         { title: "开户银行", width: "12%", render: (row) => row.bankName || "待补充" },
         { title: "银行账户", width: "12%", render: (row) => row.bankAccount || "待补充" },
         { title: "创建时间", width: "8%", render: (row) => row.createdAt },
-        { title: "操作", width: "12%", render: (row) => `<div class="actions">${actionLink("编辑", "customer-edit", row.id)}${divider()}${actionLink("删除", "customer-delete", row.id)}</div>` },
+        { title: "操作", width: "16%", render: (row) => `<div class="actions">${actionLink("详情", "customer-detail", row.id)}${divider()}${actionLink("编辑", "customer-edit", row.id)}${divider()}${actionLink("删除", "customer-delete", row.id)}</div>` },
       ],
     },
   });
+}
+
+function renderCustomerDetailPage() {
+  const customer = getActiveCustomer();
+  const rows = getCustomerContracts(customer.id);
+  const stats = getCustomerContractStats(customer.id);
+
+  return pageLayout(
+    `客户详情 - ${customer.name}`,
+    "展示客户基础资料、合同统计及关联合同列表。",
+    `<div class="section-card">
+      <div class="section-head">
+        <div class="back-link" data-action="back-customers">← 返回客户列表</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-head">
+          <p class="summary-title">客户基础信息</p>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-item"><div class="summary-item-label">客户编号</div><div class="summary-item-value">${customer.code}</div></div>
+          <div class="summary-item"><div class="summary-item-label">客户名称</div><div class="summary-item-value">${customer.name}</div></div>
+          <div class="summary-item"><div class="summary-item-label">纳税人识别号</div><div class="summary-item-value">${customer.taxId || "待补充"}</div></div>
+          <div class="summary-item"><div class="summary-item-label">企业电话</div><div class="summary-item-value">${customer.phone || "待补充"}</div></div>
+          <div class="summary-item"><div class="summary-item-label">开户银行</div><div class="summary-item-value">${customer.bankName || "待补充"}</div></div>
+          <div class="summary-item"><div class="summary-item-label">银行账户</div><div class="summary-item-value">${customer.bankAccount || "待补充"}</div></div>
+          <div class="summary-item"><div class="summary-item-label">创建人</div><div class="summary-item-value">${customer.createdBy}</div></div>
+          <div class="summary-item"><div class="summary-item-label">创建时间</div><div class="summary-item-value">${customer.createdAt}</div></div>
+          <div class="summary-item span-full"><div class="summary-item-label">企业地址</div><div class="summary-item-value">${customer.address || "待补充"}</div></div>
+          <div class="summary-item span-full"><div class="summary-item-label">备注</div><div class="summary-item-value">${customer.remark || "无"}</div></div>
+        </div>
+      </div>
+      ${renderStats([
+        { label: "合同总金额", value: stats.totalAmount, cls: "soft-blue" },
+        { label: "合同份数", value: stats.contractCount, cls: "soft-green" },
+      ])}
+      ${pageTable({
+        key: "customer-contract-table",
+        title: "关联合同列表",
+        desc: "展示该客户已关联的合同数据。",
+        rows,
+        columns: [
+          { title: "合同编号", width: "18%", render: (row) => `<div class="table-main">${row.contractNo}</div>` },
+          { title: "项目名称", width: "34%", render: (row) => row.projectName },
+          { title: "合同金额", width: "16%", render: (row) => row.contractAmount },
+          { title: "签订日期", width: "16%", render: (row) => row.signDate },
+          { title: "操作", width: "16%", render: (row) => actionLink("查看合同", "customer-contract-detail", row.id) },
+        ],
+      })}
+    </div>`
+  );
 }
 
 function renderSuppliersPage() {
@@ -2142,7 +2227,7 @@ function renderPaymentRequestsPage() {
 function renderStockPage() {
   const currentTab = state.tabs.stock;
   return pageLayout(
-    "出入库登记",
+    "设备出入库",
     "执行类页面，不走审批、不强绑定采购合同，入库与出库分 Tab 展示与操作。",
     `<div class="tab-card">
       <div class="tabs">
@@ -2153,7 +2238,7 @@ function renderStockPage() {
         ${pageTable({
           key: "stock-in-table",
           title: "入库记录",
-          desc: "记录物品来源、存放位置、入库人和入库时间。",
+          desc: "记录物品来源、存放位置等信息，入库人和入库时间在保存时自动生成。",
           toolbarLeft: `${inputControl("物品名称")}${dateRangeControl()}${inputControl("入库人")}`,
           toolbarRight: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="stock-in-create">新增入库</button>`,
           rows: stockInboundData,
@@ -2176,7 +2261,7 @@ function renderStockPage() {
         ${pageTable({
           key: "stock-out-table",
           title: "出库记录",
-          desc: "出库需保留领用去向和领用人 / 部门，不走审批。",
+          desc: "出库需保留领用去向和领用人 / 部门，出库人和出库时间在保存时自动生成。",
           toolbarLeft: `${inputControl("物品名称")}${dateRangeControl()}${inputControl("出库人")}`,
           toolbarRight: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="stock-out-create">新增出库</button>`,
           rows: stockOutboundData,
@@ -2389,7 +2474,12 @@ function closeProjectModal() {
 }
 
 function updateBreadcrumb() {
-  const pageKey = state.activePage === "supplier-history" ? "suppliers" : state.activePage;
+  const pageKey =
+    state.activePage === "supplier-history"
+      ? "suppliers"
+      : state.activePage === "customer-detail"
+        ? "customers"
+        : state.activePage;
   const page = pages[state.activePage];
   const menuPage = pages[pageKey];
   breadcrumbParent.textContent = page.group;
@@ -2397,7 +2487,12 @@ function updateBreadcrumb() {
 }
 
 function updateMenu() {
-  const activeKey = state.activePage === "supplier-history" ? "suppliers" : state.activePage;
+  const activeKey =
+    state.activePage === "supplier-history"
+      ? "suppliers"
+      : state.activePage === "customer-detail"
+        ? "customers"
+        : state.activePage;
   document.querySelectorAll("[data-nav]").forEach((button) => {
     button.classList.toggle("active", button.getAttribute("data-nav") === activeKey);
   });
@@ -2657,6 +2752,26 @@ function handleAction(action, rowId, target) {
         footer: `<button class="btn" type="button" data-close="modal">取消</button><button class="btn primary" type="button" data-close="modal">确认删除</button>`,
       });
       return;
+    case "customer-contract-detail": {
+      const activeCustomer = getActiveCustomer();
+      const contractRow = findById(getCustomerContracts(activeCustomer.id), rowId);
+      openDrawer({
+        title: `合同详情 - ${contractRow?.contractNo ?? ""}`,
+        subtitle: "从客户详情页进入，查看该客户关联合同的基础信息。",
+        body: section(
+          "合同信息",
+          grid([
+            field("客户名称", activeCustomer.name),
+            field("合同编号", contractRow?.contractNo ?? "-"),
+            field("项目名称", contractRow?.projectName ?? "-"),
+            field("合同金额", contractRow?.contractAmount ?? "-"),
+            field("签订日期", contractRow?.signDate ?? "-"),
+            field("合同状态", contractRow?.status ?? "-"),
+          ])
+        ),
+      });
+      return;
+    }
     case "revenue-apply-modal":
       openModal({
         title: "收入确认申请",
@@ -3074,6 +3189,15 @@ function handleAction(action, rowId, target) {
       state.activePage = "suppliers";
       renderPage();
       return;
+    case "customer-detail":
+      state.activeCustomerId = rowId;
+      state.activePage = "customer-detail";
+      renderPage();
+      return;
+    case "back-customers":
+      state.activePage = "customers";
+      renderPage();
+      return;
     case "plan-create":
       openModal({
         title: "发起采购计划",
@@ -3468,45 +3592,54 @@ function handleAction(action, rowId, target) {
     case "stock-out-create":
       openModal({
         title: action === "stock-in-create" ? "新增入库" : "新增出库",
-        subtitle: "出入库登记为独立执行页面，不走审批，但必须保留操作人与操作时间。",
+        subtitle: "设备出入库为独立执行页面，不走审批；保存时自动记录当前操作人与操作时间。",
         width: "overlay-panel-720",
-        body: section(
-          action === "stock-in-create" ? "入库信息" : "出库信息",
-          simpleForm(
-            action === "stock-in-create"
-              ? [
-                  fakeInput("物品名称", stockRow?.name ?? "请输入物品名称"),
-                  fakeInput("规格型号", stockRow?.spec ?? "请输入规格型号"),
-                  fakeInput("单位", stockRow?.unit ?? "请输入单位"),
-                  fakeInput("数量", stockRow?.qty ?? "请输入数量"),
-                  fakeInput("存放位置", stockRow?.place ?? "请输入存放位置"),
-                  fakeInput("来源说明", stockRow?.source ?? "请输入来源说明"),
-                  fakeInput("入库人", stockRow?.user ?? "默认当前登录人"),
-                  fakeInput("入库时间", stockRow?.time ?? "2026-04-08 16:20"),
-                  fakeTextarea("备注", stockRow?.remark ?? "填写签收、现场说明等。", 1),
-                  fakeUpload("附件", "上传签收单、现场照片等", 1),
-                ]
-              : [
-                  fakeInput("物品名称", stockRow?.name ?? "请输入物品名称"),
-                  fakeInput("规格型号", stockRow?.spec ?? "请输入规格型号"),
-                  fakeInput("单位", stockRow?.unit ?? "请输入单位"),
-                  fakeInput("数量", stockRow?.qty ?? "请输入数量"),
-                  fakeInput("领用去向", stockRow?.target ?? "请输入领用去向"),
-                  fakeInput("领用人/部门", stockRow?.owner ?? "请输入领用人或部门"),
-                  fakeInput("出库人", stockRow?.user ?? "默认当前登录人"),
-                  fakeInput("出库时间", stockRow?.time ?? "2026-04-08 16:20"),
-                  fakeTextarea("备注", stockRow?.remark ?? "填写出库用途与说明。", 1),
-                  fakeUpload("附件", "上传领用单、现场照片等", 1),
-                ]
-          )
-        ),
+        body: [
+          section(
+            action === "stock-in-create" ? "入库信息" : "出库信息",
+            simpleForm(
+              action === "stock-in-create"
+                ? [
+                    fakeInput("关联交付项目", stockRow?.projectName ?? "请选择交付项目"),
+                    fakeInput("物品名称", stockRow?.name ?? "请输入物品名称"),
+                    fakeInput("规格型号", stockRow?.spec ?? "请输入规格型号"),
+                    fakeInput("单位", stockRow?.unit ?? "请输入单位"),
+                    fakeInput("数量", stockRow?.qty ?? "请输入数量"),
+                    fakeInput("存放位置", stockRow?.place ?? "请输入存放位置"),
+                    fakeInput("来源说明", stockRow?.source ?? "请输入来源说明"),
+                    fakeTextarea("备注", stockRow?.remark ?? "填写签收、现场说明等。", 1),
+                    fakeUpload("附件", "上传签收单、现场照片等", 1),
+                  ]
+                : [
+                    fakeInput("关联交付项目", stockRow?.projectName ?? "请选择交付项目"),
+                    fakeInput("物品名称", stockRow?.name ?? "请输入物品名称"),
+                    fakeInput("规格型号", stockRow?.spec ?? "请输入规格型号"),
+                    fakeInput("单位", stockRow?.unit ?? "请输入单位"),
+                    fakeInput("数量", stockRow?.qty ?? "请输入数量"),
+                    fakeInput("领用去向", stockRow?.target ?? "请输入领用去向"),
+                    fakeInput("领用人/部门", stockRow?.owner ?? "请输入领用人或部门"),
+                    fakeTextarea("备注", stockRow?.remark ?? "填写出库用途与说明。", 1),
+                    fakeUpload("附件", "上传领用单、现场照片等", 1),
+                  ]
+            )
+          ),
+          section(
+            "自动生成规则",
+            notice([
+              action === "stock-in-create"
+                ? "保存入库记录后，系统自动写入当前登录人为入库人，并记录保存时间。"
+                : "保存出库记录后，系统自动写入当前登录人为出库人，并记录保存时间。",
+              "详情页和列表页继续展示操作人与操作时间，表单中无需手工填写。",
+            ])
+          ),
+        ].join(""),
       });
       return;
     case "stock-detail":
       openDrawer({
         title: `记录详情 - ${stockRow.code}`,
         subtitle: "展示物品、数量、操作人、时间与附件信息。",
-        body: section("记录信息", grid([field("单号", stockRow.code), field("物品名称", stockRow.name), field("规格型号", stockRow.spec), field("单位", stockRow.unit), field("数量", stockRow.qty), field("操作人", stockRow.user), field("操作时间", stockRow.time), fakeTextarea("备注", stockRow.remark, 2)])),
+        body: section("记录信息", grid([field("单号", stockRow.code), field("关联交付项目", stockRow.projectName || "-"), field("物品名称", stockRow.name), field("规格型号", stockRow.spec), field("单位", stockRow.unit), field("数量", stockRow.qty), field("操作人", stockRow.user), field("操作时间", stockRow.time), fakeTextarea("备注", stockRow.remark, 2)])),
       });
       return;
     case "delete-generic":
