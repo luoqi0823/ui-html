@@ -1283,6 +1283,10 @@ tbody tr:hover td {
   width: min(720px, 100%);
 }
 
+.overlay-panel-600 {
+  width: min(600px, 100%);
+}
+
 .overlay-panel-960 {
   width: min(960px, 100%);
 }

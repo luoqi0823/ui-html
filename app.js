@@ -14,9 +14,10 @@ const state = {
   pendingProjectId: "project-a",
   activeSupplierId: "supplier-1",
   activeCustomerId: "customer-1",
+  activeStockDeviceId: "",
   tabs: {
     invoice: "invoice",
-    stock: "inbound",
+    stock: "devices",
   },
   pagination: {},
 };
@@ -902,6 +903,7 @@ const customersData = [
     createdBy: "刘敏",
     contractCount: 3,
     invoiceCount: 6,
+    collectedAmount: "¥ 3,540,000",
     linkedContracts: ["HT-2026-001", "HT-2026-008", "HT-2026-011"],
   },
   {
@@ -919,6 +921,7 @@ const customersData = [
     createdBy: "罗晴",
     contractCount: 2,
     invoiceCount: 4,
+    collectedAmount: "¥ 2,420,000",
     linkedContracts: ["HT-2026-015", "HT-2026-019"],
   },
   {
@@ -936,6 +939,7 @@ const customersData = [
     createdBy: "周舟",
     contractCount: 1,
     invoiceCount: 2,
+    collectedAmount: "¥ 0",
     linkedContracts: ["HT-2026-028"],
   },
   {
@@ -953,6 +957,7 @@ const customersData = [
     createdBy: "杜言",
     contractCount: 0,
     invoiceCount: 0,
+    collectedAmount: "¥ 0",
     linkedContracts: [],
   },
   {
@@ -970,6 +975,7 @@ const customersData = [
     createdBy: "陈澈",
     contractCount: 0,
     invoiceCount: 0,
+    collectedAmount: "¥ 0",
     linkedContracts: [],
   },
   {
@@ -987,6 +993,7 @@ const customersData = [
     createdBy: "韩青",
     contractCount: 0,
     invoiceCount: 0,
+    collectedAmount: "¥ 0",
     linkedContracts: [],
   },
 ];
@@ -1037,12 +1044,12 @@ const inquiriesData = [
 ];
 
 const contractsData = [
-  { id: "CGHT-202604-001", code: "CGHT-202604-001", projectName: "城市交通数据中台建设一期", supplier: "成都天擎科技有限公司", sourceType: "比价", sourceTone: "blue", amount: "¥ 1,260,000", copies: "4", status: "已通过", statusTone: "green", date: "2026-04-08" },
-  { id: "CGHT-202604-002", code: "CGHT-202604-002", projectName: "智慧工地综合监管平台二期", supplier: "贵安天行科技有限公司", sourceType: "比价", sourceTone: "blue", amount: "¥ 980,000", copies: "3", status: "已通过", statusTone: "green", date: "2026-04-06" },
-  { id: "CGHT-202603-006", code: "CGHT-202603-006", projectName: "城市交通数据中台建设一期", supplier: "西南运维协作中心", sourceType: "直采", sourceTone: "green", amount: "¥ 290,000", copies: "2", status: "已通过", statusTone: "green", date: "2026-03-26" },
-  { id: "CGHT-202603-003", code: "CGHT-202603-003", projectName: "智慧工地综合监管平台二期", supplier: "贵黔智联设备有限公司", sourceType: "直采", sourceTone: "green", amount: "¥ 520,000", copies: "3", status: "已通过", statusTone: "green", date: "2026-03-18" },
-  { id: "CGHT-202602-011", code: "CGHT-202602-011", projectName: "城市交通数据中台建设一期", supplier: "云图集成服务有限公司", sourceType: "直采", sourceTone: "green", amount: "¥ 410,000", copies: "2", status: "已通过", statusTone: "green", date: "2026-02-28" },
-  { id: "CGHT-202602-008", code: "CGHT-202602-008", projectName: "智慧工地综合监管平台二期", supplier: "中黔信息服务有限公司", sourceType: "比价", sourceTone: "blue", amount: "¥ 330,000", copies: "2", status: "已通过", statusTone: "green", date: "2026-02-14" },
+  { id: "CGHT-202604-001", code: "CGHT-202604-001", projectName: "城市交通数据中台建设一期", supplier: "成都天擎科技有限公司", contractType: "设备采购合同", sourceType: "比价", sourceTone: "blue", amount: "¥ 1,260,000", copies: "4", status: "已通过", statusTone: "green", date: "2026-04-08" },
+  { id: "CGHT-202604-002", code: "CGHT-202604-002", projectName: "智慧工地综合监管平台二期", supplier: "贵安天行科技有限公司", contractType: "设备采购合同", sourceType: "比价", sourceTone: "blue", amount: "¥ 980,000", copies: "3", status: "已通过", statusTone: "green", date: "2026-04-06" },
+  { id: "CGHT-202603-006", code: "CGHT-202603-006", projectName: "城市交通数据中台建设一期", supplier: "西南运维协作中心", contractType: "服务采购合同", sourceType: "直采", sourceTone: "green", amount: "¥ 290,000", copies: "2", status: "已通过", statusTone: "green", date: "2026-03-26" },
+  { id: "CGHT-202603-003", code: "CGHT-202603-003", projectName: "智慧工地综合监管平台二期", supplier: "贵黔智联设备有限公司", contractType: "设备采购合同", sourceType: "直采", sourceTone: "green", amount: "¥ 520,000", copies: "3", status: "已通过", statusTone: "green", date: "2026-03-18" },
+  { id: "CGHT-202602-011", code: "CGHT-202602-011", projectName: "城市交通数据中台建设一期", supplier: "云图集成服务有限公司", contractType: "软件采购合同", sourceType: "直采", sourceTone: "green", amount: "¥ 410,000", copies: "2", status: "已通过", statusTone: "green", date: "2026-02-28" },
+  { id: "CGHT-202602-008", code: "CGHT-202602-008", projectName: "智慧工地综合监管平台二期", supplier: "中黔信息服务有限公司", contractType: "服务采购合同", sourceType: "比价", sourceTone: "blue", amount: "¥ 330,000", copies: "2", status: "已通过", statusTone: "green", date: "2026-02-14" },
 ];
 
 const paymentRequestsData = [
@@ -1096,22 +1103,31 @@ const paymentManagementData = [
   { id: "FKSQ-202603-003", code: "FKSQ-202603-003", projectName: "智慧工地综合监管平台二期", contractCode: "CGHT-202603-003", supplier: "贵黔智联设备有限公司", requestAmount: "¥ 260,000", account: "农业银行贵阳南明支行 / 6228 4808 1177 6632", paidAmount: "¥ 0", unpaidAmount: "¥ 260,000", status: "待支付", statusTone: "red", history: [] },
 ];
 
+const stockDevicesData = [
+  { id: "device-1", code: "SB-001", name: "边缘采集网关", category: "生产设备", spec: "TG-9000", unit: "台", defaultPlace: "A-01 设备库", createdAt: "2026-02-18 09:30", remark: "边缘侧采集与传输设备。" },
+  { id: "device-2", code: "SB-002", name: "可视化展示屏", category: "生产设备", spec: "55 寸壁挂", unit: "套", defaultPlace: "A-02 展示库", createdAt: "2026-02-20 14:15", remark: "项目现场展示与汇报设备。" },
+  { id: "device-3", code: "SB-003", name: "网络交换机", category: "生产设备", spec: "24 口千兆", unit: "台", defaultPlace: "B-01 弱电库", createdAt: "2026-02-25 10:18", remark: "网络接入与调测设备。" },
+  { id: "device-4", code: "SB-004", name: "工地监管摄像头", category: "生产设备", spec: "4K 云台", unit: "台", defaultPlace: "C-03 项目仓", createdAt: "2026-03-01 16:40", remark: "工地监管项目现场摄像设备。" },
+  { id: "device-5", code: "SB-005", name: "办公椅", category: "办公设备", spec: "人体工学", unit: "把", defaultPlace: "行政库位", createdAt: "2026-03-05 11:24", remark: "项目现场办公配套物资。" },
+  { id: "device-6", code: "SB-006", name: "布线辅材", category: "其他", spec: "标准套件", unit: "箱", defaultPlace: "B-02 综合库", createdAt: "2026-03-08 13:05", remark: "现场布线常用辅料。" },
+];
+
 const stockInboundData = [
-  { id: "RK-202604-001", code: "RK-202604-001", projectName: "城市交通数据中台建设一期", name: "边缘采集网关", spec: "TG-9000", unit: "台", qty: "12", place: "A-01 设备库", source: "采购合同 CGHT-202604-001", user: "张晨", time: "2026-04-08 16:20", remark: "设备齐套入库" },
-  { id: "RK-202604-002", code: "RK-202604-002", projectName: "智慧工地综合监管平台二期", name: "可视化展示屏", spec: "55 寸壁挂", unit: "套", qty: "4", place: "A-02 展示库", source: "采购合同 CGHT-202603-003", user: "陈澈", time: "2026-04-07 11:10", remark: "现场调拨后入库" },
-  { id: "RK-202603-006", code: "RK-202603-006", projectName: "城市交通数据中台建设一期", name: "网络交换机", spec: "24 口千兆", unit: "台", qty: "6", place: "B-01 弱电库", source: "采购合同 CGHT-202603-006", user: "李岚", time: "2026-03-28 17:45", remark: "测试环境扩容" },
-  { id: "RK-202603-003", code: "RK-202603-003", projectName: "智慧工地综合监管平台二期", name: "工地监管摄像头", spec: "4K 云台", unit: "台", qty: "10", place: "C-03 项目仓", source: "采购合同 CGHT-202604-002", user: "罗晴", time: "2026-03-22 09:20", remark: "分批入库" },
-  { id: "RK-202602-009", code: "RK-202602-009", projectName: "城市交通数据中台建设一期", name: "办公椅", spec: "人体工学", unit: "把", qty: "8", place: "行政库位", source: "行政采购", user: "杜言", time: "2026-02-20 15:08", remark: "现场办公配套" },
-  { id: "RK-202602-004", code: "RK-202602-004", projectName: "智慧工地综合监管平台二期", name: "布线辅材", spec: "标准套件", unit: "箱", qty: "5", place: "B-02 综合库", source: "采购合同 CGHT-202602-008", user: "韩青", time: "2026-02-12 10:15", remark: "批量入库" },
+  { id: "RK-202604-001", deviceId: "device-1", code: "RK-202604-001", projectName: "城市交通数据中台建设一期", place: "A-01 设备库", source: "采购合同 CGHT-202604-001", user: "张晨", time: "2026-04-08 16:20", qty: "12", remark: "设备齐套入库" },
+  { id: "RK-202604-002", deviceId: "device-2", code: "RK-202604-002", projectName: "智慧工地综合监管平台二期", place: "A-02 展示库", source: "采购合同 CGHT-202603-003", user: "陈澈", time: "2026-04-07 11:10", qty: "4", remark: "现场调拨后入库" },
+  { id: "RK-202603-006", deviceId: "device-3", code: "RK-202603-006", projectName: "城市交通数据中台建设一期", place: "B-01 弱电库", source: "采购合同 CGHT-202603-006", user: "李岚", time: "2026-03-28 17:45", qty: "6", remark: "测试环境扩容" },
+  { id: "RK-202603-003", deviceId: "device-4", code: "RK-202603-003", projectName: "智慧工地综合监管平台二期", place: "C-03 项目仓", source: "采购合同 CGHT-202604-002", user: "罗晴", time: "2026-03-22 09:20", qty: "10", remark: "分批入库" },
+  { id: "RK-202602-009", deviceId: "device-5", code: "RK-202602-009", projectName: "城市交通数据中台建设一期", place: "行政库位", source: "行政采购", user: "杜言", time: "2026-02-20 15:08", qty: "8", remark: "现场办公配套" },
+  { id: "RK-202602-004", deviceId: "device-6", code: "RK-202602-004", projectName: "智慧工地综合监管平台二期", place: "B-02 综合库", source: "采购合同 CGHT-202602-008", user: "韩青", time: "2026-02-12 10:15", qty: "5", remark: "批量入库" },
 ];
 
 const stockOutboundData = [
-  { id: "CK-202604-001", code: "CK-202604-001", projectName: "城市交通数据中台建设一期", name: "边缘采集网关", spec: "TG-9000", unit: "台", qty: "4", target: "一期项目现场安装", owner: "安装组 / 王晟", user: "张晨", time: "2026-04-09 09:30", remark: "首批发往现场" },
-  { id: "CK-202604-002", code: "CK-202604-002", projectName: "智慧工地综合监管平台二期", name: "可视化展示屏", spec: "55 寸壁挂", unit: "套", qty: "2", target: "监管大厅展示墙", owner: "实施部 / 罗晴", user: "陈澈", time: "2026-04-08 14:00", remark: "现场安装使用" },
-  { id: "CK-202603-006", code: "CK-202603-006", projectName: "城市交通数据中台建设一期", name: "网络交换机", spec: "24 口千兆", unit: "台", qty: "2", target: "测试环境部署", owner: "研发中心 / 李岚", user: "李岚", time: "2026-03-29 16:45", remark: "测试机房使用" },
-  { id: "CK-202603-003", code: "CK-202603-003", projectName: "智慧工地综合监管平台二期", name: "工地监管摄像头", spec: "4K 云台", unit: "台", qty: "6", target: "工地 2 号标段", owner: "项目部 / 罗晴", user: "罗晴", time: "2026-03-23 11:30", remark: "按批次发放" },
-  { id: "CK-202602-009", code: "CK-202602-009", projectName: "城市交通数据中台建设一期", name: "办公椅", spec: "人体工学", unit: "把", qty: "4", target: "现场项目办公室", owner: "行政部 / 杜言", user: "杜言", time: "2026-02-21 10:10", remark: "现场办公使用" },
-  { id: "CK-202602-004", code: "CK-202602-004", projectName: "智慧工地综合监管平台二期", name: "布线辅材", spec: "标准套件", unit: "箱", qty: "2", target: "布线施工", owner: "实施组 / 韩青", user: "韩青", time: "2026-02-13 13:22", remark: "现场施工领用" },
+  { id: "CK-202604-001", deviceId: "device-1", code: "CK-202604-001", projectName: "城市交通数据中台建设一期", qty: "4", recipient: "王晟", user: "张晨", time: "2026-04-09 09:30", remark: "首批发往现场" },
+  { id: "CK-202604-002", deviceId: "device-2", code: "CK-202604-002", projectName: "智慧工地综合监管平台二期", qty: "2", recipient: "罗晴", user: "陈澈", time: "2026-04-08 14:00", remark: "现场安装使用" },
+  { id: "CK-202603-006", deviceId: "device-3", code: "CK-202603-006", projectName: "城市交通数据中台建设一期", qty: "2", recipient: "李岚", user: "李岚", time: "2026-03-29 16:45", remark: "测试机房使用" },
+  { id: "CK-202603-003", deviceId: "device-4", code: "CK-202603-003", projectName: "智慧工地综合监管平台二期", qty: "6", recipient: "罗晴", user: "罗晴", time: "2026-03-23 11:30", remark: "按批次发放" },
+  { id: "CK-202602-009", deviceId: "device-5", code: "CK-202602-009", projectName: "城市交通数据中台建设一期", qty: "4", recipient: "杜言", user: "杜言", time: "2026-02-21 10:10", remark: "现场办公使用" },
+  { id: "CK-202602-004", deviceId: "device-6", code: "CK-202602-004", projectName: "智慧工地综合监管平台二期", qty: "2", recipient: "韩青", user: "韩青", time: "2026-02-13 13:22", remark: "现场施工领用" },
 ];
 
 const pages = {
@@ -1516,6 +1532,13 @@ function formatShortCurrency(value) {
   return `${value}`;
 }
 
+function formatCurrency(value) {
+  return `¥ ${Number(value || 0).toLocaleString("zh-CN", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
 function getExpenseTotals(project) {
   return project.expenseSummary.reduce(
     (acc, item) => {
@@ -1554,9 +1577,82 @@ function getDepartmentHours(project) {
   }));
 }
 
+function getProjectCostStats(project) {
+  const supplier = project.supplierCosts.reduce((sum, item) => sum + parseCurrency(item.contractAmount), 0);
+  const expense = getExpenseTotals(project).cost;
+  const labor = project.laborRows.reduce((sum, item) => sum + parseCurrency(item.laborCost), 0);
+  const total = supplier + expense + labor;
+  const contractAmount = parseCurrency(project.contractAmount);
+
+  return {
+    supplier,
+    expense,
+    labor,
+    total,
+    ratio: contractAmount ? `${((total / contractAmount) * 100).toFixed(1)}%` : "0%",
+  };
+}
+
+function getStockDevice(deviceId) {
+  return findById(stockDevicesData, deviceId);
+}
+
+function getStockDeviceCurrentQty(deviceId, excludeOutboundId = "") {
+  const inboundQty = stockInboundData
+    .filter((item) => item.deviceId === deviceId)
+    .reduce((sum, item) => sum + Number(item.qty || 0), 0);
+  const outboundQty = stockOutboundData
+    .filter((item) => item.deviceId === deviceId && item.id !== excludeOutboundId)
+    .reduce((sum, item) => sum + Number(item.qty || 0), 0);
+  return Math.max(0, inboundQty - outboundQty);
+}
+
+function getStockDeviceRecordCount(deviceId) {
+  return stockInboundData.filter((item) => item.deviceId === deviceId).length + stockOutboundData.filter((item) => item.deviceId === deviceId).length;
+}
+
+function enrichStockInboundRow(row) {
+  const device = getStockDevice(row.deviceId) ?? {};
+  return {
+    ...row,
+    name: device.name ?? "-",
+    category: device.category ?? "-",
+    spec: device.spec ?? "-",
+    unit: device.unit ?? "-",
+  };
+}
+
+function enrichStockOutboundRow(row) {
+  const device = getStockDevice(row.deviceId) ?? {};
+  return {
+    ...row,
+    name: device.name ?? "-",
+    category: device.category ?? "-",
+    spec: device.spec ?? "-",
+    unit: device.unit ?? "-",
+  };
+}
+
+function stockDeviceSelectControl(selectedId = "", size = "wide", withStock = false) {
+  return `<select class="control-select filter-control filter-control-${size}">${[
+    `<option>${selectedId ? "当前设备" : "设备"}</option>`,
+    ...stockDevicesData.map((item) => {
+      const stockText = withStock ? `（库存 ${formatStockQty(getStockDeviceCurrentQty(item.id), item.unit)}）` : "";
+      const prefix = item.id === selectedId ? "已选：" : "";
+      return `<option>${prefix}${item.name}${stockText}</option>`;
+    }),
+  ].join("")}</select>`;
+}
+
+function formatStockQty(qty, unit = "") {
+  const value = Number(qty || 0);
+  return `${value} ${unit}`.trim();
+}
+
 function renderCostPage() {
   const project = getProject();
   const expenseTotal = getExpenseTotals(project);
+  const costStats = getProjectCostStats(project);
   const supplierPaid = project.supplierCosts.reduce((sum, item) => sum + parseCurrency(item.paidAmount), 0);
   const supplierTicket = project.supplierCosts.reduce((sum, item) => sum + parseCurrency(item.ticketAmount), 0);
   const departmentHours = getDepartmentHours(project);
@@ -1577,23 +1673,23 @@ function renderCostPage() {
         </div>
         <div class="cost-split-grid">
           <div class="cost-split-card primary">
-            <div class="cost-band-label">项目成本总额</div>
-            <div class="cost-band-value">${project.costStats.total}</div>
-            <div class="cost-split-note">合同金额 ${project.contractAmount}</div>
+            <div class="cost-band-label">项目成本总额（含税）</div>
+            <div class="cost-band-value">${formatCurrency(costStats.total)}</div>
+            <div class="cost-split-note">供应商成本总额 + 报销成本总额 + 人力成本总额</div>
           </div>
           <div class="cost-split-card">
-            <div class="cost-band-label">供应商成本</div>
-            <div class="cost-band-value">${project.costStats.supplier}</div>
+            <div class="cost-band-label">供应商成本总额（含税）</div>
+            <div class="cost-band-value">${formatCurrency(costStats.supplier)}</div>
           </div>
           <div class="cost-split-card">
-            <div class="cost-band-label">报销成本</div>
-            <div class="cost-band-value">${project.costStats.expense}</div>
+            <div class="cost-band-label">报销成本总额</div>
+            <div class="cost-band-value">${formatCurrency(costStats.expense)}</div>
             <div class="cost-split-note">共 ${expenseTotal.count} 笔报销</div>
           </div>
           <div class="cost-split-card">
-            <div class="cost-band-label">人力成本</div>
-            <div class="cost-band-value">${project.costStats.labor}</div>
-            <div class="cost-split-note">成本占比 ${project.costStats.ratio}</div>
+            <div class="cost-band-label">人力成本总额</div>
+            <div class="cost-band-value">${formatCurrency(costStats.labor)}</div>
+            <div class="cost-split-note">成本占比 ${costStats.ratio}</div>
           </div>
         </div>
       </div>
@@ -1606,8 +1702,8 @@ function renderCostPage() {
         </div>
         <div class="cost-insight-grid">
           <div class="cost-insight-card">
-            <div class="cost-insight-label">供应商成本总额</div>
-            <div class="cost-insight-value">${project.costStats.supplier}</div>
+            <div class="cost-insight-label">供应商成本总额（含税）</div>
+            <div class="cost-insight-value">${formatCurrency(costStats.supplier)}</div>
           </div>
           <div class="cost-insight-card">
             <div class="cost-insight-label">成本收票金额</div>
@@ -1621,7 +1717,7 @@ function renderCostPage() {
         ${pageTable({
           key: "supplier-cost-table",
           title: "供应商成本列表",
-          desc: "仅展示采购合同审批通过后进入成本口径的数据。",
+          desc: "仅展示采购合同审批通过后进入成本口径的数据；供应商成本总额按含税合同金额统计。",
           toolbarLeft: `${inputControl("搜索供应商名称")}${dateRangeControl()}${selectControl(["支付状态", "待支付", "部分支付", "已支付"])}`,
           toolbarRight: `<button class="btn primary" type="button">查询</button>`,
           rows: project.supplierCosts,
@@ -2012,6 +2108,7 @@ function renderCustomerDetailPage() {
       ${renderStats([
         { label: "合同总金额", value: stats.totalAmount, cls: "soft-blue" },
         { label: "合同份数", value: stats.contractCount, cls: "soft-green" },
+        { label: "已回款金额", value: customer.collectedAmount || "¥ 0", cls: "soft-cyan", note: "接口字段：collectedAmount" },
       ])}
       ${pageTable({
         key: "customer-contract-table",
@@ -2104,12 +2201,11 @@ function renderPlansPage() {
         { title: "项目名称", width: "16%", render: (row) => row.projectName },
         { title: "采购事由", width: "18%", render: (row) => row.reason },
         { title: "采购类别摘要", width: "14%", render: (row) => row.categories },
-        { title: "合计预算", width: "10%", render: (row) => row.budget },
-        { title: "是否比选", width: "8%", render: (row) => statusTag(row.bidFlag, row.bidTone) },
+        { title: "合计预算", width: "12%", render: (row) => row.budget },
         { title: "审批状态", width: "10%", render: (row) => statusTag(row.status, row.statusTone) },
         { title: "申请人", width: "6%", render: (row) => row.applicant },
         { title: "申请日期", width: "10%", render: (row) => row.date },
-        { title: "操作", width: "6%", render: (row) => actionLink("详情", "plan-detail", row.id) },
+        { title: "操作", width: "8%", render: (row) => actionLink("详情", "plan-detail", row.id) },
       ],
     },
   });
@@ -2118,7 +2214,7 @@ function renderPlansPage() {
 function renderRequestsPage() {
   return simpleListPage({
     title: "采购申请",
-    desc: "根据“是否需要比价”决定后续流程和明细填写方式，状态列统一使用审批状态；不需要比价时商品必须来自供应商产品清单。",
+    desc: "采购申请发起前必须先维护供应商和产品，申请阶段统一通过采购明细组件选择已建档供应商产品，并在合计金额后补充税率、税额。",
     filters: `${selectControl(["项目", "全部项目", ...financeProjects.map((item) => item.name)])}${selectControl(["采购类别", "设备采购", "软件采购", "服务采购", "材料采购", "行政采购"])}${selectControl(["是否需要比价", "全部", "是", "否"])}${selectControl(["审批状态", "草稿", "审批中", "已通过", "已拒绝", "已撤回"])}${inputControl("申请单号 / 采购事由")}`,
     actions: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="request-create">发起采购申请</button>`,
     table: {
@@ -2173,8 +2269,8 @@ function renderInquiriesPage() {
 function renderContractsPage() {
   return simpleListPage({
     title: "采购合同签订",
-    desc: "从“比价已确定供应商”或“直采采购申请”选择采购对象，带出信息后可修改并生成合同文件；状态列统一使用审批状态。",
-    filters: `${selectControl(["项目", "全部项目", ...financeProjects.map((item) => item.name)])}${inputControl("供应商名称")}${selectControl(["审批状态", "草稿", "审批中", "已通过", "已拒绝", "已撤回"])}${inputControl("合同编号 / 合同名称")}`,
+    desc: "从“比价已确定供应商”或“直采采购申请”选择采购对象，按合同类型匹配模板并生成合同文件；状态列统一使用审批状态。",
+    filters: `${selectControl(["项目", "全部项目", ...financeProjects.map((item) => item.name)])}${inputControl("供应商名称")}${selectControl(["合同类型", "全部", "设备采购合同", "服务采购合同", "软件采购合同"])}${selectControl(["审批状态", "草稿", "审批中", "已通过", "已拒绝", "已撤回"])}${inputControl("合同编号 / 合同名称")}`,
     actions: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="contract-create">新增合同</button>`,
     table: {
       key: "contract-table",
@@ -2183,14 +2279,15 @@ function renderContractsPage() {
       rows: contractsData,
       columns: [
         { title: "合同编号", width: "12%", render: (row) => `<div class="table-main">${row.code}</div>` },
-        { title: "项目名称", width: "16%", render: (row) => row.projectName },
-        { title: "供应商名称", width: "16%", render: (row) => row.supplier },
-        { title: "来源类型", width: "10%", render: (row) => statusTag(row.sourceType, row.sourceTone) },
+        { title: "项目名称", width: "14%", render: (row) => row.projectName },
+        { title: "供应商名称", width: "14%", render: (row) => row.supplier },
+        { title: "合同类型", width: "10%", render: (row) => row.contractType },
+        { title: "来源类型", width: "8%", render: (row) => statusTag(row.sourceType, row.sourceTone) },
         { title: "合计金额", width: "10%", render: (row) => row.amount },
-        { title: "合同份数", width: "8%", render: (row) => row.copies },
-        { title: "审批状态", width: "10%", render: (row) => statusTag(row.status, row.statusTone) },
-        { title: "创建日期", width: "10%", render: (row) => row.date },
-        { title: "操作", width: "18%", render: (row) => `<div class="actions">${actionLink("详情", "contract-detail", row.id)}${divider()}${actionLink("下载合同", "download-generic", row.id, 'data-name="采购合同"')}${row.status === "已通过" ? `${divider()}${actionLink("付款申请", "contract-payment-request", row.id)}` : ""}</div>` },
+        { title: "合同份数", width: "6%", render: (row) => row.copies },
+        { title: "审批状态", width: "8%", render: (row) => statusTag(row.status, row.statusTone) },
+        { title: "创建日期", width: "8%", render: (row) => row.date },
+        { title: "操作", width: "20%", render: (row) => `<div class="actions">${actionLink("详情", "contract-detail", row.id)}${divider()}${actionLink("下载合同", "download-generic", row.id, 'data-name="采购合同"')}${row.status === "已通过" ? `${divider()}${actionLink("付款申请", "contract-payment-request", row.id)}` : ""}</div>` },
       ],
     },
   });
@@ -2226,33 +2323,63 @@ function renderPaymentRequestsPage() {
 
 function renderStockPage() {
   const currentTab = state.tabs.stock;
+  const focusedDevice = getStockDevice(state.activeStockDeviceId);
+  const deviceRows = stockDevicesData.map((item) => ({
+    ...item,
+    currentQty: getStockDeviceCurrentQty(item.id),
+  }));
+  const inboundRows = stockInboundData.map(enrichStockInboundRow);
+  const outboundRows = stockOutboundData.map(enrichStockOutboundRow);
   return pageLayout(
     "设备出入库",
-    "执行类页面，不走审批、不强绑定采购合同，入库与出库分 Tab 展示与操作。",
+    "独立执行类页面，不走审批，采用“设备主数据 + 出入库流水”模式管理库存。",
     `<div class="tab-card">
       <div class="tabs">
-        <button class="tab-btn ${currentTab === "inbound" ? "active" : ""}" type="button" data-tab-group="stock" data-tab="inbound">入库</button>
-        <button class="tab-btn ${currentTab === "outbound" ? "active" : ""}" type="button" data-tab-group="stock" data-tab="outbound">出库</button>
+        <button class="tab-btn ${currentTab === "devices" ? "active" : ""}" type="button" data-tab-group="stock" data-tab="devices">设备列表</button>
+        <button class="tab-btn ${currentTab === "inbound" ? "active" : ""}" type="button" data-tab-group="stock" data-tab="inbound">入库记录</button>
+        <button class="tab-btn ${currentTab === "outbound" ? "active" : ""}" type="button" data-tab-group="stock" data-tab="outbound">出库记录</button>
+      </div>
+      <div class="tab-panel ${currentTab === "devices" ? "" : "hidden"}">
+        ${pageTable({
+          key: "stock-device-table",
+          title: "设备列表",
+          desc: "设备主数据维护设备基础信息和实时库存；必须先建设备，才能进行入库和出库登记。",
+          toolbarLeft: `${inputControl(focusedDevice?.name ?? "设备名称")}${selectControl(["设备分类", "办公设备", "生产设备", "其他"])}`,
+          toolbarRight: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="stock-device-create">新增设备</button>`,
+          rows: deviceRows,
+          columns: [
+            { title: "设备编号", width: "10%", render: (row) => `<div class="table-main">${row.code}</div>` },
+            { title: "设备名称", width: "14%", render: (row) => row.name },
+            { title: "设备分类", width: "10%", render: (row) => row.category },
+            { title: "规格型号", width: "12%", render: (row) => row.spec || "-" },
+            { title: "单位", width: "8%", render: (row) => row.unit },
+            { title: "当前库存", width: "10%", render: (row) => formatStockQty(row.currentQty, row.unit) },
+            { title: "默认存放位置", width: "14%", render: (row) => row.defaultPlace || "-" },
+            { title: "创建时间", width: "10%", render: (row) => row.createdAt },
+            { title: "操作", width: "22%", render: (row) => `<div class="actions">${actionLink("编辑", "stock-device-edit", row.id)}${divider()}${actionLink("删除", "stock-device-delete", row.id)}${divider()}${actionLink("入库记录", "stock-device-inbound", row.id)}${divider()}${actionLink("出库记录", "stock-device-outbound", row.id)}</div>` },
+          ],
+        })}
       </div>
       <div class="tab-panel ${currentTab === "inbound" ? "" : "hidden"}">
         ${pageTable({
           key: "stock-in-table",
           title: "入库记录",
-          desc: "记录物品来源、存放位置等信息，入库人和入库时间在保存时自动生成。",
-          toolbarLeft: `${inputControl("物品名称")}${dateRangeControl()}${inputControl("入库人")}`,
+          desc: "记录设备入库数量、关联项目、存放位置和来源说明；入库基于设备主数据进行登记。",
+          toolbarLeft: `${stockDeviceSelectControl(state.activeStockDeviceId)}${selectControl(["关联项目", "全部项目", ...financeProjects.map((item) => item.name)])}${dateRangeControl()}${inputControl("入库人")}`,
           toolbarRight: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="stock-in-create">新增入库</button>`,
-          rows: stockInboundData,
+          rows: inboundRows,
           columns: [
             { title: "入库单号", width: "12%", render: (row) => `<div class="table-main">${row.code}</div>` },
-            { title: "物品名称", width: "12%", render: (row) => row.name },
+            { title: "设备名称", width: "12%", render: (row) => row.name },
+            { title: "设备分类", width: "10%", render: (row) => row.category },
             { title: "规格型号", width: "10%", render: (row) => row.spec },
             { title: "单位", width: "8%", render: (row) => row.unit },
             { title: "数量", width: "8%", render: (row) => row.qty },
+            { title: "关联项目", width: "12%", render: (row) => row.projectName || "-" },
             { title: "存放位置", width: "12%", render: (row) => row.place },
-            { title: "来源说明", width: "16%", render: (row) => row.source },
+            { title: "来源说明", width: "12%", render: (row) => row.source || "-" },
             { title: "入库人", width: "8%", render: (row) => row.user },
             { title: "入库时间", width: "10%", render: (row) => row.time },
-            { title: "备注", width: "10%", render: (row) => row.remark },
             { title: "操作", width: "14%", render: (row) => `<div class="actions">${actionLink("详情", "stock-detail", row.id)}${divider()}${actionLink("编辑", "stock-in-create", row.id)}${divider()}${actionLink("删除", "delete-generic", row.id, 'data-name="入库记录"')}</div>` },
           ],
         })}
@@ -2261,22 +2388,22 @@ function renderStockPage() {
         ${pageTable({
           key: "stock-out-table",
           title: "出库记录",
-          desc: "出库需保留领用去向和领用人 / 部门，出库人和出库时间在保存时自动生成。",
-          toolbarLeft: `${inputControl("物品名称")}${dateRangeControl()}${inputControl("出库人")}`,
+          desc: "出库基于设备主数据进行登记；出库数量不能超过当前库存，关联项目用于追溯用途。",
+          toolbarLeft: `${stockDeviceSelectControl(state.activeStockDeviceId, "wide", true)}${selectControl(["关联项目", "全部项目", ...financeProjects.map((item) => item.name)])}${dateRangeControl()}${inputControl("领用人")}`,
           toolbarRight: `<button class="btn primary" type="button">查询</button><button class="btn" type="button">重置</button><button class="btn primary" type="button" data-action="stock-out-create">新增出库</button>`,
-          rows: stockOutboundData,
+          rows: outboundRows,
           columns: [
             { title: "出库单号", width: "12%", render: (row) => `<div class="table-main">${row.code}</div>` },
-            { title: "物品名称", width: "12%", render: (row) => row.name },
+            { title: "设备名称", width: "12%", render: (row) => row.name },
+            { title: "设备分类", width: "10%", render: (row) => row.category },
             { title: "规格型号", width: "10%", render: (row) => row.spec },
             { title: "单位", width: "8%", render: (row) => row.unit },
             { title: "数量", width: "8%", render: (row) => row.qty },
-            { title: "领用去向", width: "14%", render: (row) => row.target },
-            { title: "领用人/部门", width: "14%", render: (row) => row.owner },
+            { title: "关联项目", width: "14%", render: (row) => row.projectName || "-" },
+            { title: "领用人", width: "10%", render: (row) => row.recipient },
             { title: "出库人", width: "8%", render: (row) => row.user },
             { title: "出库时间", width: "10%", render: (row) => row.time },
-            { title: "备注", width: "10%", render: (row) => row.remark },
-            { title: "操作", width: "14%", render: (row) => `<div class="actions">${actionLink("详情", "stock-detail", row.id)}${divider()}${actionLink("编辑", "stock-out-create", row.id)}${divider()}${actionLink("删除", "delete-generic", row.id, 'data-name="出库记录"')}</div>` },
+            { title: "操作", width: "18%", render: (row) => `<div class="actions">${actionLink("详情", "stock-detail", row.id)}${divider()}${actionLink("编辑", "stock-out-create", row.id)}${divider()}${actionLink("删除", "delete-generic", row.id, 'data-name="出库记录"')}</div>` },
           ],
         })}
       </div>
@@ -2540,7 +2667,12 @@ function handleAction(action, rowId, target) {
   const advanceOrderRow = findById(advanceDetailRows, rowId);
   const expenseOwnerRow = findById(project.expenseSummary, target?.dataset.expenseOwnerId);
   const laborRow = findById(project.laborRows, rowId);
+  const stockDeviceRow = findById(stockDevicesData, rowId);
+  const activeStockDevice = getStockDevice(state.activeStockDeviceId);
   const stockRow = findById(stockInboundData, rowId) ?? findById(stockOutboundData, rowId);
+  const stockRecordDevice = stockRow ? getStockDevice(stockRow.deviceId) : null;
+  const stockFormDevice = stockRecordDevice ?? stockDeviceRow ?? activeStockDevice;
+  const stockAvailableQty = stockRow ? getStockDeviceCurrentQty(stockRow.deviceId, stockRow.id) : stockFormDevice ? getStockDeviceCurrentQty(stockFormDevice.id) : null;
 
   switch (action) {
     case "open-project":
@@ -2554,10 +2686,11 @@ function handleAction(action, rowId, target) {
         body: [
           approvalHint("该新增入口直接按审批表字段定义展示，字段口径与需求文档保持一致。"),
           section("审批表字段", fieldSpecTable([
-            specRow("选择项目", "自主选择", "是", "项目选择组件", "选择交付项目（projectScope: delivery）"),
-            specRow("支付条件", "自动带出", "是", "多选复选框", "选择项目后自动带出项目合同的全部支付条件，已完成条件置灰不可再选，可多选"),
-            specRow("客户名称", "自动获取", "是", "文本只读", "选择项目后从合同自动带出"),
-            specRow("合同金额", "自动获取", "是", "数值只读", "选择项目后从合同自动带出"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“交付项目”，选择后仅展示有效业务单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择交付项目后自动带出项目名称、客户名称、合同金额、项目经理、客户经理"),
+            specRow("支付条件", "自动带出", "是", "多选复选框", "选择业务单据后自动带出项目合同的全部支付条件，已完成条件置灰不可再选，可多选"),
+            specRow("客户名称", "自动获取", "是", "文本只读", "选择业务单据后从合同自动带出"),
+            specRow("合同金额", "自动获取", "是", "数值只读", "选择业务单据后从合同自动带出"),
             specRow("本次可回款金额", "自动计算", "是", "数值只读", "等于勾选支付条件对应金额之和，自动计算"),
             specRow("备注", "自填", "否", "多行文本", ""),
           ])),
@@ -2574,8 +2707,9 @@ function handleAction(action, rowId, target) {
         body: [
           approvalHint("该新增入口直接展示审批表字段定义、默认选项和审批节点。"),
           section("审批表字段", fieldSpecTable([
-            specRow("选择项目", "自主选择", "是", "项目选择组件", "选择交付项目"),
-            specRow("支付条件进度", "自动带出", "-", "只读展示", "选择项目后自动带出所有支付条件及完成状态，只读"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“交付项目”，选择后仅展示有效业务单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择交付项目后自动带出项目名称、客户名称、合同金额、项目经理、客户经理"),
+            specRow("支付条件进度", "自动带出", "-", "只读展示", "选择业务单据后自动带出所有支付条件及完成状态，只读"),
             specRow("可回款金额", "自动带出", "-", "数值只读", "已完成回款申请的支付条件金额之和"),
             specRow("可开票金额", "自动带出", "-", "数值只读", "可回款金额 - 已开票金额"),
             specRow("客户名称（业主）", "自动带出", "-", "只读展示", "从项目合同关联客户获取"),
@@ -2619,8 +2753,9 @@ function handleAction(action, rowId, target) {
         subtitle: "详情直接展示审批表字段定义与审批流程，口径与需求文档保持一致。",
         body: [
           section("审批表字段", fieldSpecTable([
-            specRow("选择项目", "自主选择", "是", "项目选择组件", "选择交付项目"),
-            specRow("支付条件进度", "自动带出", "-", "只读展示", "选择项目后自动带出所有支付条件及完成状态，只读"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“交付项目”，选择后仅展示有效业务单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择交付项目后自动带出项目名称、客户名称、合同金额、项目经理、客户经理"),
+            specRow("支付条件进度", "自动带出", "-", "只读展示", "选择业务单据后自动带出所有支付条件及完成状态，只读"),
             specRow("可回款金额", "自动带出", "-", "数值只读", "已完成回款申请的支付条件金额之和"),
             specRow("可开票金额", "自动带出", "-", "数值只读", "可回款金额 - 已开票金额"),
             specRow("客户名称（业主）", "自动带出", "-", "只读展示", "从项目合同关联客户获取"),
@@ -2780,8 +2915,9 @@ function handleAction(action, rowId, target) {
         body: [
           approvalHint("该新增入口直接按收入确认申请审批表字段定义展示。"),
           section("审批表字段", fieldSpecTable([
-            specRow("选择项目", "自主选择", "是", "项目选择组件", "选择交付项目（projectScope: delivery）"),
-            specRow("收入确认节点", "自动带出", "是", "多选复选框", "选择项目后自动带出全部收入确认节点，已完成节点置灰不可再选，可多选"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“交付项目”，选择后仅展示有效业务单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择交付项目后自动带出项目名称、客户名称、合同金额、项目经理、客户经理"),
+            specRow("收入确认节点", "自动带出", "是", "多选复选框", "选择业务单据后自动带出全部收入确认节点，已完成节点置灰不可再选，可多选"),
             specRow("收入确认比例", "自动计算", "是", "数值只读", "等于勾选节点的比例之和"),
             specRow("收入确认金额", "自动计算", "是", "数值只读", "等于勾选节点的金额之和"),
             specRow("收入确认日期", "自填", "是", "日期选择", ""),
@@ -2800,8 +2936,9 @@ function handleAction(action, rowId, target) {
         subtitle: "详情直接展示收入确认审批表字段定义与审批流程。",
         body: [
           section("审批表字段", fieldSpecTable([
-            specRow("选择项目", "自主选择", "是", "项目选择组件", "选择交付项目（projectScope: delivery）"),
-            specRow("收入确认节点", "自动带出", "是", "多选复选框", "选择项目后自动带出全部收入确认节点，已完成节点置灰不可再选，可多选"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“交付项目”，选择后仅展示有效业务单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择交付项目后自动带出项目名称、客户名称、合同金额、项目经理、客户经理"),
+            specRow("收入确认节点", "自动带出", "是", "多选复选框", "选择业务单据后自动带出全部收入确认节点，已完成节点置灰不可再选，可多选"),
             specRow("收入确认比例", "自动计算", "是", "数值只读", "等于勾选节点的比例之和"),
             specRow("收入确认金额", "自动计算", "是", "数值只读", "等于勾选节点的金额之和"),
             specRow("收入确认日期", "自填", "是", "日期选择", ""),
@@ -3120,7 +3257,7 @@ function handleAction(action, rowId, target) {
     case "supplier-edit":
       openModal({
         title: action === "supplier-create" ? "新增供应商" : `编辑供应商 - ${supplierRow.name}`,
-        subtitle: "供应商主数据用于采购申请、采购合同和付款申请自动带出。",
+        subtitle: "供应商主数据用于采购申请、采购合同和付款申请自动带出，并支持上传立案、信用报告等资质附件。",
         width: "overlay-panel-960",
         body: section(
           "供应商信息",
@@ -3133,6 +3270,7 @@ function handleAction(action, rowId, target) {
             fakeInput("地址", supplierRow?.address ?? "请输入地址"),
             fakeInput("开户银行", supplierRow?.bank ?? "请输入开户银行"),
             fakeInput("银行账户", supplierRow?.account ?? "请输入银行账户"),
+            fakeUpload("附件", "上传供应商立案、信用报告等资质文件", 2),
             fakeTextarea("备注", supplierRow?.remark ?? "供应商合作情况说明。", 2),
           ])
         ),
@@ -3208,7 +3346,6 @@ function handleAction(action, rowId, target) {
           section("表头字段", fieldSpecTable([
             specRow("选择项目", "自主选择", "是", "项目选择组件", "交付项目"),
             specRow("采购事由", "自填", "是", "多行文本", ""),
-            specRow("是否比选", "选择", "是", "单选", "是/否，标记后续是否需要走比选流程"),
             specRow("备注", "自填", "否", "多行文本", ""),
             specRow("附件", "上传", "否", "上传组件", "支持 Word/PDF"),
           ])),
@@ -3231,7 +3368,6 @@ function handleAction(action, rowId, target) {
           section("表头字段", fieldSpecTable([
             specRow("选择项目", "自主选择", "是", "项目选择组件", "交付项目"),
             specRow("采购事由", "自填", "是", "多行文本", ""),
-            specRow("是否比选", "选择", "是", "单选", "是/否，标记后续是否需要走比选流程"),
             specRow("备注", "自填", "否", "多行文本", ""),
             specRow("附件", "上传", "否", "上传组件", "支持 Word/PDF"),
           ])),
@@ -3251,35 +3387,29 @@ function handleAction(action, rowId, target) {
         subtitle: "走审批表，提交后进入采购申请审批流程。",
         width: "overlay-panel-1200",
         body: [
-          approvalHint("该新增入口直接展示采购申请审批表字段定义，不同模式拆分展示。"),
+          approvalHint("采购申请不再支持临时新增供应商或手填商品，发起前需先在供应商管理中维护供应商与产品。"),
           section("表头字段", fieldSpecTable([
             specRow("选择项目", "自主选择", "是", "项目选择组件", "交付项目"),
             specRow("关联采购计划", "自主选择", "否", "关联审批表组件", "仅可选已通过采购计划"),
             specRow("采购事由", "自填", "是", "多行文本", ""),
             specRow("采购类别", "下拉选择", "是", "下拉", "与采购计划统一"),
             specRow("是否需要比价", "选择", "是", "单选", "决定明细表填写方式和后续流程"),
-            specRow("关联供应商", "自主选择", "条件必填", "供应商选择组件", "仅当“不需要比价”时显示且必填"),
+            specRow("关联供应商", "自主选择", "是", "供应商选择组件", "必须从供应商库选择已建档供应商；如需比价，可在后续比选环节补充其他已建档供应商"),
             specRow("备注", "自填", "否", "多行文本", ""),
             specRow("附件", "上传", "否", "上传组件", "支持 Word/PDF/图片"),
           ])),
-          section("明细表字段 - 不需要比价", fieldSpecTable([
-            specRow("商品名称", "供应商产品库", "是", "下拉选择", "从关联供应商产品清单中选择，仅可选已有产品"),
+          section("采购明细组件字段", fieldSpecTable([
+            specRow("商品名称", "供应商产品库", "是", "下拉选择", "仅可从所选供应商产品清单中选择，不支持手工新增"),
             specRow("规格型号", "自动带出", "-", "文本只读", "选择商品后自动带出"),
-            specRow("单价", "自动带出", "-", "数值只读", "选择商品后自动带出参考单价"),
+            specRow("单价", "自动带出", "-", "数值只读", "选择商品后自动带出参考单价，可按业务规则调整"),
             specRow("单位", "自动带出", "-", "文本只读", "选择商品后自动带出"),
             specRow("数量", "自填", "是", "数值输入框", "用户填写"),
             specRow("小计金额", "自动计算", "-", "数值只读", "数量 x 单价，自动计算"),
           ], "列名")),
-          section("明细表字段 - 需要比价", fieldSpecTable([
-            specRow("商品名称", "自填", "是", "输入框", "手动输入"),
-            specRow("规格型号", "自填", "否", "输入框", "手动输入"),
-            specRow("单价", "自填", "否", "数值输入框", "可为空，待比价确定"),
-            specRow("单位", "自填", "是", "输入框", "手动输入"),
-            specRow("数量", "自填", "是", "数值输入框", ""),
-            specRow("小计金额", "自填", "否", "数值输入框", "未确定单价时可为空"),
-          ], "列名")),
           section("明细后通用字段", fieldSpecTable([
-            specRow("合计金额", "自填", "是", "数值输入框", "手动填写合计金额"),
+            specRow("合计金额", "自动汇总", "是", "数值只读", "自动汇总各行小计金额"),
+            specRow("税率", "选择", "是", "下拉组件", "如 0%、1%、3%、6%、9%、13%"),
+            specRow("税额", "自动计算", "是", "数值只读", "根据合计金额和税率自动计算"),
             specRow("支付节点", "自填", "否", "自增表格", "类似合同支付节点"),
             specRow("交货验收", "自填", "否", "多行文本", "交货验收条款"),
             specRow("权责与违约", "自填", "否", "多行文本", "权责划分与违约责任条款"),
@@ -3306,28 +3436,22 @@ function handleAction(action, rowId, target) {
             specRow("采购事由", "自填", "是", "多行文本", ""),
             specRow("采购类别", "下拉选择", "是", "下拉", "与采购计划统一"),
             specRow("是否需要比价", "选择", "是", "单选", "决定明细表填写方式和后续流程"),
-            specRow("关联供应商", "自主选择", "条件必填", "供应商选择组件", "仅当“不需要比价”时显示且必填"),
+            specRow("关联供应商", "自主选择", "是", "供应商选择组件", "必须从供应商库选择已建档供应商；如需比价，可在后续比选环节补充其他已建档供应商"),
             specRow("备注", "自填", "否", "多行文本", ""),
             specRow("附件", "上传", "否", "上传组件", "支持 Word/PDF/图片"),
           ])),
-          section("明细表字段 - 不需要比价", fieldSpecTable([
-            specRow("商品名称", "供应商产品库", "是", "下拉选择", "从关联供应商产品清单中选择，仅可选已有产品"),
+          section("采购明细组件字段", fieldSpecTable([
+            specRow("商品名称", "供应商产品库", "是", "下拉选择", "仅可从所选供应商产品清单中选择，不支持手工新增"),
             specRow("规格型号", "自动带出", "-", "文本只读", "选择商品后自动带出"),
-            specRow("单价", "自动带出", "-", "数值只读", "选择商品后自动带出参考单价"),
+            specRow("单价", "自动带出", "-", "数值只读", "选择商品后自动带出参考单价，可按业务规则调整"),
             specRow("单位", "自动带出", "-", "文本只读", "选择商品后自动带出"),
             specRow("数量", "自填", "是", "数值输入框", "用户填写"),
             specRow("小计金额", "自动计算", "-", "数值只读", "数量 x 单价，自动计算"),
           ], "列名")),
-          section("明细表字段 - 需要比价", fieldSpecTable([
-            specRow("商品名称", "自填", "是", "输入框", "手动输入"),
-            specRow("规格型号", "自填", "否", "输入框", "手动输入"),
-            specRow("单价", "自填", "否", "数值输入框", "可为空，待比价确定"),
-            specRow("单位", "自填", "是", "输入框", "手动输入"),
-            specRow("数量", "自填", "是", "数值输入框", ""),
-            specRow("小计金额", "自填", "否", "数值输入框", "未确定单价时可为空"),
-          ], "列名")),
           section("明细后通用字段", fieldSpecTable([
-            specRow("合计金额", "自填", "是", "数值输入框", "手动填写合计金额"),
+            specRow("合计金额", "自动汇总", "是", "数值只读", "自动汇总各行小计金额"),
+            specRow("税率", "选择", "是", "下拉组件", "如 0%、1%、3%、6%、9%、13%"),
+            specRow("税额", "自动计算", "是", "数值只读", "根据合计金额和税率自动计算"),
             specRow("支付节点", "自填", "否", "自增表格", "类似合同支付节点"),
             specRow("交货验收", "自填", "否", "多行文本", "交货验收条款"),
             specRow("权责与违约", "自填", "否", "多行文本", "权责划分与违约责任条款"),
@@ -3369,39 +3493,29 @@ function handleAction(action, rowId, target) {
         subtitle: "走审批表，提交后进入确定供应商审批流程。",
         width: "overlay-panel-1200",
         body: [
-          approvalHint("确定供应商按文档分“基础字段 / 已有供应商模式 / 新供应商模式 / 通用条款字段”展示。"),
+          approvalHint("确定供应商仅支持已建档供应商和产品，不再支持新供应商模式；如缺少供应商或产品，需先到供应商管理维护。"),
           section("基础字段", fieldSpecTable([
             specRow("选择比选", "自主选择", "是", "关联审批表组件", "仅可选“待确认供应商”的比选单据"),
             specRow("说明", "自填", "是", "多行文本", "说明最终决定选择哪个供应商的理由"),
             specRow("附件", "上传", "否", "上传组件", "支持多个附件，供应商回函/报价文件"),
-            specRow("是否新供应商", "选择", "是", "单选", "是/否，决定后续字段展示逻辑"),
           ])),
-          section("已有供应商模式（是否新供应商 = 否）", fieldSpecTable([
-            specRow("选择供应商", "自主选择", "是", "供应商选择组件", "从供应商库中选择已有供应商"),
-            specRow("采购明细", "自填", "是", "明细表格", "见下方已有供应商采购明细表"),
+          section("供应商与采购明细", fieldSpecTable([
+            specRow("选择供应商", "自主选择", "是", "供应商选择组件", "仅可从供应商库中选择已有供应商"),
+            specRow("采购明细", "自动带出/调整", "是", "采购明细组件", "仅可选择该供应商已建档产品，并可调整数量、成交单价"),
           ])),
-          section("已有供应商采购明细表", fieldSpecTable([
+          section("采购明细表", fieldSpecTable([
             specRow("商品名称", "供应商产品库", "是", "下拉选择", "从所选供应商产品清单中选择"),
             specRow("规格型号", "自动带出", "-", "文本只读", "选择商品后自动带出"),
             specRow("单价", "自动带出", "-", "数值只读", "自动带出供应商产品清单中的参考单价"),
             specRow("单位", "自动带出", "-", "文本只读", "选择商品后自动带出"),
             specRow("数量", "自填", "是", "数值输入框", "用户填写"),
-            specRow("价格", "自填", "是", "数值输入框", "本次采购的实际协商价格"),
-          ], "列名")),
-          section("新供应商模式（是否新供应商 = 是）", fieldSpecTable([
-            specRow("供应商名称", "自填", "是", "输入框", "新供应商的公司名称"),
-            specRow("采购明细", "自填", "是", "明细表格", "见下方新供应商采购明细表"),
-          ])),
-          section("新供应商采购明细表", fieldSpecTable([
-            specRow("商品名称", "自填", "是", "输入框", "手动输入"),
-            specRow("规格型号", "自填", "否", "输入框", "手动输入"),
-            specRow("单价", "自填", "是", "数值输入框", "手动输入"),
-            specRow("单位", "自填", "是", "输入框", "手动输入"),
-            specRow("数量", "自填", "是", "数值输入框", "手动输入"),
-            specRow("价格", "自填", "是", "数值输入框", "手动输入"),
+            specRow("成交单价", "自填", "是", "数值输入框", "本次采购的实际协商价格"),
+            specRow("小计金额", "自动计算", "-", "数值只读", "数量 x 成交单价，自动计算"),
           ], "列名")),
           section("明细后通用字段", fieldSpecTable([
-            specRow("合计金额", "自填", "是", "数值输入框", "手动填写合计金额"),
+            specRow("合计金额", "自动汇总", "是", "数值只读", "自动汇总各行小计金额"),
+            specRow("税率", "选择", "是", "下拉组件", "如 0%、1%、3%、6%、9%、13%"),
+            specRow("税额", "自动计算", "是", "数值只读", "根据合计金额和税率自动计算"),
             specRow("支付节点", "自填/自动带出", "否", "自增表格", "若采购申请或比选中已填则自动带出，可修改"),
             specRow("交货验收", "自填/自动带出", "否", "多行文本", "若采购申请或比选中已填则自动带出，可修改"),
             specRow("权责与违约", "自填/自动带出", "否", "多行文本", "若采购申请或比选中已填则自动带出，可修改"),
@@ -3430,10 +3544,9 @@ function handleAction(action, rowId, target) {
             specRow("选择比选", "自主选择", "是", "关联审批表组件", "仅可选“待确认供应商”的比选单据"),
             specRow("说明", "自填", "是", "多行文本", "说明最终决定选择哪个供应商的理由"),
             specRow("附件", "上传", "否", "上传组件", "支持多个附件，供应商回函/报价文件"),
-            specRow("是否新供应商", "选择", "是", "单选", "决定后续字段展示逻辑"),
-            specRow("已有供应商模式", "条件展示", "-", "供应商选择组件 + 明细表格", "从供应商库选择已有供应商，商品从产品库选择"),
-            specRow("新供应商模式", "条件展示", "-", "输入框 + 明细表格", "填写新供应商名称，明细字段全部手填"),
-            specRow("合计金额 / 支付节点 / 交货验收 / 权责与违约 / 附则", "自填/自动带出", "按字段规则", "数值输入框 / 自增表格 / 多行文本", "继承优先级：比选 > 采购申请"),
+            specRow("选择供应商", "自主选择", "是", "供应商选择组件", "仅支持从供应商库选择已有供应商"),
+            specRow("采购明细", "自动带出/调整", "是", "采购明细组件", "仅可选择供应商产品库中的已建档产品"),
+            specRow("合计金额 / 税率 / 税额 / 支付节点 / 交货验收 / 权责与违约 / 附则", "自动计算 / 自填 / 自动带出", "按字段规则", "数值只读 / 下拉组件 / 自增表格 / 多行文本", "继承优先级：比选 > 采购申请"),
           ])),
           section("流程轨迹", timeline([{ title: "比选发起", meta: `${inquiryRow.applicant} ${inquiryRow.date}` }, { title: "比选审批", meta: "审批通过后状态切换为“待确认供应商”" }, { title: "确定供应商", meta: "仅状态满足时出现操作入口" }]))
         ].join(""),
@@ -3448,10 +3561,10 @@ function handleAction(action, rowId, target) {
           approvalHint("该新增入口直接按采购合同用印审批表字段定义展示。"),
           section("自动带出字段（可修改）", fieldSpecTable([
             specRow("项目名称", "自动带出", "是", "文本只读", "来源于采购对象关联的项目"),
-            specRow("供应商", "自动带出", "是", "文本/选择", "已有供应商显示名称（只读）；新供应商显示名称（只读）"),
-            specRow("联系人", "自动带出", "否", "输入框", "已有供应商从供应商库带出，新供应商为空需手填"),
-            specRow("联系方式", "自动带出", "否", "输入框", "同上"),
-            specRow("税务类型", "自动带出", "否", "输入框", "已有供应商从供应商库带出"),
+            specRow("供应商", "自动带出", "是", "文本只读", "从已建档供应商主数据带出"),
+            specRow("联系人", "自动带出", "否", "输入框", "从供应商库带出，可补充修改"),
+            specRow("联系方式", "自动带出", "否", "输入框", "从供应商库带出，可补充修改"),
+            specRow("税务类型", "自动带出", "否", "输入框", "从供应商库带出"),
             specRow("采购明细", "自动带出", "是", "明细表格", "从采购对象带出采购明细，可修改"),
             specRow("支付节点", "自动带出", "否", "自增表格", "从采购对象带出，可修改"),
             specRow("交货验收", "自动带出", "否", "多行文本", "从采购对象带出，可修改"),
@@ -3468,6 +3581,7 @@ function handleAction(action, rowId, target) {
             specRow("合计金额", "自动汇总", "-", "数值只读", "自动汇总各行金额"),
           ], "列名")),
           section("合同信息字段", fieldSpecTable([
+            specRow("合同类型", "选择", "是", "下拉组件", "根据合同类型匹配对应合同模板"),
             specRow("合同级别", "选择", "是", "下拉组件", "重大 / 一般 / 简易"),
             specRow("我方单位名称", "选择", "是", "下拉组件", "零一通途、通途数智等"),
             specRow("我方负责人", "选择", "是", "用户选择", ""),
@@ -3477,9 +3591,14 @@ function handleAction(action, rowId, target) {
             specRow("备注", "自填", "否", "多行文本", ""),
           ])),
           section("合同生成相关", fieldSpecTable([
-            specRow("生成合同", "系统生成", "-", "按钮/系统动作", "使用已有合同模板生成 PDF 或 Word"),
+            specRow("生成合同", "系统生成", "-", "按钮/系统动作", "根据合同类型匹配模板后生成 PDF 或 Word"),
             specRow("下载合同", "系统生成", "-", "下载按钮", "生成后提供下载查看确认"),
             specRow("合同附件", "系统生成/上传", "否", "上传组件", "生成的合同文件自动作为合同附件，也支持额外上传附件"),
+          ])),
+          section("合同生成技术说明", notice([
+            "当前若继续使用 HTML 模板生成合同，复杂表格、富文本样式和盖章定位容易出现格式偏差。",
+            "分页场景下，表格跨页、页眉页脚、签章区块容易错位，生成后需要人工复核。",
+            "建议按合同类型维护独立模板，并优先评估 Word 模板或专业文档引擎以降低分页风险。",
           ])),
           section("审批流程", timeline([{ title: "直属上级审批", meta: "一级审批" }, { title: "部门负责人审批", meta: "二级审批" }, { title: "法务 / 风控审批", meta: "三级审批，如有则触发" }, { title: "财务负责人审批", meta: "四级审批" }, { title: "总经理审批", meta: "五级审批" }, { title: "行政 / 合同管理员办理", meta: "完成用印与归档" }])),
         ].join(""),
@@ -3493,10 +3612,10 @@ function handleAction(action, rowId, target) {
         body: [
           section("自动带出字段（可修改）", fieldSpecTable([
             specRow("项目名称", "自动带出", "是", "文本只读", "来源于采购对象关联的项目"),
-            specRow("供应商", "自动带出", "是", "文本/选择", "已有供应商显示名称（只读）；新供应商显示名称（只读）"),
-            specRow("联系人", "自动带出", "否", "输入框", "已有供应商从供应商库带出，新供应商为空需手填"),
-            specRow("联系方式", "自动带出", "否", "输入框", "同上"),
-            specRow("税务类型", "自动带出", "否", "输入框", "已有供应商从供应商库带出"),
+            specRow("供应商", "自动带出", "是", "文本只读", "从已建档供应商主数据带出"),
+            specRow("联系人", "自动带出", "否", "输入框", "从供应商库带出，可补充修改"),
+            specRow("联系方式", "自动带出", "否", "输入框", "从供应商库带出，可补充修改"),
+            specRow("税务类型", "自动带出", "否", "输入框", "从供应商库带出"),
             specRow("采购明细", "自动带出", "是", "明细表格", "从采购对象带出采购明细，可修改"),
             specRow("支付节点", "自动带出", "否", "自增表格", "从采购对象带出，可修改"),
             specRow("交货验收", "自动带出", "否", "多行文本", "从采购对象带出，可修改"),
@@ -3504,6 +3623,7 @@ function handleAction(action, rowId, target) {
             specRow("附则", "自动带出", "否", "多行文本", "从采购对象带出，可修改"),
           ])),
           section("合同信息字段", fieldSpecTable([
+            specRow("合同类型", "选择", "是", "下拉组件", "根据合同类型匹配对应合同模板"),
             specRow("合同级别", "选择", "是", "下拉组件", "重大 / 一般 / 简易"),
             specRow("我方单位名称", "选择", "是", "下拉组件", "零一通途、通途数智等"),
             specRow("我方负责人", "选择", "是", "用户选择", ""),
@@ -3511,6 +3631,10 @@ function handleAction(action, rowId, target) {
             specRow("合同份数", "自填", "是", "数值输入", "合同打印份数"),
             specRow("用印名称", "自选", "是", "下拉组件", "公章 / 财务章 / 法人章等"),
             specRow("备注", "自填", "否", "多行文本", ""),
+          ])),
+          section("合同生成技术说明", notice([
+            "当前若继续使用 HTML 模板生成合同，复杂表格、富文本样式和盖章定位容易出现格式偏差。",
+            "分页场景下，表格跨页、页眉页脚、签章区块容易错位，生成后需要人工复核。",
           ])),
           section("流程轨迹", timeline([{ title: "直属上级审批", meta: "一级审批" }, { title: "部门负责人审批", meta: "二级审批" }, { title: "法务 / 风控审批", meta: "三级审批，如有则触发" }, { title: "财务负责人审批", meta: "四级审批" }, { title: "总经理审批", meta: "五级审批" }, { title: "行政 / 合同管理员办理", meta: "完成用印与归档" }]))
         ].join(""),
@@ -3524,15 +3648,16 @@ function handleAction(action, rowId, target) {
         body: [
           approvalHint("该新增入口直接按付款申请审批表字段定义展示。"),
           section("审批表字段", fieldSpecTable([
-            specRow("选择采购合同", "自主选择", "是", "下拉选择", "仅可选“已通过”的采购合同，显示：合同编号 - 供应商名称 - 合计金额"),
-            specRow("项目名称", "自动带出", "-", "文本只读", "选择采购合同后自动带出"),
-            specRow("供应商", "自动带出", "-", "文本只读", "选择采购合同后自动带出"),
-            specRow("合同金额", "自动带出", "-", "数值只读", "选择采购合同后自动带出合计金额"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“采购合同签订”，组件按类型筛选有效单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择采购合同签订单据后自动带出合同金额、已付金额、待付金额、供应商名称、开户银行"),
+            specRow("项目名称", "自动带出", "-", "文本只读", "选择业务单据后自动带出"),
+            specRow("供应商", "自动带出", "-", "文本只读", "选择业务单据后自动带出"),
+            specRow("合同金额", "自动带出", "-", "数值只读", "选择业务单据后自动带出合计金额"),
             specRow("已付金额", "自动计算", "-", "数值只读", "该合同已审批通过的付款申请金额之和"),
             specRow("待付金额", "自动计算", "-", "数值只读", "合同金额 - 已付金额"),
             specRow("本次付款金额", "自填", "是", "数值输入框", "不能超过待付金额，超过时红色预警提示"),
-            specRow("开户银行", "自动带出/自填", "是", "输入框", "已有供应商自动带出，可修改；新供应商需手填"),
-            specRow("银行账户", "自动带出/自填", "是", "输入框", "已有供应商自动带出，可修改；新供应商需手填"),
+            specRow("开户银行", "自动带出/自填", "是", "输入框", "从业务单据自动带出，可按付款需要修改"),
+            specRow("银行账户", "自动带出/自填", "是", "输入框", "从业务单据自动带出，可按付款需要修改"),
             specRow("附件", "上传", "否", "上传组件", "上传发票附件，不需要 OCR 识别"),
             specRow("备注", "自填", "否", "多行文本", ""),
           ])),
@@ -3549,15 +3674,16 @@ function handleAction(action, rowId, target) {
         body: [
           approvalHint("该新增入口直接按付款申请审批表字段定义展示。"),
           section("审批表字段", fieldSpecTable([
-            specRow("选择采购合同", "自主选择", "是", "下拉选择", "仅可选“已通过”的采购合同，显示：合同编号 - 供应商名称 - 合计金额"),
-            specRow("项目名称", "自动带出", "-", "文本只读", "选择采购合同后自动带出"),
-            specRow("供应商", "自动带出", "-", "文本只读", "选择采购合同后自动带出"),
-            specRow("合同金额", "自动带出", "-", "数值只读", "选择采购合同后自动带出合计金额"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“采购合同签订”，组件按类型筛选有效单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择采购合同签订单据后自动带出合同金额、已付金额、待付金额、供应商名称、开户银行"),
+            specRow("项目名称", "自动带出", "-", "文本只读", "选择业务单据后自动带出"),
+            specRow("供应商", "自动带出", "-", "文本只读", "选择业务单据后自动带出"),
+            specRow("合同金额", "自动带出", "-", "数值只读", "选择业务单据后自动带出合计金额"),
             specRow("已付金额", "自动计算", "-", "数值只读", "该合同已审批通过的付款申请金额之和"),
             specRow("待付金额", "自动计算", "-", "数值只读", "合同金额 - 已付金额"),
             specRow("本次付款金额", "自填", "是", "数值输入框", "不能超过待付金额，超过时红色预警提示"),
-            specRow("开户银行", "自动带出/自填", "是", "输入框", "已有供应商自动带出，可修改；新供应商需手填"),
-            specRow("银行账户", "自动带出/自填", "是", "输入框", "已有供应商自动带出，可修改；新供应商需手填"),
+            specRow("开户银行", "自动带出/自填", "是", "输入框", "从业务单据自动带出，可按付款需要修改"),
+            specRow("银行账户", "自动带出/自填", "是", "输入框", "从业务单据自动带出，可按付款需要修改"),
             specRow("附件", "上传", "否", "上传组件", "上传发票附件，不需要 OCR 识别"),
             specRow("备注", "自填", "否", "多行文本", ""),
           ])),
@@ -3572,15 +3698,16 @@ function handleAction(action, rowId, target) {
         subtitle: "详情直接展示付款申请审批表字段定义与审批流程。",
         body: [
           section("审批表字段", fieldSpecTable([
-            specRow("选择采购合同", "自主选择", "是", "下拉选择", "仅可选“已通过”的采购合同，显示：合同编号 - 供应商名称 - 合计金额"),
-            specRow("项目名称", "自动带出", "-", "文本只读", "选择采购合同后自动带出"),
-            specRow("供应商", "自动带出", "-", "文本只读", "选择采购合同后自动带出"),
-            specRow("合同金额", "自动带出", "-", "数值只读", "选择采购合同后自动带出合计金额"),
+            specRow("业务类型", "选择", "是", "业务选择组件", "当前场景固定为“采购合同签订”，组件按类型筛选有效单据"),
+            specRow("业务单据", "自主选择", "是", "业务选择组件", "选择采购合同签订单据后自动带出合同金额、已付金额、待付金额、供应商名称、开户银行"),
+            specRow("项目名称", "自动带出", "-", "文本只读", "选择业务单据后自动带出"),
+            specRow("供应商", "自动带出", "-", "文本只读", "选择业务单据后自动带出"),
+            specRow("合同金额", "自动带出", "-", "数值只读", "选择业务单据后自动带出合计金额"),
             specRow("已付金额", "自动计算", "-", "数值只读", "该合同已审批通过的付款申请金额之和"),
             specRow("待付金额", "自动计算", "-", "数值只读", "合同金额 - 已付金额"),
             specRow("本次付款金额", "自填", "是", "数值输入框", "不能超过待付金额，超过时红色预警提示"),
-            specRow("开户银行", "自动带出/自填", "是", "输入框", "已有供应商自动带出，可修改；新供应商需手填"),
-            specRow("银行账户", "自动带出/自填", "是", "输入框", "已有供应商自动带出，可修改；新供应商需手填"),
+            specRow("开户银行", "自动带出/自填", "是", "输入框", "从业务单据自动带出，可按付款需要修改"),
+            specRow("银行账户", "自动带出/自填", "是", "输入框", "从业务单据自动带出，可按付款需要修改"),
             specRow("附件", "上传", "否", "上传组件", "上传发票附件，不需要 OCR 识别"),
             specRow("备注", "自填", "否", "多行文本", ""),
           ])),
@@ -3588,11 +3715,63 @@ function handleAction(action, rowId, target) {
         ].join(""),
       });
       return;
+    case "stock-device-create":
+    case "stock-device-edit":
+      openModal({
+        title: action === "stock-device-create" ? "新增设备" : `编辑设备 - ${stockDeviceRow?.name ?? ""}`,
+        subtitle: "维护设备主数据，建设备后才能进行入库和出库登记。",
+        width: "overlay-panel-600",
+        body: section(
+          "设备信息",
+          simpleForm([
+            fakeInput("设备名称", stockDeviceRow?.name ?? "请输入设备名称"),
+            fakeInput("设备分类", stockDeviceRow?.category ?? "办公设备"),
+            fakeInput("规格型号", stockDeviceRow?.spec ?? "请输入规格型号"),
+            fakeInput("单位", stockDeviceRow?.unit ?? "请输入单位，如 台 / 套 / 箱"),
+            fakeInput("默认存放位置", stockDeviceRow?.defaultPlace ?? "请输入默认存放位置"),
+            fakeTextarea("备注", stockDeviceRow?.remark ?? "填写设备用途、管理要求等。", 2),
+          ])
+        ),
+        footer: `<button class="btn" type="button" data-close="modal">取消</button><button class="btn primary" type="button" data-close="modal">保存</button>`,
+      });
+      return;
+    case "stock-device-delete": {
+      const recordCount = stockDeviceRow ? getStockDeviceRecordCount(stockDeviceRow.id) : 0;
+      if (recordCount) {
+        openModal({
+          title: "删除设备",
+          subtitle: "已有入库或出库流水的设备不可删除。",
+          width: "overlay-panel-720",
+          body: section("删除限制", notice([`设备“${stockDeviceRow?.name ?? ""}”已有 ${recordCount} 条出入库记录，无法删除。`, "如需停用，建议在正式系统中增加“停用”状态，而不是直接物理删除。"])),
+          footer: `<button class="btn primary" type="button" data-close="modal">我知道了</button>`,
+        });
+        return;
+      }
+
+      openModal({
+        title: "删除设备",
+        subtitle: "原型中仅展示删除确认逻辑，不实际删除数据。",
+        width: "overlay-panel-720",
+        body: section("确认删除", notice([`确认删除设备“${stockDeviceRow?.name ?? ""}”吗？`, "真实业务中仍需先校验是否存在入库或出库记录。"])),
+        footer: `<button class="btn" type="button" data-close="modal">取消</button><button class="btn primary" type="button" data-close="modal">确认删除</button>`,
+      });
+      return;
+    }
+    case "stock-device-inbound":
+      state.activeStockDeviceId = rowId;
+      state.tabs.stock = "inbound";
+      renderPage();
+      return;
+    case "stock-device-outbound":
+      state.activeStockDeviceId = rowId;
+      state.tabs.stock = "outbound";
+      renderPage();
+      return;
     case "stock-in-create":
     case "stock-out-create":
       openModal({
         title: action === "stock-in-create" ? "新增入库" : "新增出库",
-        subtitle: "设备出入库为独立执行页面，不走审批；保存时自动记录当前操作人与操作时间。",
+        subtitle: action === "stock-in-create" ? "入库记录基于设备主数据登记，保存时记录入库人和入库时间。" : "出库记录基于设备主数据登记，数量不能超过当前库存。",
         width: "overlay-panel-720",
         body: [
           section(
@@ -3600,24 +3779,28 @@ function handleAction(action, rowId, target) {
             simpleForm(
               action === "stock-in-create"
                 ? [
-                    fakeInput("关联交付项目", stockRow?.projectName ?? "请选择交付项目"),
-                    fakeInput("物品名称", stockRow?.name ?? "请输入物品名称"),
-                    fakeInput("规格型号", stockRow?.spec ?? "请输入规格型号"),
-                    fakeInput("单位", stockRow?.unit ?? "请输入单位"),
+                    fakeInput("选择设备", stockFormDevice?.name ?? "请选择设备", 2, "从设备列表中选择，支持搜索"),
+                    fakeInput("规格型号", stockFormDevice?.spec ?? "选择设备后自动带出"),
+                    fakeInput("单位", stockFormDevice?.unit ?? "选择设备后自动带出"),
                     fakeInput("数量", stockRow?.qty ?? "请输入数量"),
-                    fakeInput("存放位置", stockRow?.place ?? "请输入存放位置"),
-                    fakeInput("来源说明", stockRow?.source ?? "请输入来源说明"),
+                    fakeInput("存放位置", stockRow?.place ?? stockFormDevice?.defaultPlace ?? "默认带出设备默认存放位置，可修改"),
+                    fakeInput("关联交付项目", stockRow?.projectName ?? "请选择交付项目", 2, "可选，用于归集到具体项目"),
+                    fakeInput("来源说明", stockRow?.source ?? "请输入来源说明，如采购、调拨等", 2),
+                    fakeInput("入库人", stockRow?.user ?? "默认当前登录人"),
+                    fakeInput("入库时间", stockRow?.time ?? "默认当前时间"),
                     fakeTextarea("备注", stockRow?.remark ?? "填写签收、现场说明等。", 1),
                     fakeUpload("附件", "上传签收单、现场照片等", 1),
                   ]
                 : [
-                    fakeInput("关联交付项目", stockRow?.projectName ?? "请选择交付项目"),
-                    fakeInput("物品名称", stockRow?.name ?? "请输入物品名称"),
-                    fakeInput("规格型号", stockRow?.spec ?? "请输入规格型号"),
-                    fakeInput("单位", stockRow?.unit ?? "请输入单位"),
-                    fakeInput("数量", stockRow?.qty ?? "请输入数量"),
-                    fakeInput("领用去向", stockRow?.target ?? "请输入领用去向"),
-                    fakeInput("领用人/部门", stockRow?.owner ?? "请输入领用人或部门"),
+                    fakeInput("选择设备", stockFormDevice?.name ?? "请选择设备", 2, "下拉展示设备名称及当前库存"),
+                    fakeInput("规格型号", stockFormDevice?.spec ?? "选择设备后自动带出"),
+                    fakeInput("单位", stockFormDevice?.unit ?? "选择设备后自动带出"),
+                    fakeInput("当前库存", stockFormDevice ? formatStockQty(stockAvailableQty, stockFormDevice.unit) : "选择设备后自动带出"),
+                    fakeInput("数量", stockRow?.qty ?? "请输入数量", 1, stockFormDevice ? `大于 0，且不能超过当前库存 ${formatStockQty(stockAvailableQty, stockFormDevice.unit)}` : "大于 0，且不能超过当前库存"),
+                    fakeInput("领用人", stockRow?.recipient ?? "请选择领用人"),
+                    fakeInput("关联交付项目", stockRow?.projectName ?? "请选择交付项目", 2, "可选，用于标记出库用途"),
+                    fakeInput("出库人", stockRow?.user ?? "默认当前登录人"),
+                    fakeInput("出库时间", stockRow?.time ?? "默认当前时间"),
                     fakeTextarea("备注", stockRow?.remark ?? "填写出库用途与说明。", 1),
                     fakeUpload("附件", "上传领用单、现场照片等", 1),
                   ]
@@ -3627,8 +3810,9 @@ function handleAction(action, rowId, target) {
             "自动生成规则",
             notice([
               action === "stock-in-create"
-                ? "保存入库记录后，系统自动写入当前登录人为入库人，并记录保存时间。"
-                : "保存出库记录后，系统自动写入当前登录人为出库人，并记录保存时间。",
+                ? "入库记录保存后，设备当前库存自动增加。"
+                : "出库记录保存后，设备当前库存自动减少。",
+              action === "stock-in-create" ? "必须先建设备主数据，才能进行入库登记。" : "出库前按设备累计入库与累计出库实时计算库存，数量超过库存时禁止保存。",
               "详情页和列表页继续展示操作人与操作时间，表单中无需手工填写。",
             ])
           ),
@@ -3639,7 +3823,7 @@ function handleAction(action, rowId, target) {
       openDrawer({
         title: `记录详情 - ${stockRow.code}`,
         subtitle: "展示物品、数量、操作人、时间与附件信息。",
-        body: section("记录信息", grid([field("单号", stockRow.code), field("关联交付项目", stockRow.projectName || "-"), field("物品名称", stockRow.name), field("规格型号", stockRow.spec), field("单位", stockRow.unit), field("数量", stockRow.qty), field("操作人", stockRow.user), field("操作时间", stockRow.time), fakeTextarea("备注", stockRow.remark, 2)])),
+        body: section("记录信息", grid([field("单号", stockRow.code), field("设备名称", stockRecordDevice?.name || "-"), field("设备分类", stockRecordDevice?.category || "-"), field("规格型号", stockRecordDevice?.spec || "-"), field("单位", stockRecordDevice?.unit || "-"), field("数量", stockRow.qty), field("关联交付项目", stockRow.projectName || "-"), field(stockRow.code.startsWith("CK-") ? "领用人" : "存放位置", stockRow.code.startsWith("CK-") ? stockRow.recipient || "-" : stockRow.place || "-"), field("操作人", stockRow.user), field("操作时间", stockRow.time), fakeTextarea("备注", stockRow.remark, 2)])),
       });
       return;
     case "delete-generic":
