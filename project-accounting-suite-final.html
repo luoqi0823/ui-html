@@ -1,1541 +1,3328 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>零一通途 - 项目预算核算套件</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>零一通途 - 项目预算核算套件</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/dayjs@1/dayjs.min.js"></script>
-  <script src="https://unpkg.com/antd@5.16.1/dist/antd.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/antd@5.16.1/dist/reset.css">
-  <script src="https://unpkg.com/@ant-design/icons@5.3.6/dist/index.umd.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/dayjs@1/dayjs.min.js"></script>
+    <script src="https://unpkg.com/antd@5.16.1/dist/antd.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/antd@5.16.1/dist/reset.css"
+    />
+    <script src="https://unpkg.com/@ant-design/icons@5.3.6/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <style>
-    html, body, #root { margin: 0; padding: 0; height: 100%; background: #f0f2f5; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-    .ant-layout-sider { box-shadow: 2px 0 8px rgba(0,0,0,0.06); z-index: 10; }
-    .ant-table-thead > tr > th { background-color: #fafafa !important; font-weight: 600; }
-    .ant-card { border-radius: 8px; border: none !important; box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important; }
-    .ant-tabs-nav::before { border-bottom: 1px solid #f0f0f0 !important; }
-    .ant-table-footer { background: #fff; padding: 12px 24px; }
-    .ant-table-wrapper { background: #fff; border-radius: 8px; }
-    .ant-breadcrumb { font-size: 13px; }
-
-    .project-select-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      display: flex;
-      align-items: flex-start;
-      background: #fff;
-    }
-    .project-select-card:hover { border-color: #60a5fa; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .project-select-card.active { border-color: #3b82f6; background-color: #eff6ff; }
-
-    .modal-borderless-table .ant-table-wrapper .ant-table-container { border: none !important; }
-    .modal-borderless-table .ant-table-wrapper .ant-table-container table > thead > tr > th { background: transparent !important; border-bottom: 1px solid #f0f0f0; padding-left: 8px; }
-    .modal-borderless-table .ant-table-tbody > tr > td { padding-left: 8px; }
-
-    .main-content-wrapper { padding: 24px; width: 100%; min-width: 1200px; }
-    .stat-card { height: 140px; display: flex; flex-direction: column; justify-content: center; }
-    .stat-card .ant-statistic-title { font-size: 13px; color: #8c8c8c; margin-bottom: 8px; }
-    .stat-card .ant-statistic-content { font-family: 'DIN Alternate', 'Courier New', Courier, monospace; }
-    .project-header-card { background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%); border-bottom: 1px solid #f0f0f0 !important; }
-    .btn-action { transition: all 0.3s; }
-    .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .project-item { border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
-    .project-item:hover { border-color: #1677ff; background: #f0f7ff; }
-    .project-item.active { border-color: #1677ff; background: #e6f4ff; }
-    .amount-danger { color: #ff4d4f; font-weight: 600; }
-    .amount-success { color: #52c41a; font-weight: 600; }
-    .compare-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-weight: 600;
-    }
-    .compare-badge.over { color: #cf1322; background: #fff1f0; }
-    .compare-badge.under { color: #389e0d; background: #f6ffed; }
-    .compare-badge.flat { color: #1677ff; background: #e6f4ff; }
-
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
-
-  <script type="text/babel">
-    const { useState, useMemo } = React;
-    const {
-      ConfigProvider, Layout, Menu, Card, Table, InputNumber, Input, Button, Space, Tabs, Typography,
-      Badge, message, Modal, Radio, Tag, Descriptions, Statistic, Row, Col, Divider, Tooltip, Steps, Empty, Select
-    } = antd;
-    const {
-      ProfileOutlined, AppstoreOutlined, HomeOutlined, BellOutlined, DownloadOutlined, UserOutlined,
-      MenuUnfoldOutlined, MenuFoldOutlined, PlusOutlined, SearchOutlined, SwapOutlined, DeleteOutlined,
-      EditOutlined, SendOutlined, CheckCircleOutlined, HistoryOutlined, LockOutlined, CloseOutlined,
-      SaveOutlined, ArrowUpOutlined, ArrowDownOutlined, DashboardOutlined, ProjectOutlined, FolderOpenOutlined,
-      BankOutlined, TeamOutlined, AccountBookOutlined
-    } = icons;
-
-    const { Header, Sider, Content } = Layout;
-    const { Text, Title } = Typography;
-
-    const formatMoney = (amount) => Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const HR_ROSTER_ROLE_CATALOG = [
-      { role: '项目经理（高级）', dept: '交付部' },
-      { role: '项目经理（中级）', dept: '交付部' },
-      { role: '项目助理（初级）', dept: '交付部' },
-      { role: '产品经理（高级）', dept: '产品部' },
-      { role: '产品经理（初级）', dept: '产品部' },
-      { role: '开发工程师（高级）', dept: '研发部' },
-      { role: '开发工程师（中级）', dept: '研发部' },
-      { role: '开发工程师（初级）', dept: '研发部' },
-    ];
-    const DELIVERY_ROLE_OPTIONS = [
-      '项目经理（高级）',
-      '项目经理（中级）',
-      '项目助理（初级）',
-      '产品经理（高级）',
-      '产品经理（初级）',
-      'UI设计师（中级）',
-      '开发工程师（高级）',
-      '开发工程师（中级）',
-      '开发工程师（初级）',
-      '测试工程师（初级）',
-    ];
-    const DIRECT_COST_CATALOG = {
-      '差旅费用': ['项目驻场住宿费', '交通及出差补助'],
-      '业务招待费': ['客户汇报会议餐饮', '客户沟通接待'],
-      '车辆使用费': ['项目用车', '油费过路费'],
-      '其他费用': ['外包服务费', '云服务器', '其他'],
-    };
-    const DIRECT_COST_TYPE_OPTIONS = Object.keys(DIRECT_COST_CATALOG).map(item => ({ label: item, value: item }));
-    const INITIAL_DELIVERY_LABOR_DETAILS = [
-      { key: '1', role: '项目经理（高级）', months: 2, salary: 40000.00 },
-      { key: '2', role: '产品经理（高级）', months: 1.5, salary: 30000.00 },
-      { key: '3', role: 'UI设计师（中级）', months: 1, salary: 15000.00 },
-      { key: '4', role: '开发工程师（高级）', months: 3, salary: 60000.00 },
-      { key: '5', role: '测试工程师（初级）', months: 1, salary: 10000.00 },
-    ];
-    const INITIAL_DELIVERY_OTHER_COST_DETAILS = [
-      { key: '1', category: '差旅费用', subType: '项目驻场住宿费', amount: 6000.00 },
-      { key: '2', category: '差旅费用', subType: '交通及出差补助', amount: 6000.00 },
-      { key: '3', category: '业务招待费', subType: '客户汇报会议餐饮', amount: 2000.00 },
-      { key: '4', category: '其他费用', subType: '外包服务费', amount: 45000.00 },
-      { key: '5', category: '其他费用', subType: '云服务器', amount: 7000.00 },
-    ];
-
-    function AccountingConfigPage() {
-      const [activeTab, setActiveTab] = useState('1');
-      const [isEditing, setIsEditing] = useState(false);
-      const [salaryData, setSalaryData] = useState([
-        { key: '1', role: '项目经理（高级）', dept: '交付部', salary: 10000.00 },
-        { key: '2', role: '项目经理（中级）', dept: '交付部', salary: 10000.00 },
-        { key: '3', role: '项目助理（初级）', dept: '交付部', salary: 10000.00 },
-        { key: '4', role: '产品经理（高级）', dept: '产品部', salary: 10000.00 },
-        { key: '5', role: '产品经理（初级）', dept: '产品部', salary: 10000.00 },
-        { key: '6', role: '项目助理（初级）', dept: '产品部', salary: 10000.00 },
-        { key: '7', role: '开发工程师（高级）', dept: '研发部', salary: 10000.00 },
-        { key: '8', role: '开发工程师（中级）', dept: '研发部', salary: 10000.00 },
-        { key: '9', role: '开发工程师（初级）', dept: '研发部', salary: 10000.00 },
-      ]);
-      const [serviceData, setServiceData] = useState([
-        { key: 'admin', label: '公司管理费率', value: 6 },
-        { key: 'tax', label: '税金及附加率', value: 12 },
-        { key: 'income', label: '企业所得税率', value: 18 },
-      ]);
-      const [profitData, setProfitData] = useState([
-        { key: 'p1', category: '软件项目', subType: '农路系统', researchRate: 10, devRate: 15 },
-        { key: 'p2', category: '软件项目', subType: '建管系统', researchRate: 15, devRate: 15 },
-        { key: 'p3', category: '软件项目', subType: '定制软件-资管系统...', researchRate: 40, devRate: 15 },
-        { key: 'p4', category: '咨询设计', subType: '咨询设计', researchRate: null, devRate: 15 },
-        { key: 'p5', category: '软件集成', subType: '软件集成', researchRate: null, devRate: 12 },
-        { key: 'p6', category: '智慧交通', subType: '智慧交通', researchRate: null, devRate: 8 },
-        { key: 'p7', category: '技术服务', subType: '技术服务', researchRate: null, devRate: 15 },
-      ]);
-
-      const handleSave = () => {
-        setIsEditing(false);
-        message.success('配置已保存成功');
-      };
-      const handleCancel = () => {
-        setIsEditing(false);
-        message.info('已取消编辑');
-      };
-      const addSalaryRow = () => setSalaryData([...salaryData, { key: Date.now().toString(), role: '', dept: '', salary: 0 }]);
-      const deleteSalaryRow = (key) => setSalaryData(salaryData.filter(item => item.key !== key));
-      const updateSalaryCell = (key, field, value) => {
-        setSalaryData(salaryData.map(item => {
-          if (item.key !== key) return item;
-          if (field === 'role') {
-            const matchedRole = HR_ROSTER_ROLE_CATALOG.find(roleItem => roleItem.role === value);
-            return {
-              ...item,
-              role: value,
-              dept: matchedRole ? matchedRole.dept : item.dept,
-            };
-          }
-          return { ...item, [field]: value };
-        }));
-      };
-      const updateServiceValue = (idx, value) => {
-        const next = [...serviceData];
-        next[idx].value = value;
-        setServiceData(next);
-      };
-      const updateProfitCell = (key, field, value) => setProfitData(profitData.map(item => item.key === key ? { ...item, [field]: value } : item));
-
-      const salaryColumns = [
-        {
-          title: '岗位',
-          dataIndex: 'role',
-          key: 'role',
-          render: (text, record) => isEditing ? (
-            <Select
-              className="w-full"
-              value={text || undefined}
-              placeholder="请选择花名册岗位"
-              options={HR_ROSTER_ROLE_CATALOG.map((item) => ({ label: item.role, value: item.role }))}
-              onChange={(value) => updateSalaryCell(record.key, 'role', value)}
-              showSearch
-              optionFilterProp="label"
-            />
-          ) : text
-        },
-        {
-          title: '部门',
-          dataIndex: 'dept',
-          key: 'dept',
-          render: (text) => isEditing ? <span className="block px-3 py-2 text-gray-700">{text || '-'}</span> : text
-        },
-        {
-          title: '工资（人/月）',
-          dataIndex: 'salary',
-          key: 'salary',
-          render: (val, record) => isEditing ? (
-            <InputNumber
-              className="w-full"
-              value={val}
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              onChange={(v) => updateSalaryCell(record.key, 'salary', v)}
-            />
-          ) : val?.toLocaleString('en-US', { minimumFractionDigits: 2 })
-        }
-      ];
-
-      if (isEditing) {
-        salaryColumns.push({
-          title: '操作',
-          key: 'action',
-          width: 80,
-          render: (_, record) => <Button type="link" danger onClick={() => deleteSalaryRow(record.key)}>删除</Button>
-        });
+    <style>
+      html,
+      body,
+      #root {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #f0f2f5;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
+      .ant-layout-sider {
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
+        z-index: 10;
+      }
+      .ant-table-thead > tr > th {
+        background-color: #fafafa !important;
+        font-weight: 600;
+      }
+      .ant-card {
+        border-radius: 8px;
+        border: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+      }
+      .ant-tabs-nav::before {
+        border-bottom: 1px solid #f0f0f0 !important;
+      }
+      .ant-table-footer {
+        background: #fff;
+        padding: 12px 24px;
+      }
+      .ant-table-wrapper {
+        background: #fff;
+        border-radius: 8px;
+      }
+      .ant-breadcrumb {
+        font-size: 13px;
       }
 
-      const profitColumns = [
-        {
-          title: '项目类型',
-          dataIndex: 'category',
-          key: 'category',
-          onCell: (_, index) => {
-            if (index === 0) return { rowSpan: 3 };
-            if (index < 3) return { rowSpan: 0 };
-            return { rowSpan: 1 };
-          },
-        },
-        { title: '细分项目', dataIndex: 'subType', key: 'subType' },
-        {
-          title: '研究基金比例',
-          dataIndex: 'researchRate',
-          key: 'researchRate',
-          render: (val, record) => val !== null ? (isEditing ? <InputNumber value={val} suffix="%" className="w-full" onChange={(v) => updateProfitCell(record.key, 'researchRate', v)} /> : `${val}%`) : <Text type="secondary">-</Text>,
-        },
-        {
-          title: '发展基金比例',
-          dataIndex: 'devRate',
-          key: 'devRate',
-          render: (val, record) => isEditing ? <InputNumber value={val} suffix="%" className="w-full" onChange={(v) => updateProfitCell(record.key, 'devRate', v)} /> : `${val}%`,
-        },
+      .project-select-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        display: flex;
+        align-items: flex-start;
+        background: #fff;
+      }
+      .project-select-card:hover {
+        border-color: #60a5fa;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      .project-select-card.active {
+        border-color: #3b82f6;
+        background-color: #eff6ff;
+      }
+
+      .modal-borderless-table .ant-table-wrapper .ant-table-container {
+        border: none !important;
+      }
+      .modal-borderless-table
+        .ant-table-wrapper
+        .ant-table-container
+        table
+        > thead
+        > tr
+        > th {
+        background: transparent !important;
+        border-bottom: 1px solid #f0f0f0;
+        padding-left: 8px;
+      }
+      .modal-borderless-table .ant-table-tbody > tr > td {
+        padding-left: 8px;
+      }
+
+      .main-content-wrapper {
+        padding: 24px;
+        width: 100%;
+        min-width: 1200px;
+      }
+      .stat-card {
+        height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .stat-card .ant-statistic-title {
+        font-size: 13px;
+        color: #8c8c8c;
+        margin-bottom: 8px;
+      }
+      .stat-card .ant-statistic-content {
+        font-family: "DIN Alternate", "Courier New", Courier, monospace;
+      }
+      .project-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+        border-bottom: 1px solid #f0f0f0 !important;
+      }
+      .btn-action {
+        transition: all 0.3s;
+      }
+      .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      .project-item {
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 12px;
+      }
+      .project-item:hover {
+        border-color: #1677ff;
+        background: #f0f7ff;
+      }
+      .project-item.active {
+        border-color: #1677ff;
+        background: #e6f4ff;
+      }
+      .amount-danger {
+        color: #ff4d4f;
+        font-weight: 600;
+      }
+      .amount-success {
+        color: #52c41a;
+        font-weight: 600;
+      }
+      .compare-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+      .compare-badge.over {
+        color: #cf1322;
+        background: #fff1f0;
+      }
+      .compare-badge.under {
+        color: #389e0d;
+        background: #f6ffed;
+      }
+      .compare-badge.flat {
+        color: #1677ff;
+        background: #e6f4ff;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useMemo } = React;
+      const {
+        ConfigProvider,
+        Layout,
+        Menu,
+        Card,
+        Table,
+        InputNumber,
+        Input,
+        Button,
+        Space,
+        Tabs,
+        Typography,
+        Badge,
+        message,
+        Modal,
+        Radio,
+        Tag,
+        Descriptions,
+        Statistic,
+        Row,
+        Col,
+        Divider,
+        Tooltip,
+        Steps,
+        Empty,
+        Select,
+      } = antd;
+      const {
+        ProfileOutlined,
+        AppstoreOutlined,
+        HomeOutlined,
+        BellOutlined,
+        DownloadOutlined,
+        UserOutlined,
+        MenuUnfoldOutlined,
+        MenuFoldOutlined,
+        PlusOutlined,
+        SearchOutlined,
+        SwapOutlined,
+        DeleteOutlined,
+        EditOutlined,
+        SendOutlined,
+        CheckCircleOutlined,
+        HistoryOutlined,
+        LockOutlined,
+        CloseOutlined,
+        SaveOutlined,
+        ArrowUpOutlined,
+        ArrowDownOutlined,
+        DashboardOutlined,
+        ProjectOutlined,
+        FolderOpenOutlined,
+        BankOutlined,
+        TeamOutlined,
+        AccountBookOutlined,
+      } = icons;
+
+      const { Header, Sider, Content } = Layout;
+      const { Text, Title } = Typography;
+
+      const formatMoney = (amount) =>
+        Number(amount || 0).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      const ROLE_MONTHLY_SALARIES = {
+        "项目经理（高级）": 20000,
+        "项目经理（中级）": 15000,
+        "项目助理（初级）": 10000,
+        "产品经理（高级）": 20000,
+        "产品经理（初级）": 12000,
+        "UI设计师（中级）": 15000,
+        "开发工程师（高级）": 20000,
+        "开发工程师（中级）": 15000,
+        "开发工程师（初级）": 10000,
+        "测试工程师（初级）": 10000,
+      };
+      const HR_ROSTER_ROLE_CATALOG = Object.keys(ROLE_MONTHLY_SALARIES);
+      const DELIVERY_ROLE_OPTIONS = [
+        "项目经理（高级）",
+        "项目经理（中级）",
+        "项目助理（初级）",
+        "产品经理（高级）",
+        "产品经理（初级）",
+        "UI设计师（中级）",
+        "开发工程师（高级）",
+        "开发工程师（中级）",
+        "开发工程师（初级）",
+        "测试工程师（初级）",
       ];
-
-      return (
-        <div className="p-6">
-          <div className="mb-4 flex justify-between items-end">
-            <div>
-              <Title level={3} className="!mb-3">核算配置</Title>
-              <Tabs
-                activeKey={activeTab}
-                onChange={(key) => {
-                  setActiveTab(key);
-                  setIsEditing(false);
-                }}
-                items={[
-                  { key: '1', label: '岗位工资配置' },
-                  { key: '2', label: '费用比例配置' },
-                ]}
-                className="mb-[-16px]"
-              />
-            </div>
-            <Space>
-              {isEditing ? (
-                <>
-                  <Button onClick={handleCancel}>取消</Button>
-                  <Button type="primary" onClick={handleSave}>保存</Button>
-                </>
-              ) : (
-                <Button type="primary" onClick={() => setIsEditing(true)}>编辑</Button>
-              )}
-            </Space>
-          </div>
-
-          {activeTab === '1' ? (
-            <Card bordered={false} className="shadow-sm overflow-hidden" bodyStyle={{ padding: 0 }}>
-              <Table
-                columns={salaryColumns}
-                dataSource={salaryData}
-                pagination={false}
-                footer={isEditing ? () => <Button type="dashed" onClick={addSalaryRow} block icon={<PlusOutlined />}>新增岗位</Button> : null}
-              />
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              <Card title={<div className="flex items-center"><div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />项目服务</div>} bordered={false} className="shadow-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {serviceData.map((item, idx) => (
-                    <div key={item.key} className="flex flex-col space-y-2">
-                      <Text type="secondary">{item.label}</Text>
-                      {isEditing ? (
-                        <InputNumber className="w-full" value={item.value} suffix="%" size="large" onChange={(v) => updateServiceValue(idx, v)} />
-                      ) : (
-                        <div className="text-lg font-medium p-2 bg-gray-50 rounded">{item.value}%</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card title={<div className="flex items-center"><div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />公司利润</div>} bordered={false} className="shadow-sm" bodyStyle={{ padding: 0 }}>
-                <Table columns={profitColumns} dataSource={profitData} pagination={false} bordered />
-              </Card>
-            </div>
-          )}
-        </div>
+      const DIRECT_COST_CATALOG = {
+        差旅费用: ["项目驻场住宿费", "交通及出差补助"],
+        业务招待费: ["客户汇报会议餐饮", "客户沟通接待"],
+        车辆使用费: ["项目用车", "油费过路费"],
+        其他费用: ["外包服务费", "云服务器", "其他"],
+      };
+      const DIRECT_COST_TYPE_OPTIONS = Object.keys(DIRECT_COST_CATALOG).map(
+        (item) => ({ label: item, value: item })
       );
-    }
-
-    function DeliveryPlanPage({ laborDetails, setLaborDetails, otherCostDetails, setOtherCostDetails }) {
-      const [activeTab, setActiveTab] = useState('1');
-      const [isSwitchModalVisible, setIsSwitchModalVisible] = useState(false);
-      const [isApplyModalVisible, setIsApplyModalVisible] = useState(false);
-      const [isPlanEditing, setIsPlanEditing] = useState(false);
-
-      const [currentProject, setCurrentProject] = useState({
-        id: '01TT-JS-2025004',
-        name: '金川县农村公路通行现状情况摸底调查及系统研发项目',
-        type: '软件开发与技术服务',
-        period: '2025-04-01 ~ 2026-04-30',
-        dept: '咨询设计部 / 研发部',
-        manager: '汪云 (wangyun@01road.com)',
-        status: '待申请'
-      });
-
-      const [draftLaborDetails, setDraftLaborDetails] = useState(laborDetails.map(item => ({ ...item })));
-      const [draftOtherCostDetails, setDraftOtherCostDetails] = useState(otherCostDetails.map(item => ({ ...item })));
-
-      const mainLaborDataSource = isPlanEditing ? draftLaborDetails : laborDetails;
-      const mainOtherCostDataSource = isPlanEditing ? draftOtherCostDetails : otherCostDetails;
-      const mainLaborTotal = useMemo(() => mainLaborDataSource.reduce((sum, item) => sum + item.salary, 0), [mainLaborDataSource]);
-      const mainOtherTotal = useMemo(() => mainOtherCostDataSource.reduce((sum, item) => sum + item.amount, 0), [mainOtherCostDataSource]);
-
-      const [tempSelectedProjectId, setTempSelectedProjectId] = useState(currentProject.id);
-      const projectList = [
-        { id: '01TT-ZX-2026005', name: '屏山县安上社区老旧街区改造数字孪生项目', customer: '北京中咨路捷工程咨询有限公司', manager: '汪云' },
-        { id: '01TT-ZX-2026004', name: '简阳市中心镇片区城市生态修复及公共服务设施改造提升项目', customer: '四川交投建设工程有限公司', manager: '李四' },
-        { id: '01TT-ZX-2026003', name: '美姑县“一老一小”社会公共服务信息化建设项目', customer: '美姑县民政局', manager: '张三' },
+      const calculateLaborSalary = (role, months) =>
+        Number(
+          ((ROLE_MONTHLY_SALARIES[role] || 0) * Number(months || 0)).toFixed(2)
+        );
+      const INITIAL_DELIVERY_LABOR_DETAILS = [
+        { key: "1", role: "项目经理（高级）", months: 2, salary: 40000.0 },
+        { key: "2", role: "产品经理（高级）", months: 1.5, salary: 30000.0 },
+        { key: "3", role: "UI设计师（中级）", months: 1, salary: 15000.0 },
+        { key: "4", role: "开发工程师（高级）", months: 3, salary: 60000.0 },
+        { key: "5", role: "测试工程师（初级）", months: 1, salary: 10000.0 },
+      ];
+      const INITIAL_DELIVERY_OTHER_COST_DETAILS = [
+        {
+          key: "1",
+          category: "差旅费用",
+          subType: "项目驻场住宿费",
+          amount: 6000.0,
+        },
+        {
+          key: "2",
+          category: "差旅费用",
+          subType: "交通及出差补助",
+          amount: 6000.0,
+        },
+        {
+          key: "3",
+          category: "业务招待费",
+          subType: "客户汇报会议餐饮",
+          amount: 2000.0,
+        },
+        {
+          key: "4",
+          category: "其他费用",
+          subType: "外包服务费",
+          amount: 45000.0,
+        },
+        { key: "5", category: "其他费用", subType: "云服务器", amount: 7000.0 },
+      ];
+      const INITIAL_DELIVERY_NODE_PLAN = [
+        {
+          key: "1",
+          node: "需求确认",
+          content: "完成需求调研、范围确认和评审纪要",
+          period: "2026-05-01 ~ 2026-05-15",
+          roles: ["项目经理（高级）", "产品经理（高级）"],
+        },
+        {
+          key: "2",
+          node: "方案设计",
+          content: "完成总体设计、原型评审和实施计划",
+          period: "2026-05-16 ~ 2026-06-05",
+          roles: ["产品经理（高级）", "UI设计师（中级）"],
+        },
+        {
+          key: "3",
+          node: "开发联调",
+          content: "完成核心功能开发、接口联调和缺陷修复",
+          period: "2026-06-06 ~ 2026-07-20",
+          roles: [
+            "开发工程师（高级）",
+            "开发工程师（中级）",
+            "测试工程师（初级）",
+          ],
+        },
+        {
+          key: "4",
+          node: "验收交付",
+          content: "完成用户验收、部署上线和交付资料归档",
+          period: "2026-07-21 ~ 2026-08-10",
+          roles: ["项目经理（高级）", "测试工程师（初级）"],
+        },
       ];
 
-      const [applyLaborData, setApplyLaborData] = useState([...INITIAL_DELIVERY_LABOR_DETAILS]);
-      const [applyOtherCostData, setApplyOtherCostData] = useState([...INITIAL_DELIVERY_OTHER_COST_DETAILS.map(item => ({ ...item, content: item.subType }))]);
+      function AccountingConfigPage() {
+        const [activeTab, setActiveTab] = useState("1");
+        const [isEditing, setIsEditing] = useState(false);
+        const [salaryData, setSalaryData] = useState(
+          HR_ROSTER_ROLE_CATALOG.map((role, index) => ({
+            key: String(index + 1),
+            role,
+            salary: ROLE_MONTHLY_SALARIES[role],
+          }))
+        );
+        const [serviceData, setServiceData] = useState([
+          { key: "admin", label: "公司管理费率", value: 6 },
+          { key: "tax", label: "税金及附加率", value: 12 },
+          { key: "income", label: "企业所得税率", value: 18 },
+        ]);
+        const [profitData, setProfitData] = useState([
+          {
+            key: "p1",
+            category: "软件项目",
+            subType: "农路系统",
+            researchRate: 10,
+            devRate: 15,
+          },
+          {
+            key: "p2",
+            category: "软件项目",
+            subType: "建管系统",
+            researchRate: 15,
+            devRate: 15,
+          },
+          {
+            key: "p3",
+            category: "软件项目",
+            subType: "定制软件-资管系统...",
+            researchRate: 40,
+            devRate: 15,
+          },
+          {
+            key: "p4",
+            category: "咨询设计",
+            subType: "咨询设计",
+            researchRate: null,
+            devRate: 15,
+          },
+          {
+            key: "p5",
+            category: "软件集成",
+            subType: "软件集成",
+            researchRate: null,
+            devRate: 12,
+          },
+          {
+            key: "p6",
+            category: "智慧交通",
+            subType: "智慧交通",
+            researchRate: null,
+            devRate: 8,
+          },
+          {
+            key: "p7",
+            category: "技术服务",
+            subType: "技术服务",
+            researchRate: null,
+            devRate: 15,
+          },
+        ]);
 
-      const updateTableData = (setter, data, key, field, value) => {
-        setter(data.map(item => {
-          if (item.key !== key) return item;
-          const updated = { ...item, [field]: value };
-          if (field === 'category') {
-            const nextOptions = DIRECT_COST_CATALOG[value] || [];
-            if ('subType' in updated && !nextOptions.includes(updated.subType)) updated.subType = nextOptions[0] || '';
-            if ('content' in updated && !nextOptions.includes(updated.content)) updated.content = nextOptions[0] || '';
-          }
-          return updated;
-        }));
-      };
+        const handleSave = () => {
+          setIsEditing(false);
+          message.success("配置已保存成功");
+        };
+        const handleCancel = () => {
+          setIsEditing(false);
+          message.info("已取消编辑");
+        };
+        const addSalaryRow = () =>
+          setSalaryData([
+            ...salaryData,
+            { key: Date.now().toString(), role: "", salary: 0 },
+          ]);
+        const deleteSalaryRow = (key) =>
+          setSalaryData(salaryData.filter((item) => item.key !== key));
+        const updateSalaryCell = (key, field, value) =>
+          setSalaryData(
+            salaryData.map((item) =>
+              item.key === key ? { ...item, [field]: value } : item
+            )
+          );
+        const updateServiceValue = (idx, value) => {
+          const next = [...serviceData];
+          next[idx].value = value;
+          setServiceData(next);
+        };
+        const updateProfitCell = (key, field, value) =>
+          setProfitData(
+            profitData.map((item) =>
+              item.key === key ? { ...item, [field]: value } : item
+            )
+          );
 
-      const mainLaborColumns = [
-        {
-          title: '岗位',
-          dataIndex: 'role',
-          key: 'role',
-          width: '40%',
-          render: (val, record) => isPlanEditing ? (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择岗位"
-              options={DELIVERY_ROLE_OPTIONS.map(item => ({ label: item, value: item }))}
-              onChange={(value) => updateTableData(setDraftLaborDetails, draftLaborDetails, record.key, 'role', value)}
-              showSearch
-              optionFilterProp="label"
-            />
-          ) : val
-        },
-        {
-          title: '计划投入 (人/月)',
-          dataIndex: 'months',
-          key: 'months',
-          width: '30%',
-          render: (val, record) => isPlanEditing ? (
-            <InputNumber
-              value={val}
-              min={0}
-              step={0.1}
-              onChange={(v) => updateTableData(setDraftLaborDetails, draftLaborDetails, record.key, 'months', v)}
-              className="w-full"
-            />
-          ) : val
-        },
-        {
-          title: '工资合计 (元)',
-          dataIndex: 'salary',
-          key: 'salary',
-          align: 'right',
-          render: (val, record) => isPlanEditing ? (
-            <InputNumber
-              value={val}
-              min={0}
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              onChange={(v) => updateTableData(setDraftLaborDetails, draftLaborDetails, record.key, 'salary', v)}
-              className="w-full"
-            />
-          ) : <span className="font-medium">{formatMoney(val)}</span>
-        }
-      ];
+        const salaryColumns = [
+          {
+            title: "岗位",
+            dataIndex: "role",
+            key: "role",
+            render: (text, record) =>
+              isEditing ? (
+                <Select
+                  className="w-full"
+                  value={text || undefined}
+                  placeholder="请选择花名册岗位"
+                  options={HR_ROSTER_ROLE_CATALOG.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
+                  onChange={(value) =>
+                    updateSalaryCell(record.key, "role", value)
+                  }
+                  showSearch
+                  optionFilterProp="label"
+                />
+              ) : (
+                text
+              ),
+          },
+          {
+            title: "工资（人/月）",
+            dataIndex: "salary",
+            key: "salary",
+            render: (val, record) =>
+              isEditing ? (
+                <InputNumber
+                  className="w-full"
+                  value={val}
+                  formatter={(value) =>
+                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                  onChange={(v) => updateSalaryCell(record.key, "salary", v)}
+                />
+              ) : (
+                val?.toLocaleString("en-US", { minimumFractionDigits: 2 })
+              ),
+          },
+        ];
 
-      if (isPlanEditing) {
-        mainLaborColumns.push({
-          title: '操作',
-          key: 'action',
-          width: 80,
-          align: 'center',
-          render: (_, record) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setDraftLaborDetails(draftLaborDetails.filter(item => item.key !== record.key))} />
-        });
-      }
-
-      const mainOtherCostColumns = [
-        {
-          title: '费用类型',
-          dataIndex: 'category',
-          key: 'category',
-          width: '24%',
-          render: (val, record) => isPlanEditing ? (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择费用类型"
-              options={DIRECT_COST_TYPE_OPTIONS}
-              onChange={(value) => updateTableData(setDraftOtherCostDetails, draftOtherCostDetails, record.key, 'category', value)}
-            />
-          ) : val
-        },
-        {
-          title: '费用内容',
-          dataIndex: 'subType',
-          key: 'subType',
-          width: '44%',
-          render: (val, record) => isPlanEditing ? (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择费用内容"
-              options={(DIRECT_COST_CATALOG[record.category] || []).map(item => ({ label: item, value: item }))}
-              onChange={(value) => updateTableData(setDraftOtherCostDetails, draftOtherCostDetails, record.key, 'subType', value)}
-            />
-          ) : val
-        },
-        {
-          title: '计划金额 (元)',
-          dataIndex: 'amount',
-          key: 'amount',
-          align: 'right',
-          render: (val, record) => isPlanEditing ? (
-            <InputNumber value={val} min={0} onChange={(v) => updateTableData(setDraftOtherCostDetails, draftOtherCostDetails, record.key, 'amount', v)} className="w-full" />
-          ) : <span className="font-medium">{formatMoney(val)}</span>
-        }
-      ];
-
-      if (isPlanEditing) {
-        mainOtherCostColumns.push({
-          title: '操作',
-          key: 'action',
-          width: 80,
-          align: 'center',
-          render: (_, record) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setDraftOtherCostDetails(draftOtherCostDetails.filter(item => item.key !== record.key))} />
-        });
-      }
-
-      const updateApplyData = updateTableData;
-
-      const applyLaborColumns = [
-        {
-          title: '岗位',
-          dataIndex: 'role',
-          render: (val, record) => (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择岗位"
-              options={DELIVERY_ROLE_OPTIONS.map(item => ({ label: item, value: item }))}
-              onChange={(value) => updateApplyData(setApplyLaborData, applyLaborData, record.key, 'role', value)}
-              bordered={false}
-              showSearch
-              optionFilterProp="label"
-            />
-          )
-        },
-        { title: '人月', dataIndex: 'months', width: 100, render: (val, record) => <InputNumber value={val} min={0} step={0.1} onChange={v => updateApplyData(setApplyLaborData, applyLaborData, record.key, 'months', v)} bordered={false} className="w-full bg-gray-50 rounded" /> },
-        { title: '工资合计', dataIndex: 'salary', width: 150, render: (val, record) => <InputNumber value={val} min={0} formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={value => value.replace(/\$\s?|(,*)/g, '')} onChange={v => updateApplyData(setApplyLaborData, applyLaborData, record.key, 'salary', v)} bordered={false} className="w-full bg-gray-50 rounded" /> },
-        { title: '操作', width: 70, align: 'center', render: (_, record) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setApplyLaborData(applyLaborData.filter(i => i.key !== record.key))} /> }
-      ];
-
-      const applyOtherCostColumns = [
-        {
-          title: '费用类型',
-          dataIndex: 'category',
-          render: (val, record) => (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择费用类型"
-              options={DIRECT_COST_TYPE_OPTIONS}
-              onChange={(value) => updateApplyData(setApplyOtherCostData, applyOtherCostData, record.key, 'category', value)}
-              bordered={false}
-            />
-          )
-        },
-        {
-          title: '费用内容',
-          dataIndex: 'content',
-          render: (val, record) => (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择费用内容"
-              options={(DIRECT_COST_CATALOG[record.category] || []).map(item => ({ label: item, value: item }))}
-              onChange={(value) => updateApplyData(setApplyOtherCostData, applyOtherCostData, record.key, 'content', value)}
-              bordered={false}
-            />
-          )
-        },
-        { title: '总金额', dataIndex: 'amount', width: 160, render: (val, record) => <InputNumber value={val} min={0} onChange={v => updateApplyData(setApplyOtherCostData, applyOtherCostData, record.key, 'amount', v)} bordered={false} className="w-full bg-gray-50 rounded" /> },
-        { title: '操作', width: 70, align: 'center', render: (_, record) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setApplyOtherCostData(applyOtherCostData.filter(i => i.key !== record.key))} /> }
-      ];
-
-      const applyLaborTotal = useMemo(() => applyLaborData.reduce((sum, item) => sum + (item.salary || 0), 0), [applyLaborData]);
-      const applyOtherCostTotal = useMemo(() => applyOtherCostData.reduce((sum, item) => sum + (item.amount || 0), 0), [applyOtherCostData]);
-
-      const handleSwitchProjectConfirm = () => {
-        const proj = projectList.find(p => p.id === tempSelectedProjectId);
-        if (proj) {
-          setCurrentProject({
-            ...currentProject,
-            id: proj.id,
-            name: proj.name,
-            manager: proj.manager + ' (邮箱已隐藏)',
-            status: '待申请'
+        if (isEditing) {
+          salaryColumns.push({
+            title: "操作",
+            key: "action",
+            width: 80,
+            render: (_, record) => (
+              <Button
+                type="link"
+                danger
+                onClick={() => deleteSalaryRow(record.key)}
+              >
+                删除
+              </Button>
+            ),
           });
-          message.success(`已切换至项目：${proj.name}`);
         }
-        setIsSwitchModalVisible(false);
-      };
 
-      const openApplyModal = () => {
-        setApplyLaborData(laborDetails.map(item => ({ ...item })));
-        setApplyOtherCostData(otherCostDetails.map(item => ({ ...item, content: item.subType || item.content })));
-        setIsApplyModalVisible(true);
-      };
+        const profitColumns = [
+          {
+            title: "项目类型",
+            dataIndex: "category",
+            key: "category",
+            onCell: (_, index) => {
+              if (index === 0) return { rowSpan: 3 };
+              if (index < 3) return { rowSpan: 0 };
+              return { rowSpan: 1 };
+            },
+          },
+          { title: "细分项目", dataIndex: "subType", key: "subType" },
+          {
+            title: "研究基金比例",
+            dataIndex: "researchRate",
+            key: "researchRate",
+            render: (val, record) =>
+              val !== null ? (
+                isEditing ? (
+                  <InputNumber
+                    value={val}
+                    suffix="%"
+                    className="w-full"
+                    onChange={(v) =>
+                      updateProfitCell(record.key, "researchRate", v)
+                    }
+                  />
+                ) : (
+                  `${val}%`
+                )
+              ) : (
+                <Text type="secondary">-</Text>
+              ),
+          },
+          {
+            title: "发展基金比例",
+            dataIndex: "devRate",
+            key: "devRate",
+            render: (val, record) =>
+              isEditing ? (
+                <InputNumber
+                  value={val}
+                  suffix="%"
+                  className="w-full"
+                  onChange={(v) => updateProfitCell(record.key, "devRate", v)}
+                />
+              ) : (
+                `${val}%`
+              ),
+          },
+        ];
 
-      const handleStartPlanEdit = () => {
-        setDraftLaborDetails(laborDetails.map(item => ({ ...item })));
-        setDraftOtherCostDetails(otherCostDetails.map(item => ({ ...item })));
-        setIsPlanEditing(true);
-      };
-
-      const handleCancelPlanEdit = () => {
-        setDraftLaborDetails(laborDetails.map(item => ({ ...item })));
-        setDraftOtherCostDetails(otherCostDetails.map(item => ({ ...item })));
-        setIsPlanEditing(false);
-        message.info('已取消编辑');
-      };
-
-      const handleConfirmPlanEdit = () => {
-        setLaborDetails(draftLaborDetails.map(item => ({ ...item })));
-        setOtherCostDetails(draftOtherCostDetails.map(item => ({ ...item })));
-        setIsPlanEditing(false);
-        message.success('交付计划已更新');
-      };
-
-      const handleSubmitApplication = () => {
-        if (applyLaborData.length === 0 && applyOtherCostData.length === 0) {
-          message.warning('请至少填写一项费用明细');
-          return;
-        }
-        const nextLabor = applyLaborData.map(item => ({
-          key: item.key,
-          role: item.role,
-          months: item.months,
-          salary: item.salary || 0,
-        }));
-        const nextOther = applyOtherCostData.map(item => ({
-          key: item.key,
-          category: item.category || '',
-          subType: item.content || item.subType || '',
-          amount: item.amount || 0,
-        }));
-        setLaborDetails(nextLabor);
-        setOtherCostDetails(nextOther);
-        message.success({ content: '计划申请已成功提交至财务部审核', duration: 3 });
-        setIsApplyModalVisible(false);
-        setCurrentProject({ ...currentProject, status: '审核中' });
-      };
-
-      return (
-        <div className="p-4 md:p-6 overflow-auto">
-          <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 min-h-full flex flex-col">
-            <div className="px-8 py-5 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50/50 rounded-t-xl">
-              <div className="flex flex-col mb-4 md:mb-0">
-                <div className="flex items-center space-x-3 mb-2">
-                  <span className="text-xl font-bold text-gray-800">{currentProject.name}</span>
-                  {currentProject.status === '待申请' ? (
-                    <Tag color="warning" className="m-0 border-orange-200 text-orange-600 bg-orange-50">待申请</Tag>
-                  ) : (
-                    <Tag color="processing" className="m-0 border-blue-200">审核中</Tag>
-                  )}
-                  <Button type="link" size="small" icon={<SwapOutlined />} onClick={() => setIsSwitchModalVisible(true)} className="text-gray-500 hover:text-blue-500">切换项目</Button>
-                </div>
-                <span className="text-gray-500">项目编号：{currentProject.id}</span>
+        return (
+          <div className="p-6">
+            <div className="mb-4 flex justify-between items-end">
+              <div>
+                <Title level={3} className="!mb-3">
+                  核算配置
+                </Title>
+                <Tabs
+                  activeKey={activeTab}
+                  onChange={(key) => {
+                    setActiveTab(key);
+                    setIsEditing(false);
+                  }}
+                  items={[
+                    { key: "1", label: "岗位工资配置" },
+                    { key: "2", label: "费用比例配置" },
+                  ]}
+                  className="mb-[-16px]"
+                />
               </div>
               <Space>
-                {isPlanEditing ? (
+                {isEditing ? (
                   <>
-                    <Button size="large" onClick={handleCancelPlanEdit}>取消</Button>
-                    <Button type="primary" size="large" className="shadow-md shadow-blue-500/20" onClick={handleConfirmPlanEdit}>确认</Button>
-                  </>
-                ) : (
-                  <>
-                    <Button onClick={handleStartPlanEdit} size="large">编辑</Button>
-                    <Button type="primary" size="large" className="shadow-md shadow-blue-500/20" onClick={openApplyModal}>
-                      发起计划申请
+                    <Button onClick={handleCancel}>取消</Button>
+                    <Button type="primary" onClick={handleSave}>
+                      保存
                     </Button>
                   </>
+                ) : (
+                  <Button type="primary" onClick={() => setIsEditing(true)}>
+                    编辑
+                  </Button>
                 )}
               </Space>
             </div>
 
-            <div className="p-8 flex-1">
-              <div className="mb-8">
-                <div className="text-base font-semibold text-gray-800 mb-4 flex items-center">
-                  <div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" /> 项目基础信息
-                </div>
-                <Descriptions column={{ xxl: 3, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }} bordered size="middle" className="bg-white">
-                  <Descriptions.Item label="项目编号">{currentProject.id}</Descriptions.Item>
-                  <Descriptions.Item label="项目类型">{currentProject.type}</Descriptions.Item>
-                  <Descriptions.Item label="项目经理">{currentProject.manager}</Descriptions.Item>
-                  <Descriptions.Item label="参与交付部门">{currentProject.dept}</Descriptions.Item>
-                  <Descriptions.Item label="预计交付周期" span={2}>{currentProject.period}</Descriptions.Item>
-                </Descriptions>
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-6 mb-8">
-                <div className="bg-gradient-to-br from-orange-50 to-orange-100/30 border border-orange-200/60 rounded-xl p-6 flex-1 relative overflow-hidden group">
-                  <div className="absolute right-[-20px] top-[-20px] text-orange-500/5 opacity-20 group-hover:scale-110 transition duration-500">
-                    <TeamOutlined style={{ fontSize: '120px' }} />
-                  </div>
-                  <div className="text-orange-800/70 text-sm font-medium mb-2 relative z-10">计划人工预算总额 (元)</div>
-                  <div className="text-3xl font-bold text-orange-600 relative z-10 font-mono">¥ {formatMoney(mainLaborTotal)}</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100/30 border border-blue-200/60 rounded-xl p-6 flex-1 relative overflow-hidden group">
-                  <div className="absolute right-[-20px] top-[-20px] text-blue-500/5 opacity-20 group-hover:scale-110 transition duration-500">
-                    <AccountBookOutlined style={{ fontSize: '120px' }} />
-                  </div>
-                  <div className="text-blue-800/70 text-sm font-medium mb-2 relative z-10">计划直接成本预算总额 (元)</div>
-                  <div className="text-3xl font-bold text-blue-600 relative z-10 font-mono">¥ {formatMoney(mainOtherTotal)}</div>
-                </div>
-              </div>
-
-              <div className="border border-gray-100 rounded-xl p-2">
-                <Tabs
-                  activeKey={activeTab}
-                  onChange={setActiveTab}
-                  className="px-2"
-                  items={[
-                    { key: '1', label: <span className="px-4 text-base">人工费用明细</span>, children: (
-                      <>
-                        <Table columns={mainLaborColumns} dataSource={mainLaborDataSource} pagination={false} className="mt-2" />
-                        {isPlanEditing ? (
-                          <div className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium" onClick={() => setDraftLaborDetails([...draftLaborDetails, { key: Date.now().toString(), role: '', months: 0, salary: 0 }])}>
-                            <PlusOutlined className="mr-1" /> 新增人员计划
-                          </div>
-                        ) : null}
-                      </>
-                    ) },
-                    { key: '2', label: <span className="px-4 text-base">其他直接成本明细</span>, children: (
-                      <>
-                        <Table columns={mainOtherCostColumns} dataSource={mainOtherCostDataSource} pagination={false} bordered className="mt-2" />
-                        {isPlanEditing ? (
-                          <div className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium" onClick={() => setDraftOtherCostDetails([...draftOtherCostDetails, { key: Date.now().toString(), category: '', subType: '', amount: 0 }])}>
-                            <PlusOutlined className="mr-1" /> 新增成本项
-                          </div>
-                        ) : null}
-                      </>
-                    ) }
-                  ]}
+            {activeTab === "1" ? (
+              <Card
+                bordered={false}
+                className="shadow-sm overflow-hidden"
+                bodyStyle={{ padding: 0 }}
+              >
+                <Table
+                  columns={salaryColumns}
+                  dataSource={salaryData}
+                  pagination={false}
+                  footer={
+                    isEditing
+                      ? () => (
+                          <Button
+                            type="dashed"
+                            onClick={addSalaryRow}
+                            block
+                            icon={<PlusOutlined />}
+                          >
+                            新增岗位
+                          </Button>
+                        )
+                      : null
+                  }
                 />
+              </Card>
+            ) : (
+              <div className="space-y-6">
+                <Card
+                  title={
+                    <div className="flex items-center">
+                      <div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />
+                      项目服务
+                    </div>
+                  }
+                  bordered={false}
+                  className="shadow-sm"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {serviceData.map((item, idx) => (
+                      <div key={item.key} className="flex flex-col space-y-2">
+                        <Text type="secondary">{item.label}</Text>
+                        {isEditing ? (
+                          <InputNumber
+                            className="w-full"
+                            value={item.value}
+                            suffix="%"
+                            size="large"
+                            onChange={(v) => updateServiceValue(idx, v)}
+                          />
+                        ) : (
+                          <div className="text-lg font-medium p-2 bg-gray-50 rounded">
+                            {item.value}%
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                <Card
+                  title={
+                    <div className="flex items-center">
+                      <div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />
+                      公司利润
+                    </div>
+                  }
+                  bordered={false}
+                  className="shadow-sm"
+                  bodyStyle={{ padding: 0 }}
+                >
+                  <Table
+                    columns={profitColumns}
+                    dataSource={profitData}
+                    pagination={false}
+                    bordered
+                  />
+                </Card>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function DeliveryPlanPage({
+        laborDetails,
+        setLaborDetails,
+        otherCostDetails,
+        setOtherCostDetails,
+      }) {
+        const [activeTab, setActiveTab] = useState("1");
+        const [isSwitchModalVisible, setIsSwitchModalVisible] = useState(false);
+        const [isApplyModalVisible, setIsApplyModalVisible] = useState(false);
+        const [isPlanEditing, setIsPlanEditing] = useState(false);
+
+        const [currentProject, setCurrentProject] = useState({
+          id: "01TT-JS-2025004",
+          name: "金川县农村公路通行现状情况摸底调查及系统研发项目",
+          type: "软件开发与技术服务",
+          period: "2025-04-01 ~ 2026-04-30",
+          dept: "咨询设计部 / 研发部",
+          manager: "汪云 (wangyun@01road.com)",
+          status: "待申请",
+        });
+
+        const [nodePlan, setNodePlan] = useState(
+          INITIAL_DELIVERY_NODE_PLAN.map((item) => ({
+            ...item,
+            roles: [...item.roles],
+          }))
+        );
+        const [draftNodePlan, setDraftNodePlan] = useState(
+          INITIAL_DELIVERY_NODE_PLAN.map((item) => ({
+            ...item,
+            roles: [...item.roles],
+          }))
+        );
+        const [draftLaborDetails, setDraftLaborDetails] = useState(
+          laborDetails.map((item) => ({ ...item }))
+        );
+        const [draftOtherCostDetails, setDraftOtherCostDetails] = useState(
+          otherCostDetails.map((item) => ({ ...item }))
+        );
+
+        const mainNodePlanDataSource = isPlanEditing ? draftNodePlan : nodePlan;
+        const mainLaborDataSource = isPlanEditing
+          ? draftLaborDetails
+          : laborDetails;
+        const mainOtherCostDataSource = isPlanEditing
+          ? draftOtherCostDetails
+          : otherCostDetails;
+        const mainLaborTotal = useMemo(
+          () => mainLaborDataSource.reduce((sum, item) => sum + item.salary, 0),
+          [mainLaborDataSource]
+        );
+        const mainOtherTotal = useMemo(
+          () =>
+            mainOtherCostDataSource.reduce((sum, item) => sum + item.amount, 0),
+          [mainOtherCostDataSource]
+        );
+
+        const [tempSelectedProjectId, setTempSelectedProjectId] = useState(
+          currentProject.id
+        );
+        const projectList = [
+          {
+            id: "01TT-ZX-2026005",
+            name: "屏山县安上社区老旧街区改造数字孪生项目",
+            customer: "北京中咨路捷工程咨询有限公司",
+            manager: "汪云",
+          },
+          {
+            id: "01TT-ZX-2026004",
+            name: "简阳市中心镇片区城市生态修复及公共服务设施改造提升项目",
+            customer: "四川交投建设工程有限公司",
+            manager: "李四",
+          },
+          {
+            id: "01TT-ZX-2026003",
+            name: "美姑县“一老一小”社会公共服务信息化建设项目",
+            customer: "美姑县民政局",
+            manager: "张三",
+          },
+        ];
+
+        const [applyLaborData, setApplyLaborData] = useState([
+          ...INITIAL_DELIVERY_LABOR_DETAILS,
+        ]);
+        const [applyOtherCostData, setApplyOtherCostData] = useState([
+          ...INITIAL_DELIVERY_OTHER_COST_DETAILS.map((item) => ({
+            ...item,
+            content: item.subType,
+          })),
+        ]);
+        const [applyNodePlanData, setApplyNodePlanData] = useState(
+          INITIAL_DELIVERY_NODE_PLAN.map((item) => ({
+            ...item,
+            roles: [...item.roles],
+          }))
+        );
+
+        const updateTableData = (setter, data, key, field, value) => {
+          setter(
+            data.map((item) =>
+              item.key === key ? { ...item, [field]: value } : item
+            )
+          );
+        };
+        const updateLaborData = (setter, data, key, field, value) => {
+          setter(
+            data.map((item) => {
+              if (item.key !== key) return item;
+              const next = { ...item, [field]: value };
+              if (field === "role" || field === "months") {
+                next.salary = calculateLaborSalary(next.role, next.months);
+              }
+              return next;
+            })
+          );
+        };
+
+        const mainNodePlanColumns = [
+          {
+            title: "项目节点",
+            dataIndex: "node",
+            key: "node",
+            width: "18%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Input
+                  value={val || ""}
+                  placeholder="请输入项目节点"
+                  onChange={(event) =>
+                    updateTableData(
+                      setDraftNodePlan,
+                      draftNodePlan,
+                      record.key,
+                      "node",
+                      event.target.value
+                    )
+                  }
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "内容",
+            dataIndex: "content",
+            key: "content",
+            width: "30%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Input
+                  value={val || ""}
+                  placeholder="请输入内容"
+                  onChange={(event) =>
+                    updateTableData(
+                      setDraftNodePlan,
+                      draftNodePlan,
+                      record.key,
+                      "content",
+                      event.target.value
+                    )
+                  }
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "周期",
+            dataIndex: "period",
+            key: "period",
+            width: "22%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Input
+                  value={val || ""}
+                  placeholder="如：2026-05-01 ~ 2026-05-15"
+                  onChange={(event) =>
+                    updateTableData(
+                      setDraftNodePlan,
+                      draftNodePlan,
+                      record.key,
+                      "period",
+                      event.target.value
+                    )
+                  }
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "岗位",
+            dataIndex: "roles",
+            key: "roles",
+            width: "30%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Select
+                  mode="multiple"
+                  className="w-full"
+                  value={val || []}
+                  placeholder="请选择岗位"
+                  options={DELIVERY_ROLE_OPTIONS.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
+                  onChange={(value) =>
+                    updateTableData(
+                      setDraftNodePlan,
+                      draftNodePlan,
+                      record.key,
+                      "roles",
+                      value
+                    )
+                  }
+                  optionFilterProp="label"
+                />
+              ) : (
+                (val || []).join("、")
+              ),
+          },
+        ];
+
+        if (isPlanEditing) {
+          mainNodePlanColumns.push({
+            title: "操作",
+            key: "action",
+            width: 80,
+            align: "center",
+            render: (_, record) => (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() =>
+                  setDraftNodePlan(
+                    draftNodePlan.filter((item) => item.key !== record.key)
+                  )
+                }
+              />
+            ),
+          });
+        }
+
+        const mainLaborColumns = [
+          {
+            title: "岗位",
+            dataIndex: "role",
+            key: "role",
+            width: "40%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Select
+                  className="w-full"
+                  value={val || undefined}
+                  placeholder="请选择岗位"
+                  options={DELIVERY_ROLE_OPTIONS.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
+                  onChange={(value) =>
+                    updateLaborData(
+                      setDraftLaborDetails,
+                      draftLaborDetails,
+                      record.key,
+                      "role",
+                      value
+                    )
+                  }
+                  showSearch
+                  optionFilterProp="label"
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "计划投入 (人/月)",
+            dataIndex: "months",
+            key: "months",
+            width: "30%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <InputNumber
+                  value={val}
+                  min={0}
+                  step={0.1}
+                  onChange={(v) =>
+                    updateLaborData(
+                      setDraftLaborDetails,
+                      draftLaborDetails,
+                      record.key,
+                      "months",
+                      v
+                    )
+                  }
+                  className="w-full"
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "工资合计 (元)",
+            dataIndex: "salary",
+            key: "salary",
+            align: "right",
+            render: (val) => (
+              <span className="font-medium">{formatMoney(val)}</span>
+            ),
+          },
+        ];
+
+        if (isPlanEditing) {
+          mainLaborColumns.push({
+            title: "操作",
+            key: "action",
+            width: 80,
+            align: "center",
+            render: (_, record) => (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() =>
+                  setDraftLaborDetails(
+                    draftLaborDetails.filter((item) => item.key !== record.key)
+                  )
+                }
+              />
+            ),
+          });
+        }
+
+        const mainOtherCostColumns = [
+          {
+            title: "费用类型",
+            dataIndex: "category",
+            key: "category",
+            width: "24%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Select
+                  className="w-full"
+                  value={val || undefined}
+                  placeholder="请选择费用类型"
+                  options={DIRECT_COST_TYPE_OPTIONS}
+                  onChange={(value) =>
+                    updateTableData(
+                      setDraftOtherCostDetails,
+                      draftOtherCostDetails,
+                      record.key,
+                      "category",
+                      value
+                    )
+                  }
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "费用内容",
+            dataIndex: "subType",
+            key: "subType",
+            width: "44%",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <Input
+                  className="w-full"
+                  value={val || ""}
+                  placeholder="请输入费用内容"
+                  onChange={(event) =>
+                    updateTableData(
+                      setDraftOtherCostDetails,
+                      draftOtherCostDetails,
+                      record.key,
+                      "subType",
+                      event.target.value
+                    )
+                  }
+                />
+              ) : (
+                val
+              ),
+          },
+          {
+            title: "计划金额 (元)",
+            dataIndex: "amount",
+            key: "amount",
+            align: "right",
+            render: (val, record) =>
+              isPlanEditing ? (
+                <InputNumber
+                  value={val}
+                  min={0}
+                  onChange={(v) =>
+                    updateTableData(
+                      setDraftOtherCostDetails,
+                      draftOtherCostDetails,
+                      record.key,
+                      "amount",
+                      v
+                    )
+                  }
+                  className="w-full"
+                />
+              ) : (
+                <span className="font-medium">{formatMoney(val)}</span>
+              ),
+          },
+        ];
+
+        if (isPlanEditing) {
+          mainOtherCostColumns.push({
+            title: "操作",
+            key: "action",
+            width: 80,
+            align: "center",
+            render: (_, record) => (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() =>
+                  setDraftOtherCostDetails(
+                    draftOtherCostDetails.filter(
+                      (item) => item.key !== record.key
+                    )
+                  )
+                }
+              />
+            ),
+          });
+        }
+
+        const updateApplyData = updateTableData;
+
+        const applyNodePlanColumns = [
+          {
+            title: "项目节点",
+            dataIndex: "node",
+            width: "18%",
+            render: (val, record) => (
+              <Input
+                value={val || ""}
+                placeholder="请输入项目节点"
+                onChange={(event) =>
+                  updateApplyData(
+                    setApplyNodePlanData,
+                    applyNodePlanData,
+                    record.key,
+                    "node",
+                    event.target.value
+                  )
+                }
+                bordered={false}
+                className="bg-gray-50 rounded"
+              />
+            ),
+          },
+          {
+            title: "内容",
+            dataIndex: "content",
+            width: "30%",
+            render: (val, record) => (
+              <Input
+                value={val || ""}
+                placeholder="请输入内容"
+                onChange={(event) =>
+                  updateApplyData(
+                    setApplyNodePlanData,
+                    applyNodePlanData,
+                    record.key,
+                    "content",
+                    event.target.value
+                  )
+                }
+                bordered={false}
+                className="bg-gray-50 rounded"
+              />
+            ),
+          },
+          {
+            title: "周期",
+            dataIndex: "period",
+            width: "22%",
+            render: (val, record) => (
+              <Input
+                value={val || ""}
+                placeholder="请输入周期"
+                onChange={(event) =>
+                  updateApplyData(
+                    setApplyNodePlanData,
+                    applyNodePlanData,
+                    record.key,
+                    "period",
+                    event.target.value
+                  )
+                }
+                bordered={false}
+                className="bg-gray-50 rounded"
+              />
+            ),
+          },
+          {
+            title: "岗位",
+            dataIndex: "roles",
+            width: "30%",
+            render: (val, record) => (
+              <Select
+                mode="multiple"
+                className="w-full"
+                value={val || []}
+                placeholder="请选择岗位"
+                options={DELIVERY_ROLE_OPTIONS.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+                onChange={(value) =>
+                  updateApplyData(
+                    setApplyNodePlanData,
+                    applyNodePlanData,
+                    record.key,
+                    "roles",
+                    value
+                  )
+                }
+                optionFilterProp="label"
+                bordered={false}
+              />
+            ),
+          },
+          {
+            title: "操作",
+            width: 70,
+            align: "center",
+            render: (_, record) => (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() =>
+                  setApplyNodePlanData(
+                    applyNodePlanData.filter((item) => item.key !== record.key)
+                  )
+                }
+              />
+            ),
+          },
+        ];
+
+        const applyLaborColumns = [
+          {
+            title: "岗位",
+            dataIndex: "role",
+            render: (val, record) => (
+              <Select
+                className="w-full"
+                value={val || undefined}
+                placeholder="请选择岗位"
+                options={DELIVERY_ROLE_OPTIONS.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+                onChange={(value) =>
+                  updateLaborData(
+                    setApplyLaborData,
+                    applyLaborData,
+                    record.key,
+                    "role",
+                    value
+                  )
+                }
+                bordered={false}
+                showSearch
+                optionFilterProp="label"
+              />
+            ),
+          },
+          {
+            title: "人月",
+            dataIndex: "months",
+            width: 100,
+            render: (val, record) => (
+              <InputNumber
+                value={val}
+                min={0}
+                step={0.1}
+                onChange={(v) =>
+                  updateLaborData(
+                    setApplyLaborData,
+                    applyLaborData,
+                    record.key,
+                    "months",
+                    v
+                  )
+                }
+                bordered={false}
+                className="w-full bg-gray-50 rounded"
+              />
+            ),
+          },
+          {
+            title: "工资合计",
+            dataIndex: "salary",
+            width: 150,
+            render: (val) => (
+              <span className="font-medium">{formatMoney(val)}</span>
+            ),
+          },
+          {
+            title: "操作",
+            width: 70,
+            align: "center",
+            render: (_, record) => (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() =>
+                  setApplyLaborData(
+                    applyLaborData.filter((i) => i.key !== record.key)
+                  )
+                }
+              />
+            ),
+          },
+        ];
+
+        const applyOtherCostColumns = [
+          {
+            title: "费用类型",
+            dataIndex: "category",
+            render: (val, record) => (
+              <Select
+                className="w-full"
+                value={val || undefined}
+                placeholder="请选择费用类型"
+                options={DIRECT_COST_TYPE_OPTIONS}
+                onChange={(value) =>
+                  updateApplyData(
+                    setApplyOtherCostData,
+                    applyOtherCostData,
+                    record.key,
+                    "category",
+                    value
+                  )
+                }
+                bordered={false}
+              />
+            ),
+          },
+          {
+            title: "费用内容",
+            dataIndex: "content",
+            render: (val, record) => (
+              <Input
+                className="w-full"
+                value={val || ""}
+                placeholder="请输入费用内容"
+                onChange={(event) =>
+                  updateApplyData(
+                    setApplyOtherCostData,
+                    applyOtherCostData,
+                    record.key,
+                    "content",
+                    event.target.value
+                  )
+                }
+                bordered={false}
+              />
+            ),
+          },
+          {
+            title: "总金额",
+            dataIndex: "amount",
+            width: 160,
+            render: (val, record) => (
+              <InputNumber
+                value={val}
+                min={0}
+                onChange={(v) =>
+                  updateApplyData(
+                    setApplyOtherCostData,
+                    applyOtherCostData,
+                    record.key,
+                    "amount",
+                    v
+                  )
+                }
+                bordered={false}
+                className="w-full bg-gray-50 rounded"
+              />
+            ),
+          },
+          {
+            title: "操作",
+            width: 70,
+            align: "center",
+            render: (_, record) => (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() =>
+                  setApplyOtherCostData(
+                    applyOtherCostData.filter((i) => i.key !== record.key)
+                  )
+                }
+              />
+            ),
+          },
+        ];
+
+        const applyLaborTotal = useMemo(
+          () =>
+            applyLaborData.reduce((sum, item) => sum + (item.salary || 0), 0),
+          [applyLaborData]
+        );
+        const applyOtherCostTotal = useMemo(
+          () =>
+            applyOtherCostData.reduce(
+              (sum, item) => sum + (item.amount || 0),
+              0
+            ),
+          [applyOtherCostData]
+        );
+
+        const handleSwitchProjectConfirm = () => {
+          const proj = projectList.find((p) => p.id === tempSelectedProjectId);
+          if (proj) {
+            setCurrentProject({
+              ...currentProject,
+              id: proj.id,
+              name: proj.name,
+              manager: proj.manager + " (邮箱已隐藏)",
+              status: "待申请",
+            });
+            message.success(`已切换至项目：${proj.name}`);
+          }
+          setIsSwitchModalVisible(false);
+        };
+
+        const openApplyModal = () => {
+          setApplyNodePlanData(
+            nodePlan.map((item) => ({
+              ...item,
+              roles: [...(item.roles || [])],
+            }))
+          );
+          setApplyLaborData(laborDetails.map((item) => ({ ...item })));
+          setApplyOtherCostData(
+            otherCostDetails.map((item) => ({
+              ...item,
+              content: item.subType || item.content,
+            }))
+          );
+          setIsApplyModalVisible(true);
+        };
+
+        const handleStartPlanEdit = () => {
+          setDraftNodePlan(
+            nodePlan.map((item) => ({
+              ...item,
+              roles: [...(item.roles || [])],
+            }))
+          );
+          setDraftLaborDetails(laborDetails.map((item) => ({ ...item })));
+          setDraftOtherCostDetails(
+            otherCostDetails.map((item) => ({ ...item }))
+          );
+          setIsPlanEditing(true);
+        };
+
+        const handleCancelPlanEdit = () => {
+          setDraftNodePlan(
+            nodePlan.map((item) => ({
+              ...item,
+              roles: [...(item.roles || [])],
+            }))
+          );
+          setDraftLaborDetails(laborDetails.map((item) => ({ ...item })));
+          setDraftOtherCostDetails(
+            otherCostDetails.map((item) => ({ ...item }))
+          );
+          setIsPlanEditing(false);
+          message.info("已取消编辑");
+        };
+
+        const handleConfirmPlanEdit = () => {
+          setNodePlan(
+            draftNodePlan.map((item) => ({
+              ...item,
+              roles: [...(item.roles || [])],
+            }))
+          );
+          setLaborDetails(draftLaborDetails.map((item) => ({ ...item })));
+          setOtherCostDetails(
+            draftOtherCostDetails.map((item) => ({ ...item }))
+          );
+          setIsPlanEditing(false);
+          message.success("交付计划已更新");
+        };
+
+        const handleSubmitApplication = () => {
+          if (applyLaborData.length === 0 && applyOtherCostData.length === 0) {
+            message.warning("请至少填写一项费用明细");
+            return;
+          }
+          const nextLabor = applyLaborData.map((item) => ({
+            key: item.key,
+            role: item.role,
+            months: item.months,
+            salary: calculateLaborSalary(item.role, item.months),
+          }));
+          const nextOther = applyOtherCostData.map((item) => ({
+            key: item.key,
+            category: item.category || "",
+            subType: item.content || item.subType || "",
+            amount: item.amount || 0,
+          }));
+          const nextNodes = applyNodePlanData.map((item) => ({
+            key: item.key,
+            node: item.node || "",
+            content: item.content || "",
+            period: item.period || "",
+            roles: [...(item.roles || [])],
+          }));
+          setNodePlan(nextNodes);
+          setLaborDetails(nextLabor);
+          setOtherCostDetails(nextOther);
+          message.success({
+            content: "计划申请已成功提交至财务部审核",
+            duration: 3,
+          });
+          setIsApplyModalVisible(false);
+          setCurrentProject({ ...currentProject, status: "审核中" });
+        };
+
+        return (
+          <div className="p-4 md:p-6 overflow-auto">
+            <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 min-h-full flex flex-col">
+              <div className="px-8 py-5 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50/50 rounded-t-xl">
+                <div className="flex flex-col mb-4 md:mb-0">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <span className="text-xl font-bold text-gray-800">
+                      {currentProject.name}
+                    </span>
+                    {currentProject.status === "待申请" ? (
+                      <Tag
+                        color="warning"
+                        className="m-0 border-orange-200 text-orange-600 bg-orange-50"
+                      >
+                        待申请
+                      </Tag>
+                    ) : (
+                      <Tag color="processing" className="m-0 border-blue-200">
+                        审核中
+                      </Tag>
+                    )}
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<SwapOutlined />}
+                      onClick={() => setIsSwitchModalVisible(true)}
+                      className="text-gray-500 hover:text-blue-500"
+                    >
+                      切换项目
+                    </Button>
+                  </div>
+                  <span className="text-gray-500">
+                    项目编号：{currentProject.id}
+                  </span>
+                </div>
+                <Space>
+                  {isPlanEditing ? (
+                    <>
+                      <Button size="large" onClick={handleCancelPlanEdit}>
+                        取消
+                      </Button>
+                      <Button
+                        type="primary"
+                        size="large"
+                        className="shadow-md shadow-blue-500/20"
+                        onClick={handleConfirmPlanEdit}
+                      >
+                        确认
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button onClick={handleStartPlanEdit} size="large">
+                        编辑
+                      </Button>
+                      <Button
+                        type="primary"
+                        size="large"
+                        className="shadow-md shadow-blue-500/20"
+                        onClick={openApplyModal}
+                      >
+                        发起计划申请
+                      </Button>
+                    </>
+                  )}
+                </Space>
+              </div>
+
+              <div className="p-8 flex-1">
+                <div className="mb-8">
+                  <div className="text-base font-semibold text-gray-800 mb-4 flex items-center">
+                    <div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />{" "}
+                    项目基础信息
+                  </div>
+                  <Descriptions
+                    column={{ xxl: 3, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}
+                    bordered
+                    size="middle"
+                    className="bg-white"
+                  >
+                    <Descriptions.Item label="项目编号">
+                      {currentProject.id}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="项目类型">
+                      {currentProject.type}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="项目经理">
+                      {currentProject.manager}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="参与交付部门">
+                      {currentProject.dept}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="预计交付周期" span={2}>
+                      {currentProject.period}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </div>
+
+                <div className="mb-8">
+                  <div className="text-base font-semibold text-gray-800 mb-4 flex items-center">
+                    <div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />{" "}
+                    项目节点计划
+                  </div>
+                  <div className="border border-gray-100 rounded-xl p-2">
+                    <Table
+                      columns={mainNodePlanColumns}
+                      dataSource={mainNodePlanDataSource}
+                      pagination={false}
+                      bordered
+                      className="mt-2"
+                    />
+                    {isPlanEditing ? (
+                      <div
+                        className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium"
+                        onClick={() =>
+                          setDraftNodePlan([
+                            ...draftNodePlan,
+                            {
+                              key: Date.now().toString(),
+                              node: "",
+                              content: "",
+                              period: "",
+                              roles: [],
+                            },
+                          ])
+                        }
+                      >
+                        <PlusOutlined className="mr-1" /> 新增节点
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="text-base font-semibold text-gray-800 mb-4 flex items-center">
+                  <div className="w-1 h-4 bg-blue-600 mr-2 rounded-sm" />{" "}
+                  项目预算
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-6 mb-8">
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100/30 border border-orange-200/60 rounded-xl p-6 flex-1 relative overflow-hidden group">
+                    <div className="absolute right-[-20px] top-[-20px] text-orange-500/5 opacity-20 group-hover:scale-110 transition duration-500">
+                      <TeamOutlined style={{ fontSize: "120px" }} />
+                    </div>
+                    <div className="text-orange-800/70 text-sm font-medium mb-2 relative z-10">
+                      计划人工预算总额 (元)
+                    </div>
+                    <div className="text-3xl font-bold text-orange-600 relative z-10 font-mono">
+                      ¥ {formatMoney(mainLaborTotal)}
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100/30 border border-blue-200/60 rounded-xl p-6 flex-1 relative overflow-hidden group">
+                    <div className="absolute right-[-20px] top-[-20px] text-blue-500/5 opacity-20 group-hover:scale-110 transition duration-500">
+                      <AccountBookOutlined style={{ fontSize: "120px" }} />
+                    </div>
+                    <div className="text-blue-800/70 text-sm font-medium mb-2 relative z-10">
+                      计划直接成本预算总额 (元)
+                    </div>
+                    <div className="text-3xl font-bold text-blue-600 relative z-10 font-mono">
+                      ¥ {formatMoney(mainOtherTotal)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border border-gray-100 rounded-xl p-2">
+                  <Tabs
+                    activeKey={activeTab}
+                    onChange={setActiveTab}
+                    className="px-2"
+                    items={[
+                      {
+                        key: "1",
+                        label: (
+                          <span className="px-4 text-base">人工费用明细</span>
+                        ),
+                        children: (
+                          <>
+                            <Table
+                              columns={mainLaborColumns}
+                              dataSource={mainLaborDataSource}
+                              pagination={false}
+                              className="mt-2"
+                            />
+                            {isPlanEditing ? (
+                              <div
+                                className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium"
+                                onClick={() =>
+                                  setDraftLaborDetails([
+                                    ...draftLaborDetails,
+                                    {
+                                      key: Date.now().toString(),
+                                      role: "",
+                                      months: 0,
+                                      salary: 0,
+                                    },
+                                  ])
+                                }
+                              >
+                                <PlusOutlined className="mr-1" /> 新增人员计划
+                              </div>
+                            ) : null}
+                          </>
+                        ),
+                      },
+                      {
+                        key: "2",
+                        label: (
+                          <span className="px-4 text-base">
+                            其他直接成本明细
+                          </span>
+                        ),
+                        children: (
+                          <>
+                            <Table
+                              columns={mainOtherCostColumns}
+                              dataSource={mainOtherCostDataSource}
+                              pagination={false}
+                              bordered
+                              className="mt-2"
+                            />
+                            {isPlanEditing ? (
+                              <div
+                                className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium"
+                                onClick={() =>
+                                  setDraftOtherCostDetails([
+                                    ...draftOtherCostDetails,
+                                    {
+                                      key: Date.now().toString(),
+                                      category: "",
+                                      subType: "",
+                                      amount: 0,
+                                    },
+                                  ])
+                                }
+                              >
+                                <PlusOutlined className="mr-1" /> 新增成本项
+                              </div>
+                            ) : null}
+                          </>
+                        ),
+                      },
+                    ]}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <Modal
-            title={<div className="text-lg font-bold text-gray-800">切换关联项目</div>}
-            open={isSwitchModalVisible}
-            onCancel={() => setIsSwitchModalVisible(false)}
-            onOk={handleSwitchProjectConfirm}
-            width={650}
-            okText="确认切换"
-            cancelText="取消"
-            destroyOnClose
-            centered
-          >
-            <div className="py-2">
-              <Input prefix={<SearchOutlined className="text-gray-400" />} placeholder="搜索项目名称 / 编号 / 客户" size="large" className="mb-5 rounded-lg bg-gray-50 border-gray-200 hover:border-blue-400 focus:bg-white transition" />
-              <div className="h-[350px] overflow-y-auto pr-2">
-                {projectList.map(proj => (
-                  <div key={proj.id} className={`project-select-card ${tempSelectedProjectId === proj.id ? 'active' : ''}`} onClick={() => setTempSelectedProjectId(proj.id)}>
-                    <Radio checked={tempSelectedProjectId === proj.id} className="mt-1 mr-4 scale-110" />
-                    <div className="flex-1">
-                      <div className="text-base font-semibold text-gray-800 mb-1.5">{proj.id} - {proj.name}</div>
-                      <div className="text-xs text-gray-500 bg-gray-50 inline-block px-2 py-1 rounded">
-                        客户：<span className="text-gray-700 font-medium mr-4">{proj.customer}</span>
-                        经理：<span className="text-gray-700 font-medium">{proj.manager}</span>
+            <Modal
+              title={
+                <div className="text-lg font-bold text-gray-800">
+                  切换关联项目
+                </div>
+              }
+              open={isSwitchModalVisible}
+              onCancel={() => setIsSwitchModalVisible(false)}
+              onOk={handleSwitchProjectConfirm}
+              width={650}
+              okText="确认切换"
+              cancelText="取消"
+              destroyOnClose
+              centered
+            >
+              <div className="py-2">
+                <Input
+                  prefix={<SearchOutlined className="text-gray-400" />}
+                  placeholder="搜索项目名称 / 编号 / 客户"
+                  size="large"
+                  className="mb-5 rounded-lg bg-gray-50 border-gray-200 hover:border-blue-400 focus:bg-white transition"
+                />
+                <div className="h-[350px] overflow-y-auto pr-2">
+                  {projectList.map((proj) => (
+                    <div
+                      key={proj.id}
+                      className={`project-select-card ${
+                        tempSelectedProjectId === proj.id ? "active" : ""
+                      }`}
+                      onClick={() => setTempSelectedProjectId(proj.id)}
+                    >
+                      <Radio
+                        checked={tempSelectedProjectId === proj.id}
+                        className="mt-1 mr-4 scale-110"
+                      />
+                      <div className="flex-1">
+                        <div className="text-base font-semibold text-gray-800 mb-1.5">
+                          {proj.id} - {proj.name}
+                        </div>
+                        <div className="text-xs text-gray-500 bg-gray-50 inline-block px-2 py-1 rounded">
+                          客户：
+                          <span className="text-gray-700 font-medium mr-4">
+                            {proj.customer}
+                          </span>
+                          经理：
+                          <span className="text-gray-700 font-medium">
+                            {proj.manager}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Modal>
+
+            <Modal
+              title={
+                <div className="text-lg font-bold text-gray-800">
+                  发起计划申请审批
+                </div>
+              }
+              open={isApplyModalVisible}
+              onCancel={() => setIsApplyModalVisible(false)}
+              width={1100}
+              destroyOnClose
+              centered
+              className="modal-borderless-table"
+              footer={[
+                <Button
+                  key="cancel"
+                  onClick={() => setIsApplyModalVisible(false)}
+                >
+                  取消
+                </Button>,
+                <Button
+                  key="submit"
+                  type="primary"
+                  onClick={handleSubmitApplication}
+                >
+                  提交申请
+                </Button>,
+              ]}
+            >
+              <div className="py-4 max-h-[65vh] overflow-y-auto px-2">
+                <div className="flex items-center mb-8 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                  <span className="text-red-500 mr-1">*</span>
+                  <span className="w-24 text-gray-600 font-medium">
+                    关联项目：
+                  </span>
+                  <div className="flex-1 text-gray-800 font-semibold">
+                    {currentProject.name}（{currentProject.id}）
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-800 font-medium text-base">
+                        项目节点计划
+                      </span>
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <Table
+                      columns={applyNodePlanColumns}
+                      dataSource={applyNodePlanData}
+                      pagination={false}
+                      size="middle"
+                      rowKey="key"
+                    />
+                    <div
+                      className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium"
+                      onClick={() =>
+                        setApplyNodePlanData([
+                          ...applyNodePlanData,
+                          {
+                            key: Date.now().toString(),
+                            node: "",
+                            content: "",
+                            period: "",
+                            roles: [],
+                          },
+                        ])
+                      }
+                    >
+                      <PlusOutlined className="mr-1" /> 新增节点
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <span className="text-red-500 mr-1">*</span>
+                      <span className="text-gray-800 font-medium text-base">
+                        直接人工费用预算
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      人工总额：
+                      <span className="text-orange-600 font-bold text-lg">
+                        {formatMoney(applyLaborTotal)}
+                      </span>{" "}
+                      元
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <Table
+                      columns={applyLaborColumns}
+                      dataSource={applyLaborData}
+                      pagination={false}
+                      size="middle"
+                      rowKey="key"
+                    />
+                    <div
+                      className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium"
+                      onClick={() =>
+                        setApplyLaborData([
+                          ...applyLaborData,
+                          {
+                            key: Date.now().toString(),
+                            role: "",
+                            months: 0,
+                            salary: 0,
+                          },
+                        ])
+                      }
+                    >
+                      <PlusOutlined className="mr-1" /> 新增人员计划
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <span className="text-red-500 mr-1">*</span>
+                      <span className="text-gray-800 font-medium text-base">
+                        直接其他成本预算
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      成本总额：
+                      <span className="text-blue-600 font-bold text-lg">
+                        {formatMoney(applyOtherCostTotal)}
+                      </span>{" "}
+                      元
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <Table
+                      columns={applyOtherCostColumns}
+                      dataSource={applyOtherCostData}
+                      pagination={false}
+                      size="middle"
+                      rowKey="key"
+                    />
+                    <div
+                      className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium"
+                      onClick={() =>
+                        setApplyOtherCostData([
+                          ...applyOtherCostData,
+                          {
+                            key: Date.now().toString(),
+                            category: "",
+                            content: "",
+                            amount: 0,
+                          },
+                        ])
+                      }
+                    >
+                      <PlusOutlined className="mr-1" /> 新增成本项
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="w-16 text-gray-600 text-right mr-3 mt-1 font-medium">
+                    备注说明：
+                  </span>
+                  <Input.TextArea
+                    rows={3}
+                    placeholder="请输入申请审批备注（选填）"
+                    className="flex-1 rounded-md border-gray-300"
+                  />
+                </div>
+              </div>
+            </Modal>
+          </div>
+        );
+      }
+
+      function ProjectAccountingPage({
+        deliveryLaborDetails,
+        setDeliveryLaborDetails,
+        deliveryOtherCostDetails,
+        setDeliveryOtherCostDetails,
+      }) {
+        const [projectStatus, setProjectStatus] = useState("EMPTY");
+        const [hasContract, setHasContract] = useState(false);
+        const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
+        const [projectInfo, setProjectInfo] = useState({
+          id: "01TT-JS-2025004",
+          name: "金川县农村公路通行现状摸底调查及系统研发项目",
+        });
+        const [contractData, setContractData] = useState([]);
+        const [purchaseDetails, setPurchaseDetails] = useState({
+          software: 0,
+          equipment: 0,
+          material: 0,
+          techService: 0,
+          purchaseOther: 0,
+        });
+        const [rates, setRates] = useState({
+          management: 0.06,
+          research: 0.1,
+          dev: 0.15,
+          incomeTax: 0.18,
+        });
+        const [budgetSnapshots, setBudgetSnapshots] = useState({
+          initial: null,
+          formal: null,
+        });
+        const [activeBudgetView, setActiveBudgetView] = useState("current");
+        const [lastSubmittedType, setLastSubmittedType] = useState(null);
+        const [lockedBudgetType, setLockedBudgetType] = useState(null);
+
+        const isEditing = projectStatus === "EDITING";
+        const isApproved =
+          projectStatus === "APPROVED" || projectStatus === "SETTLED";
+        const isLocked =
+          lockedBudgetType === "formal" || projectStatus === "SETTLED";
+        const hasInitialBudget = Boolean(budgetSnapshots.initial);
+        const canStartFormal = hasContract && hasInitialBudget && !isLocked;
+        const currentBudgetPrepared =
+          Object.values(purchaseDetails).some((v) => v > 0) ||
+          contractData.length > 0;
+        const hasCompiledBudget =
+          currentBudgetPrepared ||
+          Boolean(budgetSnapshots.initial) ||
+          Boolean(budgetSnapshots.formal) ||
+          ["DRAFT", "SUBMITTED", "APPROVED", "SETTLED"].includes(projectStatus);
+
+        const displaySource =
+          !isEditing &&
+          activeBudgetView !== "current" &&
+          budgetSnapshots[activeBudgetView]
+            ? budgetSnapshots[activeBudgetView]
+            : {
+                contractData,
+                purchaseDetails,
+                deliveryLaborDetails,
+                deliveryOtherCostDetails,
+                rates,
+              };
+
+        const displayContractData = displaySource.contractData;
+        const displayPurchaseDetails =
+          displaySource.purchaseDetails || purchaseDetails;
+        const displayLaborDetails =
+          displaySource.deliveryLaborDetails || deliveryLaborDetails;
+        const displayOtherCostDetails =
+          displaySource.deliveryOtherCostDetails || deliveryOtherCostDetails;
+        const displayRates = displaySource.rates;
+        const laborDirectTotal = displayLaborDetails.reduce(
+          (sum, item) => sum + (item.salary || 0),
+          0
+        );
+        const otherCostBuckets = {
+          business: displayOtherCostDetails
+            .filter((item) => item.category === "业务招待费")
+            .reduce((sum, item) => sum + (item.amount || 0), 0),
+          travel: displayOtherCostDetails
+            .filter((item) => item.category === "差旅费用")
+            .reduce((sum, item) => sum + (item.amount || 0), 0),
+          vehicle: displayOtherCostDetails
+            .filter((item) => item.category === "车辆使用费")
+            .reduce((sum, item) => sum + (item.amount || 0), 0),
+          otherExpense: displayOtherCostDetails
+            .filter((item) => item.category === "其他费用")
+            .reduce((sum, item) => sum + (item.amount || 0), 0),
+        };
+
+        const hasDataPrepared = useMemo(
+          () =>
+            Object.values(displayPurchaseDetails).some((v) => v > 0) ||
+            displayContractData.length > 0 ||
+            displayLaborDetails.length > 0 ||
+            displayOtherCostDetails.length > 0,
+          [
+            displayPurchaseDetails,
+            displayContractData,
+            displayLaborDetails,
+            displayOtherCostDetails,
+          ]
+        );
+
+        const totals = useMemo(() => {
+          const totalContract = displayContractData.reduce(
+            (acc, cur) => acc + (cur.amount || 0),
+            0
+          );
+          const totalNet = displayContractData.reduce(
+            (acc, cur) => acc + (cur.netAmount || 0),
+            0
+          );
+          const purchaseTotal =
+            displayPurchaseDetails.software +
+            displayPurchaseDetails.equipment +
+            displayPurchaseDetails.material +
+            displayPurchaseDetails.techService +
+            displayPurchaseDetails.purchaseOther;
+          const laborTotal = laborDirectTotal;
+          const otherTotal =
+            otherCostBuckets.business +
+            otherCostBuckets.travel +
+            otherCostBuckets.vehicle +
+            otherCostBuckets.otherExpense;
+          const directTotal = purchaseTotal + laborTotal + otherTotal;
+          const managementFee = totalNet * displayRates.management;
+          const researchFund = totalNet * displayRates.research;
+          const devFund = totalNet * displayRates.dev;
+          const taxSurcharge = totalNet > 0 ? 14376.35 : 0;
+          const profitTotal = researchFund + devFund;
+          const indirectTotal = managementFee + taxSurcharge + profitTotal;
+          const incomeTaxAmount = devFund * displayRates.incomeTax;
+          const marketValue =
+            totalNet - directTotal - indirectTotal - incomeTaxAmount;
+          const grossProfit = totalNet - directTotal;
+          return {
+            totalContract,
+            totalNet,
+            managementFee,
+            researchFund,
+            devFund,
+            profitTotal,
+            indirectTotal,
+            incomeTaxAmount,
+            directTotal,
+            purchaseTotal,
+            laborTotal,
+            otherTotal,
+            marketValue,
+            grossProfit,
+            taxSurcharge,
+          };
+        }, [
+          displayContractData,
+          displayPurchaseDetails,
+          laborDirectTotal,
+          otherCostBuckets,
+          displayRates,
+        ]);
+
+        const actualFactors = {
+          s1: 1.18,
+          s2: 0.92,
+          s3: 1.08,
+          s4: 0.87,
+          s5: 0.96,
+          l1: 1.12,
+          o1: 0.88,
+          o2: 1.14,
+          o3: 0.73,
+          o4: 1.06,
+          "i1-1": 1,
+          "i1-2": 1,
+          p1: 1,
+          p2: 1,
+          t1: 1,
+          m1: 1,
+        };
+
+        const handleStartEdit = () => {
+          setProjectStatus("EDITING");
+          setActiveBudgetView("current");
+          if (hasContract && contractData.length === 0) {
+            setContractData([
+              {
+                key: "c-sync",
+                name: "同步：金川农村公路摸底调查正式协议",
+                amount: 6000000,
+                taxRate: 0.06,
+                netAmount: 5660377.35,
+              },
+            ]);
+          }
+        };
+
+        const handleCancel = () => {
+          setProjectStatus(
+            hasCompiledBudget ? (isApproved ? "APPROVED" : "DRAFT") : "EMPTY"
+          );
+          message.info("已取消编辑");
+        };
+        const handleSaveDraft = () => {
+          setProjectStatus("DRAFT");
+          setActiveBudgetView("current");
+          message.success("预算草稿已保存");
+        };
+        const saveBudgetSnapshot = (type, status) => {
+          const label = type === "initial" ? "初步预算 V1" : "正式预算 V1";
+          const snapshot = {
+            type,
+            status,
+            label,
+            contractData: contractData.map((item) => ({ ...item })),
+            purchaseDetails: { ...purchaseDetails },
+            deliveryLaborDetails: deliveryLaborDetails.map((item) => ({
+              ...item,
+            })),
+            deliveryOtherCostDetails: deliveryOtherCostDetails.map((item) => ({
+              ...item,
+            })),
+            rates: { ...rates },
+          };
+          setBudgetSnapshots((prev) => ({ ...prev, [type]: snapshot }));
+          setActiveBudgetView(type);
+        };
+        const handleViewInitialBudget = () => {
+          if (!budgetSnapshots.initial) {
+            saveBudgetSnapshot("initial", "approved");
+            message.success("初步预算快照已生成");
+          } else {
+            setActiveBudgetView("initial");
+            message.info("已切换到初步预算快照");
+          }
+          setProjectStatus("DRAFT");
+        };
+        const handleSubmitApply = (type) => {
+          const submitType = type === "official" ? "formal" : "initial";
+          if (submitType === "initial") {
+            handleViewInitialBudget();
+            return;
+          }
+          saveBudgetSnapshot(submitType, "submitted");
+          setLastSubmittedType(submitType);
+          setProjectStatus("SUBMITTED");
+          message.loading("财务正在提交正式预算审核...", 1.5);
+        };
+        const handleMockApprove = () => {
+          if (!lastSubmittedType) return;
+          setBudgetSnapshots((prev) => ({
+            ...prev,
+            [lastSubmittedType]: prev[lastSubmittedType]
+              ? { ...prev[lastSubmittedType], status: "approved" }
+              : prev[lastSubmittedType],
+          }));
+          if (lastSubmittedType === "formal") {
+            setLockedBudgetType("formal");
+            setActiveBudgetView("formal");
+          } else {
+            setActiveBudgetView("initial");
+          }
+          setProjectStatus("APPROVED");
+          message.success("模拟：正式预算已审批通过");
+        };
+        const toggleMockContract = () => {
+          const next = !hasContract;
+          setHasContract(next);
+          if (next) {
+            setContractData([
+              {
+                key: "c-sync",
+                name: "同步：金川农村公路摸底调查正式协议",
+                amount: 6000000,
+                taxRate: 0.06,
+                netAmount: 5660377.35,
+              },
+            ]);
+          } else {
+            setContractData([]);
+          }
+          message.info(
+            next ? "模拟：已关联正式合同" : "模拟：回到未签合同状态"
+          );
+        };
+
+        const contractColumns = [
+          {
+            title: "合同内容",
+            dataIndex: "name",
+            key: "name",
+            render: (text, record) =>
+              isEditing && !hasContract ? (
+                <Input
+                  value={text}
+                  size="small"
+                  placeholder="输入合同名称"
+                  onChange={(e) =>
+                    setContractData(
+                      contractData.map((i) =>
+                        i.key === record.key
+                          ? { ...i, name: e.target.value }
+                          : i
+                      )
+                    )
+                  }
+                />
+              ) : (
+                text
+              ),
+          },
+          {
+            title: "金额(含税)",
+            dataIndex: "amount",
+            align: "right",
+            width: 220,
+            render: (val, record) =>
+              isEditing && !hasContract ? (
+                <InputNumber
+                  value={val}
+                  size="small"
+                  style={{ width: "100%" }}
+                  onChange={(v) =>
+                    setContractData(
+                      contractData.map((i) =>
+                        i.key === record.key
+                          ? {
+                              ...i,
+                              amount: v || 0,
+                              netAmount: (v || 0) / (1 + i.taxRate),
+                            }
+                          : i
+                      )
+                    )
+                  }
+                  formatter={(v) =>
+                    `¥ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                />
+              ) : (
+                <Text strong>¥{(val || 0).toLocaleString()}</Text>
+              ),
+          },
+          {
+            title: "适用税率",
+            dataIndex: "taxRate",
+            width: 140,
+            render: (val, record) =>
+              isEditing && !hasContract ? (
+                <antd.Select
+                  value={val}
+                  size="small"
+                  style={{ width: "100%" }}
+                  onChange={(v) =>
+                    setContractData(
+                      contractData.map((i) =>
+                        i.key === record.key
+                          ? { ...i, taxRate: v, netAmount: i.amount / (1 + v) }
+                          : i
+                      )
+                    )
+                  }
+                  options={[
+                    { label: "3%", value: 0.03 },
+                    { label: "6%", value: 0.06 },
+                    { label: "13%", value: 0.13 },
+                  ]}
+                />
+              ) : (
+                <Tag color="blue">{(val * 100).toFixed(0)}%</Tag>
+              ),
+          },
+          {
+            title: "不含税额",
+            dataIndex: "netAmount",
+            align: "right",
+            width: 220,
+            render: (v) => (
+              <Text type="secondary" className="font-mono">
+                ¥
+                {(v || 0).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
+              </Text>
+            ),
+          },
+          ...(isEditing && !hasContract
+            ? [
+                {
+                  title: "操作",
+                  width: 60,
+                  align: "center",
+                  render: (_, r) => (
+                    <Button
+                      type="text"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() =>
+                        setContractData(
+                          contractData.filter((i) => i.key !== r.key)
+                        )
+                      }
+                    />
+                  ),
+                },
+              ]
+            : []),
+        ];
+
+        const accountingData = [
+          {
+            key: "d1",
+            name: <Text strong>一、项目直接成本费用</Text>,
+            budget: totals.directTotal,
+            children: [
+              {
+                key: "d1-1",
+                name: "设备/软件等采购",
+                budget: totals.purchaseTotal,
+                children: [
+                  {
+                    key: "s1",
+                    name: "软件采购款项",
+                    budget: displayPurchaseDetails.software,
+                  },
+                  {
+                    key: "s2",
+                    name: "设备采购款项",
+                    budget: displayPurchaseDetails.equipment,
+                  },
+                  {
+                    key: "s3",
+                    name: "材料采购款项",
+                    budget: displayPurchaseDetails.material,
+                  },
+                  {
+                    key: "s4",
+                    name: "技术服务费采购款项",
+                    budget: displayPurchaseDetails.techService,
+                  },
+                  {
+                    key: "s5",
+                    name: "其他款项",
+                    budget: displayPurchaseDetails.purchaseOther,
+                  },
+                ],
+              },
+              {
+                key: "d1-2",
+                name: "人工成本",
+                budget: totals.laborTotal,
+                children: [
+                  {
+                    key: "l1",
+                    name: "项目直接人工成本",
+                    budget: laborDirectTotal,
+                  },
+                ],
+              },
+              {
+                key: "d1-3",
+                name: "其他成本",
+                budget: totals.otherTotal,
+                children: [
+                  {
+                    key: "o1",
+                    name: "业务招待费",
+                    budget: otherCostBuckets.business,
+                  },
+                  {
+                    key: "o2",
+                    name: "差旅费用",
+                    budget: otherCostBuckets.travel,
+                  },
+                  {
+                    key: "o3",
+                    name: "车辆使用费",
+                    budget: otherCostBuckets.vehicle,
+                  },
+                  {
+                    key: "o4",
+                    name: "其他费用",
+                    budget: otherCostBuckets.otherExpense,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "i1",
+            name: <Text strong>二、间接费用 (只读)</Text>,
+            budget: totals.indirectTotal,
+            children: [
+              {
+                key: "i1-1",
+                name: "公司管理费",
+                budget: totals.managementFee,
+                rateField: "management",
+              },
+              { key: "i1-2", name: "税金及附加", budget: totals.taxSurcharge },
+              {
+                key: "i1-3",
+                name: "公司利润",
+                budget: totals.profitTotal,
+                children: [
+                  {
+                    key: "p1",
+                    name: "公司研究基金",
+                    budget: totals.researchFund,
+                    rateField: "research",
+                  },
+                  {
+                    key: "p2",
+                    name: "公司发展基金",
+                    budget: totals.devFund,
+                    rateField: "dev",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "t1",
+            name: <Text strong>三、公司所得税</Text>,
+            budget: totals.incomeTaxAmount,
+            rateField: "incomeTax",
+          },
+          {
+            key: "m1",
+            name: (
+              <div className="bg-blue-600 px-4 py-1.5 inline-block rounded text-white font-bold text-xs shadow-md">
+                最终项目市场包产值
+              </div>
+            ),
+            budget: totals.marketValue,
+          },
+        ];
+
+        const getActualForRecord = (record) => {
+          const factor = actualFactors[record.key] ?? 1;
+          return (record.budget || 0) * factor;
+        };
+
+        const renderCompare = (record) => {
+          const actualVal = getActualForRecord(record);
+          const budgetVal = record.budget || 0;
+          const diff = actualVal - budgetVal;
+          if (Math.abs(diff) < 0.01) {
+            return <span className="compare-badge flat">持平</span>;
+          }
+          if (diff > 0) {
+            return (
+              <span className="compare-badge over">
+                <ArrowUpOutlined /> 超出预算
+              </span>
+            );
+          }
+          return (
+            <span className="compare-badge under">
+              <ArrowDownOutlined /> 低于预算
+            </span>
+          );
+        };
+
+        const accountingColumns = [
+          {
+            title: "核算科目明细",
+            dataIndex: "name",
+            width: 340,
+            render: (text, record) => (
+              <Space>
+                {text}
+                {record.rateField && (
+                  <div className="flex items-center gap-1 ml-2 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
+                    <span className="text-blue-400 text-[10px] font-bold uppercase">
+                      比例:
+                    </span>
+                    {isEditing ? (
+                      <InputNumber
+                        size="small"
+                        min={0}
+                        max={100}
+                        style={{ width: 60 }}
+                        value={rates[record.rateField] * 100}
+                        onChange={(v) =>
+                          setRates({
+                            ...rates,
+                            [record.rateField]: (v || 0) / 100,
+                          })
+                        }
+                        formatter={(v) => `${v}%`}
+                        variant="borderless"
+                        className="font-bold text-blue-700"
+                      />
+                    ) : (
+                      <span className="text-blue-600 font-bold text-xs">
+                        {(rates[record.rateField] * 100).toFixed(1)}%
+                      </span>
+                    )}
+                  </div>
+                )}
+              </Space>
+            ),
+          },
+          {
+            title: "预算金额 (元)",
+            dataIndex: "budget",
+            align: "right",
+            width: 220,
+            render: (val, record) => {
+              return (
+                <Text strong className="font-mono text-base">
+                  ¥{" "}
+                  {(val || 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })}
+                </Text>
+              );
+            },
+          },
+          ...(isApproved
+            ? [
+                {
+                  title: "过程实际支出 (元)",
+                  key: "actual",
+                  align: "right",
+                  width: 220,
+                  render: (_, record) => {
+                    const actualVal = getActualForRecord(record);
+                    return (
+                      <Text
+                        className={
+                          actualVal > (record.budget || 0)
+                            ? "amount-danger"
+                            : "amount-success"
+                        }
+                      >
+                        ¥{" "}
+                        {actualVal.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
+                      </Text>
+                    );
+                  },
+                },
+                {
+                  title: "对比",
+                  key: "compare",
+                  width: 140,
+                  render: (_, record) => renderCompare(record),
+                },
+              ]
+            : []),
+        ];
+
+        return (
+          <div className="overflow-auto bg-[#f0f2f5]">
+            <div className="main-content-wrapper space-y-6">
+              <div className="flex justify-end items-center">
+                <Space size="large">
+                  <Button
+                    type="dashed"
+                    size="small"
+                    icon={<SwapOutlined />}
+                    onClick={toggleMockContract}
+                  >
+                    模拟切换: {hasContract ? "已签合同项目" : "未签合同项目"}
+                  </Button>
+                  {projectStatus === "SUBMITTED" && (
+                    <Button
+                      type="primary"
+                      ghost
+                      size="small"
+                      onClick={handleMockApprove}
+                    >
+                      模拟审批通过
+                    </Button>
+                  )}
+                </Space>
+              </div>
+
+              <Card
+                className="project-header-card shadow-sm"
+                bodyStyle={{ padding: "24px 32px" }}
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <Title level={3} className="!m-0 tracking-tight">
+                      {projectInfo.name}
+                    </Title>
+                    <Space className="mt-2" split={<Divider type="vertical" />}>
+                      <Text type="secondary" className="text-xs font-mono">
+                        编号：{projectInfo.id}
+                      </Text>
+                      <Button
+                        type="link"
+                        size="small"
+                        icon={<SwapOutlined />}
+                        onClick={() => setIsSwitchModalOpen(true)}
+                      >
+                        切换项目
+                      </Button>
+                      <Tag
+                        color={
+                          projectStatus === "SUBMITTED"
+                            ? "orange"
+                            : isApproved
+                            ? "success"
+                            : "default"
+                        }
+                        bordered={false}
+                      >
+                        {projectStatus === "EMPTY"
+                          ? "待编制"
+                          : projectStatus === "EDITING"
+                          ? "编制中"
+                          : projectStatus === "DRAFT"
+                          ? "已编制"
+                          : projectStatus === "SUBMITTED"
+                          ? "审批中"
+                          : projectStatus === "SETTLED"
+                          ? "已结项"
+                          : "执行中"}
+                      </Tag>
+                    </Space>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {!isEditing && !hasCompiledBudget && (
+                      <Button
+                        type="primary"
+                        size="large"
+                        icon={<EditOutlined />}
+                        onClick={handleStartEdit}
+                        className="btn-action shadow-md"
+                      >
+                        编制核算预算
+                      </Button>
+                    )}
+                    {!isEditing && hasCompiledBudget && !isLocked && (
+                      <Space size="middle">
+                        <Button
+                          size="large"
+                          icon={<EditOutlined />}
+                          onClick={handleStartEdit}
+                        >
+                          编辑
+                        </Button>
+                        {!hasInitialBudget && (
+                          <Button
+                            type="primary"
+                            size="large"
+                            icon={<HistoryOutlined />}
+                            onClick={handleViewInitialBudget}
+                            className="btn-action"
+                          >
+                            查看初步预算
+                          </Button>
+                        )}
+                        {canStartFormal && (
+                          <Button
+                            type="primary"
+                            size="large"
+                            icon={<CheckCircleOutlined />}
+                            onClick={() => handleSubmitApply("official")}
+                            className="shadow-lg shadow-blue-500/30 btn-action"
+                          >
+                            财务发起正式预算
+                          </Button>
+                        )}
+                      </Space>
+                    )}
+                    {isEditing && (
+                      <Space size="middle">
+                        <Button
+                          size="large"
+                          icon={<CloseOutlined />}
+                          onClick={handleCancel}
+                        >
+                          取消
+                        </Button>
+                        <Button
+                          size="large"
+                          icon={<SaveOutlined />}
+                          onClick={handleSaveDraft}
+                        >
+                          保存草稿
+                        </Button>
+                        <Space>
+                          <Button
+                            type="primary"
+                            size="large"
+                            icon={<HistoryOutlined />}
+                            onClick={handleViewInitialBudget}
+                            className="btn-action"
+                          >
+                            查看初步预算
+                          </Button>
+                          <Tooltip
+                            title={
+                              !canStartFormal
+                                ? "正式预算需要先签订合同且存在初步预算"
+                                : ""
+                            }
+                          >
+                            <Button
+                              type="primary"
+                              size="large"
+                              icon={<CheckCircleOutlined />}
+                              disabled={!canStartFormal}
+                              className="shadow-lg shadow-blue-500/30 btn-action"
+                              onClick={() => handleSubmitApply("official")}
+                            >
+                              财务发起正式预算
+                            </Button>
+                          </Tooltip>
+                        </Space>
+                      </Space>
+                    )}
+                    {isLocked && (
+                      <div className="bg-gray-100/50 border border-gray-200 rounded-lg px-6 py-2 flex items-center gap-2 shadow-inner">
+                        <LockOutlined className="text-gray-400" />
+                        <Text strong className="text-gray-400 text-sm italic">
+                          核算已进入锁定周期
+                        </Text>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {(budgetSnapshots.initial || budgetSnapshots.formal) &&
+                  !isEditing && (
+                    <div className="mb-6 flex justify-end">
+                      <Radio.Group
+                        value={activeBudgetView}
+                        onChange={(e) => setActiveBudgetView(e.target.value)}
+                        optionType="button"
+                        buttonStyle="solid"
+                        options={[
+                          ...(currentBudgetPrepared
+                            ? [{ label: "当前编制稿", value: "current" }]
+                            : []),
+                          ...(budgetSnapshots.initial
+                            ? [
+                                {
+                                  label: budgetSnapshots.initial.label,
+                                  value: "initial",
+                                },
+                              ]
+                            : []),
+                          ...(budgetSnapshots.formal
+                            ? [
+                                {
+                                  label: budgetSnapshots.formal.label,
+                                  value: "formal",
+                                },
+                              ]
+                            : []),
+                        ]}
+                      />
+                    </div>
+                  )}
+
+                <Descriptions
+                  column={3}
+                  size="small"
+                  bordered
+                  className="bg-white/50 mb-8 rounded-lg overflow-hidden"
+                >
+                  <Descriptions.Item label="项目类型">
+                    软件开发与技术服务
+                  </Descriptions.Item>
+                  <Descriptions.Item label="项目经理">
+                    汪云 (wangyun@01road.com)
+                  </Descriptions.Item>
+                  <Descriptions.Item label="参与交付部门">
+                    咨询设计部 / 研发部
+                  </Descriptions.Item>
+                  <Descriptions.Item label="预计周期" span={3}>
+                    2025-04-01 ~ 2026-04-30
+                  </Descriptions.Item>
+                </Descriptions>
+
+                <div className="mt-8 px-4 pb-2">
+                  <Steps
+                    size="small"
+                    current={
+                      projectStatus === "SUBMITTED" ? 1 : isApproved ? 3 : 0
+                    }
+                    items={[
+                      {
+                        title: "项目立项",
+                        description: "2025-03-15",
+                        icon: <HistoryOutlined />,
+                      },
+                      {
+                        title: "初步预算",
+                        description: hasInitialBudget
+                          ? "已生成"
+                          : hasCompiledBudget
+                          ? "可查看"
+                          : "未开始",
+                      },
+                      {
+                        title: "正式预算",
+                        description:
+                          budgetSnapshots.formal?.status === "approved"
+                            ? "已锁定"
+                            : projectStatus === "SUBMITTED" &&
+                              lastSubmittedType === "formal"
+                            ? "审核中"
+                            : hasContract
+                            ? "待发起"
+                            : "待同步",
+                      },
+                      {
+                        title: "执行核算",
+                        description: isApproved ? "监控中" : "待开启",
+                      },
+                      { title: "结算交付", icon: <CheckCircleOutlined /> },
+                    ]}
+                  />
+                </div>
+              </Card>
+
+              <Row gutter={16}>
+                <Col span={6}>
+                  <Card className="stat-card shadow-sm" bordered={false}>
+                    <Statistic
+                      title="合同含税总额"
+                      value={totals.totalContract}
+                      prefix="¥"
+                      precision={2}
+                    />
+                    <div className="mt-1">
+                      <Tag
+                        color={hasContract ? "success" : "default"}
+                        bordered={false}
+                        className="text-[10px] m-0"
+                      >
+                        {hasContract ? "正式合同" : "预估阶段"}
+                      </Tag>
+                    </div>
+                  </Card>
+                </Col>
+                <Col span={6}>
+                  <Card className="stat-card shadow-sm" bordered={false}>
+                    <Statistic
+                      title="不含税收入 (预算)"
+                      value={totals.totalNet}
+                      prefix="¥"
+                      precision={2}
+                      valueStyle={{ color: "#1677ff" }}
+                    />
+                    <div className="mt-1 opacity-0">-</div>
+                  </Card>
+                </Col>
+                <Col span={6}>
+                  <Card className="stat-card shadow-sm" bordered={false}>
+                    <Statistic
+                      title="预估总利润 (预算)"
+                      value={totals.grossProfit}
+                      prefix="¥"
+                      precision={2}
+                      valueStyle={{ color: "#3f8600" }}
+                    />
+                  </Card>
+                </Col>
+                <Col span={6}>
+                  <Card
+                    className="stat-card bg-blue-600 shadow-blue-500/20"
+                    bordered={false}
+                  >
+                    <Statistic
+                      title={
+                        <span className="text-blue-100 font-medium">
+                          预估市场包产值
+                        </span>
+                      }
+                      value={totals.marketValue}
+                      prefix="¥"
+                      precision={2}
+                      valueStyle={{ color: "#fff", fontWeight: "bold" }}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+
+              <Card
+                title={
+                  <Space>
+                    <div className="w-1 h-4 bg-blue-600 rounded-full" />
+                    <span>合同金额构成细项</span>
+                  </Space>
+                }
+                size="small"
+                extra={
+                  isEditing &&
+                  !hasContract && (
+                    <Button
+                      type="primary"
+                      ghost
+                      size="small"
+                      icon={<PlusOutlined />}
+                      onClick={() =>
+                        setContractData([
+                          ...contractData,
+                          {
+                            key: Date.now(),
+                            name: "预估合同项",
+                            amount: 0,
+                            taxRate: 0.06,
+                            netAmount: 0,
+                          },
+                        ])
+                      }
+                    >
+                      添加合同行
+                    </Button>
+                  )
+                }
+              >
+                <Table
+                  columns={contractColumns}
+                  dataSource={isEditing ? contractData : displayContractData}
+                  pagination={false}
+                  size="small"
+                  locale={{
+                    emptyText:
+                      "暂无数据，请在编辑模式下录入预估额或关联正式合同",
+                  }}
+                />
+              </Card>
+
+              <Card
+                title={
+                  <div className="flex justify-between items-center w-full pr-2">
+                    <Space>
+                      <div className="w-1 h-4 bg-blue-600 rounded-full" />
+                      <span>项目预算执行核心明细对照</span>
+                    </Space>
+                    {isApproved && projectStatus !== "SETTLED" && (
+                      <Button
+                        danger
+                        type="primary"
+                        size="small"
+                        shape="round"
+                        icon={<CheckCircleOutlined />}
+                        onClick={() => setProjectStatus("SETTLED")}
+                      >
+                        确认结算结项
+                      </Button>
+                    )}
+                  </div>
+                }
+                size="small"
+              >
+                {!hasCompiledBudget && !isEditing ? (
+                  <Empty
+                    description="该项目尚未编制预算，请点击上方按钮开始"
+                    className="py-20"
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  >
+                    <Button
+                      type="primary"
+                      size="large"
+                      icon={<EditOutlined />}
+                      onClick={handleStartEdit}
+                    >
+                      立即编制核算草案
+                    </Button>
+                  </Empty>
+                ) : (
+                  <Table
+                    columns={accountingColumns}
+                    dataSource={accountingData}
+                    pagination={false}
+                    expandable={{ defaultExpandAllRows: true }}
+                    bordered
+                    size="middle"
+                    rowClassName={(record) =>
+                      record.children ? "bg-gray-50/60 font-medium" : ""
+                    }
+                  />
+                )}
+              </Card>
+            </div>
+
+            <Modal
+              title={<div className="text-lg font-bold">切换项目</div>}
+              open={isSwitchModalOpen}
+              onCancel={() => setIsSwitchModalOpen(false)}
+              footer={[
+                <Button key="c" onClick={() => setIsSwitchModalOpen(false)}>
+                  取消
+                </Button>,
+                <Button
+                  key="ok"
+                  type="primary"
+                  onClick={() => setIsSwitchModalOpen(false)}
+                >
+                  确定
+                </Button>,
+              ]}
+              width={680}
+              destroyOnClose
+              centered
+            >
+              <Input
+                prefix={<SearchOutlined className="text-gray-400" />}
+                placeholder="搜索项目名称 / 编号 / 客户"
+                size="large"
+                className="mb-6 rounded-lg"
+              />
+              <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2">
+                {[
+                  {
+                    id: "01TT-ZX-2026005",
+                    name: "屏山县安上社区老旧街区改造项目",
+                    client: "北京中咨路捷工程咨询",
+                    manager: "汪云",
+                  },
+                  {
+                    id: "01TT-ZX-2026004",
+                    name: "简阳市中心镇片区生态修复项目",
+                    client: "四川交投建设工程",
+                    manager: "李四",
+                  },
+                  {
+                    id: "01TT-ZX-2026003",
+                    name: "美姑县“一老一小”信息化项目",
+                    client: "美姑县民政局",
+                    manager: "张三",
+                  },
+                ].map((p) => (
+                  <div
+                    key={p.id}
+                    className={`project-item ${
+                      p.id === projectInfo.id ? "active" : ""
+                    }`}
+                    onClick={() => {
+                      setProjectInfo({ id: p.id, name: p.name });
+                      setIsSwitchModalOpen(false);
+                      message.success(`已切换至：${p.name}`);
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Radio checked={p.id === projectInfo.id} />
+                      <div>
+                        <div className="font-bold text-gray-800">
+                          {p.id} - {p.name}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          客户：{p.client} | 经理：{p.manager}
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </Modal>
-
-          <Modal
-            title={<div className="text-lg font-bold text-gray-800">发起计划申请审批</div>}
-            open={isApplyModalVisible}
-            onCancel={() => setIsApplyModalVisible(false)}
-            width={950}
-            destroyOnClose
-            centered
-            className="modal-borderless-table"
-            footer={[
-              <Button key="cancel" onClick={() => setIsApplyModalVisible(false)}>取消</Button>,
-              <Button key="submit" type="primary" onClick={handleSubmitApplication}>提交申请</Button>,
-            ]}
-          >
-            <div className="py-4 max-h-[65vh] overflow-y-auto px-2">
-              <div className="flex items-center mb-8 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
-                <span className="text-red-500 mr-1">*</span>
-                <span className="w-24 text-gray-600 font-medium">关联项目：</span>
-                <div className="flex-1 text-gray-800 font-semibold">
-                  {currentProject.name}（{currentProject.id}）
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <span className="text-red-500 mr-1">*</span>
-                    <span className="text-gray-800 font-medium text-base">直接人工费用预算</span>
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    人工总额：<span className="text-orange-600 font-bold text-lg">{formatMoney(applyLaborTotal)}</span> 元
-                  </div>
-                </div>
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
-                  <Table columns={applyLaborColumns} dataSource={applyLaborData} pagination={false} size="middle" rowKey="key" />
-                  <div className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium" onClick={() => setApplyLaborData([...applyLaborData, { key: Date.now().toString(), role: '', months: 0, salary: 0 }])}>
-                    <PlusOutlined className="mr-1" /> 新增人员计划
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <span className="text-red-500 mr-1">*</span>
-                    <span className="text-gray-800 font-medium text-base">直接其他成本预算</span>
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    成本总额：<span className="text-blue-600 font-bold text-lg">{formatMoney(applyOtherCostTotal)}</span> 元
-                  </div>
-                </div>
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
-                  <Table columns={applyOtherCostColumns} dataSource={applyOtherCostData} pagination={false} size="middle" rowKey="key" />
-                  <div className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium" onClick={() => setApplyOtherCostData([...applyOtherCostData, { key: Date.now().toString(), category: '', content: '', amount: 0 }])}>
-                    <PlusOutlined className="mr-1" /> 新增成本项
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-start bg-gray-50 p-4 rounded-lg border border-gray-100">
-                <span className="w-16 text-gray-600 text-right mr-3 mt-1 font-medium">备注说明：</span>
-                <Input.TextArea rows={3} placeholder="请输入申请审批备注（选填）" className="flex-1 rounded-md border-gray-300" />
-              </div>
-            </div>
-          </Modal>
-        </div>
-      );
-    }
-
-    function ProjectAccountingPage({ deliveryLaborDetails, setDeliveryLaborDetails, deliveryOtherCostDetails, setDeliveryOtherCostDetails }) {
-      const [projectStatus, setProjectStatus] = useState('EMPTY');
-      const [hasContract, setHasContract] = useState(false);
-      const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
-      const [projectInfo, setProjectInfo] = useState({
-        id: '01TT-JS-2025004',
-        name: '金川县农村公路通行现状摸底调查及系统研发项目'
-      });
-      const [contractData, setContractData] = useState([]);
-      const [purchaseDetails, setPurchaseDetails] = useState({
-        software: 0, equipment: 0, material: 0, techService: 0, purchaseOther: 0,
-      });
-      const [rates, setRates] = useState({ management: 0.06, research: 0.10, dev: 0.15, incomeTax: 0.18 });
-      const [budgetSnapshots, setBudgetSnapshots] = useState({ initial: null, formal: null });
-      const [activeBudgetView, setActiveBudgetView] = useState('current');
-      const [lastSubmittedType, setLastSubmittedType] = useState(null);
-      const [lockedBudgetType, setLockedBudgetType] = useState(null);
-      const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
-      const [isLaborModalOpen, setIsLaborModalOpen] = useState(false);
-      const [isOtherCostModalOpen, setIsOtherCostModalOpen] = useState(false);
-      const [tempPurchaseDetails, setTempPurchaseDetails] = useState({
-        software: 0, equipment: 0, material: 0, techService: 0, purchaseOther: 0,
-      });
-      const [tempLaborDetails, setTempLaborDetails] = useState([]);
-      const [tempOtherCostDetails, setTempOtherCostDetails] = useState([]);
-
-      const isEditing = projectStatus === 'EDITING';
-      const isApproved = projectStatus === 'APPROVED' || projectStatus === 'SETTLED';
-      const isLocked = lockedBudgetType === 'formal' || projectStatus === 'SETTLED';
-      const hasInitialApproved = budgetSnapshots.initial?.status === 'approved';
-      const canStartFormal = hasContract && hasInitialApproved && !isLocked;
-      const currentBudgetPrepared = Object.values(purchaseDetails).some(v => v > 0) || contractData.length > 0;
-      const hasCompiledBudget = currentBudgetPrepared || Boolean(budgetSnapshots.initial) || Boolean(budgetSnapshots.formal) || ['DRAFT', 'SUBMITTED', 'APPROVED', 'SETTLED'].includes(projectStatus);
-
-      const displaySource = !isEditing && activeBudgetView !== 'current' && budgetSnapshots[activeBudgetView]
-        ? budgetSnapshots[activeBudgetView]
-        : { contractData, purchaseDetails, deliveryLaborDetails, deliveryOtherCostDetails, rates };
-
-      const displayContractData = displaySource.contractData;
-      const displayPurchaseDetails = displaySource.purchaseDetails || purchaseDetails;
-      const displayLaborDetails = displaySource.deliveryLaborDetails || deliveryLaborDetails;
-      const displayOtherCostDetails = displaySource.deliveryOtherCostDetails || deliveryOtherCostDetails;
-      const displayRates = displaySource.rates;
-      const laborDirectTotal = displayLaborDetails.reduce((sum, item) => sum + (item.salary || 0), 0);
-      const otherCostBuckets = {
-        business: displayOtherCostDetails.filter(item => item.category === '业务招待费').reduce((sum, item) => sum + (item.amount || 0), 0),
-        travel: displayOtherCostDetails.filter(item => item.category === '差旅费用').reduce((sum, item) => sum + (item.amount || 0), 0),
-        vehicle: displayOtherCostDetails.filter(item => item.category === '车辆使用费').reduce((sum, item) => sum + (item.amount || 0), 0),
-        otherExpense: displayOtherCostDetails.filter(item => item.category === '其他费用').reduce((sum, item) => sum + (item.amount || 0), 0),
-      };
-
-      const hasDataPrepared = useMemo(
-        () => Object.values(displayPurchaseDetails).some(v => v > 0) || displayContractData.length > 0 || displayLaborDetails.length > 0 || displayOtherCostDetails.length > 0,
-        [displayPurchaseDetails, displayContractData, displayLaborDetails, displayOtherCostDetails]
-      );
-
-      const totals = useMemo(() => {
-        const totalContract = displayContractData.reduce((acc, cur) => acc + (cur.amount || 0), 0);
-        const totalNet = displayContractData.reduce((acc, cur) => acc + (cur.netAmount || 0), 0);
-        const purchaseTotal = displayPurchaseDetails.software + displayPurchaseDetails.equipment + displayPurchaseDetails.material + displayPurchaseDetails.techService + displayPurchaseDetails.purchaseOther;
-        const laborTotal = laborDirectTotal;
-        const otherTotal = otherCostBuckets.business + otherCostBuckets.travel + otherCostBuckets.vehicle + otherCostBuckets.otherExpense;
-        const directTotal = purchaseTotal + laborTotal + otherTotal;
-        const managementFee = totalNet * displayRates.management;
-        const researchFund = totalNet * displayRates.research;
-        const devFund = totalNet * displayRates.dev;
-        const taxSurcharge = totalNet > 0 ? 14376.35 : 0;
-        const profitTotal = researchFund + devFund;
-        const indirectTotal = managementFee + taxSurcharge + profitTotal;
-        const incomeTaxAmount = devFund * displayRates.incomeTax;
-        const marketValue = totalNet - directTotal - indirectTotal - incomeTaxAmount;
-        const grossProfit = totalNet - directTotal;
-        return { totalContract, totalNet, managementFee, researchFund, devFund, profitTotal, indirectTotal, incomeTaxAmount, directTotal, purchaseTotal, laborTotal, otherTotal, marketValue, grossProfit, taxSurcharge };
-      }, [displayContractData, displayPurchaseDetails, laborDirectTotal, otherCostBuckets, displayRates]);
-
-      const actualFactors = {
-        's1': 1.18, 's2': 0.92, 's3': 1.08, 's4': 0.87, 's5': 0.96,
-        'l1': 1.12, 'o1': 0.88, 'o2': 1.14, 'o3': 0.73, 'o4': 1.06,
-        'i1-1': 1, 'i1-2': 1, 'p1': 1, 'p2': 1, 't1': 1, 'm1': 1
-      };
-
-      const handleStartEdit = () => {
-        setProjectStatus('EDITING');
-        setActiveBudgetView('current');
-        if (hasContract && contractData.length === 0) {
-          setContractData([{ key: 'c-sync', name: '同步：金川农村公路摸底调查正式协议', amount: 6000000, taxRate: 0.06, netAmount: 5660377.35 }]);
-        }
-      };
-
-      const handleCancel = () => {
-        setProjectStatus(hasCompiledBudget ? (isApproved ? 'APPROVED' : 'DRAFT') : 'EMPTY');
-        message.info('已取消编辑');
-      };
-      const handleSaveDraft = () => {
-        setProjectStatus('DRAFT');
-        setActiveBudgetView('current');
-        message.success('预算草稿已保存');
-      };
-      const saveBudgetSnapshot = (type, status) => {
-        const label = type === 'initial' ? '初步预算 V1' : '正式预算 V1';
-        const snapshot = {
-          type,
-          status,
-          label,
-          contractData: contractData.map(item => ({ ...item })),
-          purchaseDetails: { ...purchaseDetails },
-          deliveryLaborDetails: deliveryLaborDetails.map(item => ({ ...item })),
-          deliveryOtherCostDetails: deliveryOtherCostDetails.map(item => ({ ...item })),
-          rates: { ...rates },
-        };
-        setBudgetSnapshots(prev => ({ ...prev, [type]: snapshot }));
-        setActiveBudgetView(type);
-      };
-      const handleSubmitApply = (type) => {
-        const submitType = type === 'official' ? 'formal' : 'initial';
-        saveBudgetSnapshot(submitType, 'submitted');
-        setLastSubmittedType(submitType);
-        setProjectStatus('SUBMITTED');
-        message.loading(`正在提交${type === 'official' ? '正式' : '初步'}预算审核...`, 1.5);
-      };
-      const handleMockApprove = () => {
-        if (!lastSubmittedType) return;
-        setBudgetSnapshots(prev => ({
-          ...prev,
-          [lastSubmittedType]: prev[lastSubmittedType] ? { ...prev[lastSubmittedType], status: 'approved' } : prev[lastSubmittedType]
-        }));
-        if (lastSubmittedType === 'formal') {
-          setLockedBudgetType('formal');
-          setActiveBudgetView('formal');
-        } else {
-          setActiveBudgetView('initial');
-        }
-        setProjectStatus('APPROVED');
-        message.success(`模拟：${lastSubmittedType === 'formal' ? '正式预算' : '初步预算'}已审批通过`);
-      };
-      const toggleMockContract = () => {
-        const next = !hasContract;
-        setHasContract(next);
-        if (next) {
-          setContractData([{ key: 'c-sync', name: '同步：金川农村公路摸底调查正式协议', amount: 6000000, taxRate: 0.06, netAmount: 5660377.35 }]);
-        } else {
-          setContractData([]);
-        }
-        message.info(next ? '模拟：已关联正式合同' : '模拟：回到未签合同状态');
-      };
-      const openPurchaseEditor = () => {
-        setTempPurchaseDetails({ ...purchaseDetails });
-        setIsPurchaseModalOpen(true);
-      };
-      const openLaborEditor = () => {
-        setTempLaborDetails(deliveryLaborDetails.map(item => ({ ...item })));
-        setIsLaborModalOpen(true);
-      };
-      const openOtherCostEditor = () => {
-        setTempOtherCostDetails(deliveryOtherCostDetails.map(item => ({ ...item })));
-        setIsOtherCostModalOpen(true);
-      };
-      const savePurchaseEditor = () => {
-        setPurchaseDetails({ ...tempPurchaseDetails });
-        setIsPurchaseModalOpen(false);
-        message.success('采购明细已同步到预算表');
-      };
-      const saveLaborEditor = () => {
-        setDeliveryLaborDetails(tempLaborDetails.map(item => ({ ...item })));
-        setIsLaborModalOpen(false);
-        message.success('人工成本明细已同步到交付计划和预算表');
-      };
-      const saveOtherCostEditor = () => {
-        setDeliveryOtherCostDetails(tempOtherCostDetails.map(item => ({ ...item })));
-        setIsOtherCostModalOpen(false);
-        message.success('其他成本明细已同步到交付计划和预算表');
-      };
-
-      const contractColumns = [
-        {
-          title: '合同内容', dataIndex: 'name', key: 'name',
-          render: (text, record) => (isEditing && !hasContract) ? <Input value={text} size="small" placeholder="输入合同名称" onChange={e => setContractData(contractData.map(i => i.key === record.key ? { ...i, name: e.target.value } : i))} /> : text
-        },
-        {
-          title: '金额(含税)', dataIndex: 'amount', align: 'right', width: 220,
-          render: (val, record) => (isEditing && !hasContract) ? (
-            <InputNumber value={val} size="small" style={{ width: '100%' }} onChange={v => setContractData(contractData.map(i => i.key === record.key ? { ...i, amount: v || 0, netAmount: (v || 0) / (1 + i.taxRate) } : i))} formatter={v => `¥ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
-          ) : <Text strong>¥{(val || 0).toLocaleString()}</Text>
-        },
-        {
-          title: '适用税率', dataIndex: 'taxRate', width: 140,
-          render: (val, record) => (isEditing && !hasContract) ? (
-            <antd.Select value={val} size="small" style={{ width: '100%' }} onChange={v => setContractData(contractData.map(i => i.key === record.key ? { ...i, taxRate: v, netAmount: i.amount / (1 + v) } : i))} options={[{ label: '3%', value: 0.03 }, { label: '6%', value: 0.06 }, { label: '13%', value: 0.13 }]} />
-          ) : <Tag color="blue">{(val * 100).toFixed(0)}%</Tag>
-        },
-        { title: '不含税额', dataIndex: 'netAmount', align: 'right', width: 220, render: v => <Text type="secondary" className="font-mono">¥{(v || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text> },
-        ...(isEditing && !hasContract ? [{ title: '操作', width: 60, align: 'center', render: (_, r) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setContractData(contractData.filter(i => i.key !== r.key))} /> }] : [])
-      ];
-
-      const accountingData = [
-        { key: 'd1', name: <Text strong>一、项目直接成本费用</Text>, budget: totals.directTotal, children: [
-          { key: 'd1-1', name: '设备/软件等采购', budget: totals.purchaseTotal, detailEditor: 'purchase', children: [
-            { key: 's1', name: '软件采购款项', budget: displayPurchaseDetails.software },
-            { key: 's2', name: '设备采购款项', budget: displayPurchaseDetails.equipment },
-            { key: 's3', name: '材料采购款项', budget: displayPurchaseDetails.material },
-            { key: 's4', name: '技术服务费采购款项', budget: displayPurchaseDetails.techService },
-            { key: 's5', name: '其他款项', budget: displayPurchaseDetails.purchaseOther },
-          ]},
-          { key: 'd1-2', name: '人工成本', budget: totals.laborTotal, detailEditor: 'labor', children: [
-            { key: 'l1', name: '项目直接人工成本', budget: laborDirectTotal },
-          ]},
-          { key: 'd1-3', name: '其他成本', budget: totals.otherTotal, detailEditor: 'other', children: [
-            { key: 'o1', name: '业务招待费', budget: otherCostBuckets.business },
-            { key: 'o2', name: '差旅费用', budget: otherCostBuckets.travel },
-            { key: 'o3', name: '车辆使用费', budget: otherCostBuckets.vehicle },
-            { key: 'o4', name: '其他费用', budget: otherCostBuckets.otherExpense },
-          ]},
-        ]},
-        { key: 'i1', name: <Text strong>二、间接费用 (只读)</Text>, budget: totals.indirectTotal, children: [
-          { key: 'i1-1', name: '公司管理费', budget: totals.managementFee, rateField: 'management' },
-          { key: 'i1-2', name: '税金及附加', budget: totals.taxSurcharge },
-          { key: 'i1-3', name: '公司利润', budget: totals.profitTotal, children: [
-            { key: 'p1', name: '公司研究基金', budget: totals.researchFund, rateField: 'research' },
-            { key: 'p2', name: '公司发展基金', budget: totals.devFund, rateField: 'dev' },
-          ]}
-        ]},
-        { key: 't1', name: <Text strong>三、公司所得税</Text>, budget: totals.incomeTaxAmount, rateField: 'incomeTax' },
-        { key: 'm1', name: <div className="bg-blue-600 px-4 py-1.5 inline-block rounded text-white font-bold text-xs shadow-md">最终项目市场包产值</div>, budget: totals.marketValue }
-      ];
-
-      const getActualForRecord = (record) => {
-        const factor = actualFactors[record.key] ?? 1;
-        return (record.budget || 0) * factor;
-      };
-
-      const renderCompare = (record) => {
-        const actualVal = getActualForRecord(record);
-        const budgetVal = record.budget || 0;
-        const diff = actualVal - budgetVal;
-        if (Math.abs(diff) < 0.01) {
-          return <span className="compare-badge flat">持平</span>;
-        }
-        if (diff > 0) {
-          return <span className="compare-badge over"><ArrowUpOutlined /> 超出预算</span>;
-        }
-        return <span className="compare-badge under"><ArrowDownOutlined /> 低于预算</span>;
-      };
-
-      const accountingColumns = [
-        {
-          title: '核算科目明细',
-          dataIndex: 'name',
-          width: 340,
-          render: (text, record) => (
-            <Space>
-              {text}
-              {record.rateField && (
-                <div className="flex items-center gap-1 ml-2 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
-                  <span className="text-blue-400 text-[10px] font-bold uppercase">比例:</span>
-                  {isEditing ? (
-                    <InputNumber
-                      size="small"
-                      min={0}
-                      max={100}
-                      style={{ width: 60 }}
-                      value={rates[record.rateField] * 100}
-                      onChange={v => setRates({ ...rates, [record.rateField]: (v || 0) / 100 })}
-                      formatter={v => `${v}%`}
-                      variant="borderless"
-                      className="font-bold text-blue-700"
-                    />
-                  ) : (
-                    <span className="text-blue-600 font-bold text-xs">{(rates[record.rateField] * 100).toFixed(1)}%</span>
-                  )}
-                </div>
-              )}
-            </Space>
-          )
-        },
-        {
-          title: '预算金额 (元)',
-          dataIndex: 'budget',
-          align: 'right',
-          width: 220,
-          render: (val, record) => {
-            if (record.detailEditor && isEditing) {
-              const openEditor = record.detailEditor === 'purchase'
-                ? openPurchaseEditor
-                : record.detailEditor === 'labor'
-                  ? openLaborEditor
-                  : openOtherCostEditor;
-              return (
-                <div className="flex items-center justify-end gap-2">
-                  <Text strong className="font-mono text-base">¥ {(val || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
-                  <Button type="link" size="small" onClick={openEditor}>编辑明细</Button>
-                </div>
-              );
-            }
-            return <Text strong className="font-mono text-base">¥ {(val || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>;
-          }
-        },
-        ...(isApproved ? [
-          {
-            title: '过程实际支出 (元)',
-            key: 'actual',
-            align: 'right',
-            width: 220,
-            render: (_, record) => {
-              const actualVal = getActualForRecord(record);
-              return <Text className={actualVal > (record.budget || 0) ? 'amount-danger' : 'amount-success'}>¥ {actualVal.toLocaleString(undefined, { maximumFractionDigits: 2 })}</Text>;
-            }
-          },
-          {
-            title: '对比',
-            key: 'compare',
-            width: 140,
-            render: (_, record) => renderCompare(record)
-          }
-        ] : [])
-      ];
-
-      const purchaseEditorRows = [
-        { key: 'software', label: '软件采购款项' },
-        { key: 'equipment', label: '设备采购款项' },
-        { key: 'material', label: '材料采购款项' },
-        { key: 'techService', label: '技术服务费采购款项' },
-        { key: 'purchaseOther', label: '其他款项' },
-      ];
-
-      const laborEditorColumns = [
-        {
-          title: '岗位',
-          dataIndex: 'role',
-          render: (val, record) => (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择岗位"
-              options={DELIVERY_ROLE_OPTIONS.map(item => ({ label: item, value: item }))}
-              onChange={(value) => setTempLaborDetails(tempLaborDetails.map(item => item.key === record.key ? { ...item, role: value } : item))}
-              showSearch
-              optionFilterProp="label"
-            />
-          )
-        },
-        { title: '人月', dataIndex: 'months', width: 120, render: (val, record) => <InputNumber value={val} min={0} step={0.1} onChange={v => setTempLaborDetails(tempLaborDetails.map(item => item.key === record.key ? { ...item, months: v || 0 } : item))} className="w-full" /> },
-        { title: '工资合计', dataIndex: 'salary', width: 180, render: (val, record) => <InputNumber value={val} min={0} onChange={v => setTempLaborDetails(tempLaborDetails.map(item => item.key === record.key ? { ...item, salary: v || 0 } : item))} className="w-full" formatter={v => `¥ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} /> },
-        { title: '操作', width: 70, align: 'center', render: (_, record) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setTempLaborDetails(tempLaborDetails.filter(item => item.key !== record.key))} /> }
-      ];
-
-      const otherCostEditorColumns = [
-        {
-          title: '费用类型',
-          dataIndex: 'category',
-          render: (val, record) => (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择费用类型"
-              options={DIRECT_COST_TYPE_OPTIONS}
-              onChange={(value) => setTempOtherCostDetails(tempOtherCostDetails.map(item => {
-                if (item.key !== record.key) return item;
-                const nextContent = (DIRECT_COST_CATALOG[value] || [])[0] || '';
-                return { ...item, category: value, subType: nextContent };
-              }))}
-            />
-          )
-        },
-        {
-          title: '费用内容',
-          dataIndex: 'subType',
-          render: (val, record) => (
-            <Select
-              className="w-full"
-              value={val || undefined}
-              placeholder="请选择费用内容"
-              options={(DIRECT_COST_CATALOG[record.category] || []).map(item => ({ label: item, value: item }))}
-              onChange={(value) => setTempOtherCostDetails(tempOtherCostDetails.map(item => item.key === record.key ? { ...item, subType: value } : item))}
-            />
-          )
-        },
-        { title: '计划金额', dataIndex: 'amount', width: 180, render: (val, record) => <InputNumber value={val} min={0} onChange={v => setTempOtherCostDetails(tempOtherCostDetails.map(item => item.key === record.key ? { ...item, amount: v || 0 } : item))} className="w-full" formatter={v => `¥ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} /> },
-        { title: '操作', width: 70, align: 'center', render: (_, record) => <Button type="text" danger icon={<DeleteOutlined />} onClick={() => setTempOtherCostDetails(tempOtherCostDetails.filter(item => item.key !== record.key))} /> }
-      ];
-
-      return (
-        <div className="overflow-auto bg-[#f0f2f5]">
-          <div className="main-content-wrapper space-y-6">
-            <div className="flex justify-end items-center">
-              <Space size="large">
-                    <Button type="dashed" size="small" icon={<SwapOutlined />} onClick={toggleMockContract}>
-                      模拟切换: {hasContract ? '已签合同项目' : '未签合同项目'}
-                    </Button>
-                    {projectStatus === 'SUBMITTED' && (
-                  <Button type="primary" ghost size="small" onClick={handleMockApprove}>模拟审批通过</Button>
-                )}
-              </Space>
-            </div>
-
-            <Card className="project-header-card shadow-sm" bodyStyle={{ padding: '24px 32px' }}>
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <Title level={3} className="!m-0 tracking-tight">{projectInfo.name}</Title>
-                  <Space className="mt-2" split={<Divider type="vertical" />}>
-                    <Text type="secondary" className="text-xs font-mono">编号：{projectInfo.id}</Text>
-                    <Button type="link" size="small" icon={<SwapOutlined />} onClick={() => setIsSwitchModalOpen(true)}>切换项目</Button>
-                    <Tag color={projectStatus === 'SUBMITTED' ? 'orange' : isApproved ? 'success' : 'default'} bordered={false}>
-                      {projectStatus === 'EMPTY' ? '待编制' : projectStatus === 'EDITING' ? '编制中' : projectStatus === 'DRAFT' ? '已编制' : projectStatus === 'SUBMITTED' ? '审批中' : projectStatus === 'SETTLED' ? '已结项' : '执行中'}
-                    </Tag>
-                  </Space>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  {!isEditing && !hasCompiledBudget && (
-                    <Button type="primary" size="large" icon={<EditOutlined />} onClick={handleStartEdit} className="btn-action shadow-md">编制核算预算</Button>
-                  )}
-                  {!isEditing && hasCompiledBudget && !isLocked && (
-                    <Space size="middle">
-                      <Button size="large" icon={<EditOutlined />} onClick={handleStartEdit}>编辑</Button>
-                      {!hasInitialApproved && (
-                        <Button type="primary" size="large" icon={<SendOutlined />} onClick={() => handleSubmitApply('preliminary')} className="btn-action">发起初步预算</Button>
-                      )}
-                      {canStartFormal && (
-                        <Button type="primary" size="large" icon={<CheckCircleOutlined />} onClick={() => handleSubmitApply('official')} className="shadow-lg shadow-blue-500/30 btn-action">发起正式预算</Button>
-                      )}
-                    </Space>
-                  )}
-                  {isEditing && (
-                    <Space size="middle">
-                      <Button size="large" icon={<CloseOutlined />} onClick={handleCancel}>取消</Button>
-                      <Button size="large" icon={<SaveOutlined />} onClick={handleSaveDraft}>保存草稿</Button>
-                      <Space>
-                        <Button type="primary" size="large" icon={<SendOutlined />} onClick={() => handleSubmitApply('preliminary')} className="btn-action">发起初步预算</Button>
-                        <Tooltip title={!canStartFormal ? '正式预算需要先签订合同且初步预算审批通过' : ''}>
-                          <Button type="primary" size="large" icon={<CheckCircleOutlined />} disabled={!canStartFormal} className="shadow-lg shadow-blue-500/30 btn-action" onClick={() => handleSubmitApply('official')}>发起正式预算</Button>
-                        </Tooltip>
-                      </Space>
-                    </Space>
-                  )}
-                  {isLocked && (
-                    <div className="bg-gray-100/50 border border-gray-200 rounded-lg px-6 py-2 flex items-center gap-2 shadow-inner">
-                      <LockOutlined className="text-gray-400" />
-                      <Text strong className="text-gray-400 text-sm italic">核算已进入锁定周期</Text>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {(budgetSnapshots.initial || budgetSnapshots.formal) && !isEditing && (
-                <div className="mb-6 flex justify-end">
-                  <Radio.Group
-                    value={activeBudgetView}
-                    onChange={(e) => setActiveBudgetView(e.target.value)}
-                    optionType="button"
-                    buttonStyle="solid"
-                    options={[
-                      ...(currentBudgetPrepared ? [{ label: '当前编制稿', value: 'current' }] : []),
-                      ...(budgetSnapshots.initial ? [{ label: budgetSnapshots.initial.label, value: 'initial' }] : []),
-                      ...(budgetSnapshots.formal ? [{ label: budgetSnapshots.formal.label, value: 'formal' }] : []),
-                    ]}
-                  />
-                </div>
-              )}
-
-              <Descriptions column={3} size="small" bordered className="bg-white/50 mb-8 rounded-lg overflow-hidden">
-                <Descriptions.Item label="项目类型">软件开发与技术服务</Descriptions.Item>
-                <Descriptions.Item label="项目经理">汪云 (wangyun@01road.com)</Descriptions.Item>
-                <Descriptions.Item label="参与交付部门">咨询设计部 / 研发部</Descriptions.Item>
-                <Descriptions.Item label="预计周期" span={3}>2025-04-01 ~ 2026-04-30</Descriptions.Item>
-              </Descriptions>
-
-              <div className="mt-8 px-4 pb-2">
-                <Steps size="small" current={projectStatus === 'SUBMITTED' ? 1 : isApproved ? 3 : 0}
-                  items={[
-                    { title: '项目立项', description: '2025-03-15', icon: <HistoryOutlined /> },
-                    { title: '初步预算', description: budgetSnapshots.initial?.status === 'approved' ? '已通过' : projectStatus === 'SUBMITTED' && lastSubmittedType === 'initial' ? '审核中' : (hasCompiledBudget ? '已编制' : '未开始') },
-                    { title: '正式预算', description: budgetSnapshots.formal?.status === 'approved' ? '已锁定' : projectStatus === 'SUBMITTED' && lastSubmittedType === 'formal' ? '审核中' : (hasContract ? '待发起' : '待同步') },
-                    { title: '执行核算', description: isApproved ? '监控中' : '待开启' },
-                    { title: '结算交付', icon: <CheckCircleOutlined /> }
-                  ]}
-                />
-              </div>
-            </Card>
-
-            <Row gutter={16}>
-              <Col span={6}>
-                <Card className="stat-card shadow-sm" bordered={false}>
-                  <Statistic title="合同含税总额" value={totals.totalContract} prefix="¥" precision={2} />
-                  <div className="mt-1"><Tag color={hasContract ? 'success' : 'default'} bordered={false} className="text-[10px] m-0">{hasContract ? '正式合同' : '预估阶段'}</Tag></div>
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card className="stat-card shadow-sm" bordered={false}>
-                  <Statistic title="不含税收入 (预算)" value={totals.totalNet} prefix="¥" precision={2} valueStyle={{ color: '#1677ff' }} />
-                  <div className="mt-1 opacity-0">-</div>
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card className="stat-card shadow-sm" bordered={false}>
-                  <Statistic title="预估总利润 (预算)" value={totals.grossProfit} prefix="¥" precision={2} valueStyle={{ color: '#3f8600' }} />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card className="stat-card bg-blue-600 shadow-blue-500/20" bordered={false}>
-                  <Statistic title={<span className="text-blue-100 font-medium">预估市场包产值</span>} value={totals.marketValue} prefix="¥" precision={2} valueStyle={{ color: '#fff', fontWeight: 'bold' }} />
-                </Card>
-              </Col>
-            </Row>
-
-            <Card title={<Space><div className="w-1 h-4 bg-blue-600 rounded-full" /><span>合同金额构成细项</span></Space>} size="small" extra={isEditing && !hasContract && <Button type="primary" ghost size="small" icon={<PlusOutlined />} onClick={() => setContractData([...contractData, { key: Date.now(), name: '预估合同项', amount: 0, taxRate: 0.06, netAmount: 0 }])}>添加合同行</Button>}>
-              <Table columns={contractColumns} dataSource={isEditing ? contractData : displayContractData} pagination={false} size="small" locale={{ emptyText: '暂无数据，请在编辑模式下录入预估额或关联正式合同' }} />
-            </Card>
-
-            <Card title={<div className="flex justify-between items-center w-full pr-2"><Space><div className="w-1 h-4 bg-blue-600 rounded-full" /><span>项目预算执行核心明细对照</span></Space>{isApproved && projectStatus !== 'SETTLED' && <Button danger type="primary" size="small" shape="round" icon={<CheckCircleOutlined />} onClick={() => setProjectStatus('SETTLED')}>确认结算结项</Button>}</div>} size="small">
-              {!hasCompiledBudget && !isEditing ? (
-                <Empty description="该项目尚未编制预算，请点击上方按钮开始" className="py-20" image={Empty.PRESENTED_IMAGE_SIMPLE}>
-                  <Button type="primary" size="large" icon={<EditOutlined />} onClick={handleStartEdit}>立即编制核算草案</Button>
-                </Empty>
-              ) : (
-                <Table
-                  columns={accountingColumns}
-                  dataSource={accountingData}
-                  pagination={false}
-                  expandable={{ defaultExpandAllRows: true }}
-                  bordered
-                  size="middle"
-                  rowClassName={record => record.children ? 'bg-gray-50/60 font-medium' : ''}
-                />
-              )}
-            </Card>
+            </Modal>
           </div>
+        );
+      }
 
-          <Modal title={<div className="text-lg font-bold">切换项目</div>} open={isSwitchModalOpen} onCancel={() => setIsSwitchModalOpen(false)} footer={[<Button key="c" onClick={() => setIsSwitchModalOpen(false)}>取消</Button>, <Button key="ok" type="primary" onClick={() => setIsSwitchModalOpen(false)}>确定</Button>]} width={680} destroyOnClose centered>
-            <Input prefix={<SearchOutlined className="text-gray-400" />} placeholder="搜索项目名称 / 编号 / 客户" size="large" className="mb-6 rounded-lg" />
-            <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2">
-              {[
-                { id: '01TT-ZX-2026005', name: '屏山县安上社区老旧街区改造项目', client: '北京中咨路捷工程咨询', manager: '汪云' },
-                { id: '01TT-ZX-2026004', name: '简阳市中心镇片区生态修复项目', client: '四川交投建设工程', manager: '李四' },
-                { id: '01TT-ZX-2026003', name: '美姑县“一老一小”信息化项目', client: '美姑县民政局', manager: '张三' }
-              ].map(p => (
-                <div key={p.id} className={`project-item ${p.id === projectInfo.id ? 'active' : ''}`} onClick={() => { setProjectInfo({ id: p.id, name: p.name }); setIsSwitchModalOpen(false); message.success(`已切换至：${p.name}`); }}>
-                  <div className="flex items-center gap-3">
-                    <Radio checked={p.id === projectInfo.id} />
-                    <div>
-                      <div className="font-bold text-gray-800">{p.id} - {p.name}</div>
-                      <div className="text-xs text-gray-500 mt-1">客户：{p.client} | 经理：{p.manager}</div>
+      function App() {
+        const [collapsed, setCollapsed] = useState(false);
+        const [currentPage, setCurrentPage] = useState("config");
+        const [sharedLaborDetails, setSharedLaborDetails] = useState(
+          INITIAL_DELIVERY_LABOR_DETAILS.map((item) => ({ ...item }))
+        );
+        const [sharedOtherCostDetails, setSharedOtherCostDetails] = useState(
+          INITIAL_DELIVERY_OTHER_COST_DETAILS.map((item) => ({ ...item }))
+        );
+        const pageTitles = {
+          config: "核算配置",
+          delivery: "交付计划",
+          accounting: "项目核算",
+        };
+
+        return (
+          <ConfigProvider
+            theme={{ token: { colorPrimary: "#1677ff", borderRadius: 8 } }}
+          >
+            <Layout className="min-h-screen bg-[#f5f7fa]">
+              <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+                theme="dark"
+                className="shadow-lg"
+                width={220}
+              >
+                <div className="h-16 flex items-center justify-center border-b border-gray-800">
+                  <span className="text-white font-bold text-lg tracking-wider">
+                    {collapsed ? "01" : "零一通途"}
+                  </span>
+                </div>
+                <Menu
+                  theme="dark"
+                  mode="inline"
+                  selectedKeys={[currentPage]}
+                  defaultOpenKeys={["info", "project", "finance"]}
+                  className="mt-2"
+                  items={[
+                    {
+                      key: "info",
+                      icon: <ProfileOutlined />,
+                      label: "基础信息",
+                      children: [{ key: "config", label: "核算配置" }],
+                    },
+                    {
+                      key: "project",
+                      icon: <AppstoreOutlined />,
+                      label: "项目管理",
+                      children: [{ key: "delivery", label: "交付计划" }],
+                    },
+                    {
+                      key: "finance",
+                      icon: <HomeOutlined />,
+                      label: "财务管理",
+                      children: [{ key: "accounting", label: "项目核算" }],
+                    },
+                  ]}
+                  onClick={({ key }) => {
+                    if (["config", "delivery", "accounting"].includes(key))
+                      setCurrentPage(key);
+                  }}
+                />
+              </Sider>
+
+              <Layout>
+                <Header className="bg-white p-0 flex justify-between items-center px-6 shadow-sm z-10 border-b">
+                  <div className="flex items-center">
+                    <Button
+                      type="text"
+                      icon={
+                        collapsed ? (
+                          <MenuUnfoldOutlined />
+                        ) : (
+                          <MenuFoldOutlined />
+                        )
+                      }
+                      onClick={() => setCollapsed(!collapsed)}
+                      className="text-lg mr-4"
+                    />
+                    <span className="text-base font-semibold text-gray-800">
+                      {pageTitles[currentPage]}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-6">
+                    <Badge dot>
+                      <BellOutlined className="text-lg cursor-pointer text-gray-500 hover:text-blue-500 transition" />
+                    </Badge>
+                    <DownloadOutlined className="text-lg cursor-pointer text-gray-500 hover:text-blue-500 transition" />
+                    <div className="flex items-center space-x-2 cursor-pointer bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 hover:bg-gray-100 transition">
+                      <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
+                        管
+                      </div>
+                      <span className="text-sm text-gray-700">系统管理员</span>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Modal>
+                </Header>
 
-          <Modal
-            title={<div className="text-lg font-bold text-gray-800">编辑采购明细</div>}
-            open={isPurchaseModalOpen}
-            onCancel={() => setIsPurchaseModalOpen(false)}
-            destroyOnClose
-            centered
-            width={760}
-            footer={[
-              <Button key="cancel" onClick={() => setIsPurchaseModalOpen(false)}>取消</Button>,
-              <Button key="save" type="primary" onClick={savePurchaseEditor}>保存</Button>,
-            ]}
-          >
-            <div className="py-4">
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <Table
-                  pagination={false}
-                  rowKey="key"
-                  dataSource={purchaseEditorRows}
-                  columns={[
-                    { title: '采购明细项', dataIndex: 'label' },
-                    {
-                      title: '预算金额',
-                      dataIndex: 'key',
-                      width: 240,
-                      render: (field) => (
-                        <InputNumber
-                          value={tempPurchaseDetails[field]}
-                          min={0}
-                          onChange={v => setTempPurchaseDetails({ ...tempPurchaseDetails, [field]: v || 0 })}
-                          className="w-full"
-                          formatter={v => `¥ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        />
-                      )
-                    }
-                  ]}
-                />
-              </div>
-            </div>
-          </Modal>
-
-          <Modal
-            title={<div className="text-lg font-bold text-gray-800">编辑人工成本明细</div>}
-            open={isLaborModalOpen}
-            onCancel={() => setIsLaborModalOpen(false)}
-            destroyOnClose
-            centered
-            width={920}
-            footer={[
-              <Button key="cancel" onClick={() => setIsLaborModalOpen(false)}>取消</Button>,
-              <Button key="save" type="primary" onClick={saveLaborEditor}>保存</Button>,
-            ]}
-          >
-            <div className="py-4">
-              <div className="mb-4 text-sm text-gray-500">保存后将同步更新项目核算预算表与交付计划人工费用明细。</div>
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <Table columns={laborEditorColumns} dataSource={tempLaborDetails} pagination={false} rowKey="key" />
-                <div className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium" onClick={() => setTempLaborDetails([...tempLaborDetails, { key: Date.now().toString(), role: '', months: 0, salary: 0 }])}>
-                  <PlusOutlined className="mr-1" /> 新增人员计划
-                </div>
-              </div>
-            </div>
-          </Modal>
-
-          <Modal
-            title={<div className="text-lg font-bold text-gray-800">编辑其他成本明细</div>}
-            open={isOtherCostModalOpen}
-            onCancel={() => setIsOtherCostModalOpen(false)}
-            destroyOnClose
-            centered
-            width={980}
-            footer={[
-              <Button key="cancel" onClick={() => setIsOtherCostModalOpen(false)}>取消</Button>,
-              <Button key="save" type="primary" onClick={saveOtherCostEditor}>保存</Button>,
-            ]}
-          >
-            <div className="py-4">
-              <div className="mb-4 text-sm text-gray-500">保存后将同步更新项目核算预算表与交付计划其他直接成本明细。</div>
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <Table columns={otherCostEditorColumns} dataSource={tempOtherCostDetails} pagination={false} rowKey="key" />
-                <div className="m-2 p-2.5 border border-dashed border-blue-300 text-blue-500 bg-blue-50/30 text-center rounded-md cursor-pointer hover:bg-blue-50 transition font-medium" onClick={() => setTempOtherCostDetails([...tempOtherCostDetails, { key: Date.now().toString(), category: '', subType: '', amount: 0 }])}>
-                  <PlusOutlined className="mr-1" /> 新增成本项
-                </div>
-              </div>
-            </div>
-          </Modal>
-        </div>
-      );
-    }
-
-    function App() {
-      const [collapsed, setCollapsed] = useState(false);
-      const [currentPage, setCurrentPage] = useState('config');
-      const [sharedLaborDetails, setSharedLaborDetails] = useState(INITIAL_DELIVERY_LABOR_DETAILS.map(item => ({ ...item })));
-      const [sharedOtherCostDetails, setSharedOtherCostDetails] = useState(INITIAL_DELIVERY_OTHER_COST_DETAILS.map(item => ({ ...item })));
-      const pageTitles = {
-        config: '核算配置',
-        delivery: '交付计划',
-        accounting: '项目核算',
-      };
-
-      return (
-        <ConfigProvider theme={{ token: { colorPrimary: '#1677ff', borderRadius: 8 } }}>
-          <Layout className="min-h-screen bg-[#f5f7fa]">
-            <Sider trigger={null} collapsible collapsed={collapsed} theme="dark" className="shadow-lg" width={220}>
-              <div className="h-16 flex items-center justify-center border-b border-gray-800">
-                <span className="text-white font-bold text-lg tracking-wider">{collapsed ? '01' : '零一通途'}</span>
-              </div>
-              <Menu
-                theme="dark"
-                mode="inline"
-                selectedKeys={[currentPage]}
-                defaultOpenKeys={['info', 'project', 'finance']}
-                className="mt-2"
-                items={[
-                  { key: 'info', icon: <ProfileOutlined />, label: '基础信息', children: [{ key: 'config', label: '核算配置' }] },
-                  { key: 'project', icon: <AppstoreOutlined />, label: '项目管理', children: [{ key: 'delivery', label: '交付计划' }] },
-                  { key: 'finance', icon: <HomeOutlined />, label: '财务管理', children: [{ key: 'accounting', label: '项目核算' }] },
-                ]}
-                onClick={({ key }) => {
-                  if (['config', 'delivery', 'accounting'].includes(key)) setCurrentPage(key);
-                }}
-              />
-            </Sider>
-
-            <Layout>
-              <Header className="bg-white p-0 flex justify-between items-center px-6 shadow-sm z-10 border-b">
-                <div className="flex items-center">
-                  <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} className="text-lg mr-4" />
-                  <span className="text-base font-semibold text-gray-800">{pageTitles[currentPage]}</span>
-                </div>
-                <div className="flex items-center space-x-6">
-                  <Badge dot><BellOutlined className="text-lg cursor-pointer text-gray-500 hover:text-blue-500 transition" /></Badge>
-                  <DownloadOutlined className="text-lg cursor-pointer text-gray-500 hover:text-blue-500 transition" />
-                  <div className="flex items-center space-x-2 cursor-pointer bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 hover:bg-gray-100 transition">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">管</div>
-                    <span className="text-sm text-gray-700">系统管理员</span>
-                  </div>
-                </div>
-              </Header>
-
-              <Content className="overflow-auto">
-                {currentPage === 'config' && <AccountingConfigPage />}
-                {currentPage === 'delivery' && (
-                  <DeliveryPlanPage
-                    laborDetails={sharedLaborDetails}
-                    setLaborDetails={setSharedLaborDetails}
-                    otherCostDetails={sharedOtherCostDetails}
-                    setOtherCostDetails={setSharedOtherCostDetails}
-                  />
-                )}
-                {currentPage === 'accounting' && (
-                  <ProjectAccountingPage
-                    deliveryLaborDetails={sharedLaborDetails}
-                    setDeliveryLaborDetails={setSharedLaborDetails}
-                    deliveryOtherCostDetails={sharedOtherCostDetails}
-                    setDeliveryOtherCostDetails={setSharedOtherCostDetails}
-                  />
-                )}
-              </Content>
+                <Content className="overflow-auto">
+                  {currentPage === "config" && <AccountingConfigPage />}
+                  {currentPage === "delivery" && (
+                    <DeliveryPlanPage
+                      laborDetails={sharedLaborDetails}
+                      setLaborDetails={setSharedLaborDetails}
+                      otherCostDetails={sharedOtherCostDetails}
+                      setOtherCostDetails={setSharedOtherCostDetails}
+                    />
+                  )}
+                  {currentPage === "accounting" && (
+                    <ProjectAccountingPage
+                      deliveryLaborDetails={sharedLaborDetails}
+                      setDeliveryLaborDetails={setSharedLaborDetails}
+                      deliveryOtherCostDetails={sharedOtherCostDetails}
+                      setDeliveryOtherCostDetails={setSharedOtherCostDetails}
+                    />
+                  )}
+                </Content>
+              </Layout>
             </Layout>
-          </Layout>
-        </ConfigProvider>
-      );
-    }
+          </ConfigProvider>
+        );
+      }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
-</body>
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
 </html>
