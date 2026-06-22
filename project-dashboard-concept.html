@@ -1,0 +1,1447 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>项目经营驾驶舱原型</title>
+    <style>
+      :root {
+        --bg: #f3f6fa;
+        --panel: #ffffff;
+        --line: #dfe5ee;
+        --line-strong: #cfd8e5;
+        --text: #182233;
+        --muted: #667085;
+        --soft: #f8fafc;
+        --blue: #2563eb;
+        --cyan: #0891b2;
+        --green: #16a34a;
+        --amber: #d97706;
+        --red: #dc2626;
+        --violet: #7c3aed;
+        --shadow: 0 10px 30px rgba(18, 32, 53, 0.06);
+        --shadow-strong: 0 16px 38px rgba(18, 32, 53, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+        font-size: 14px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0)),
+          radial-gradient(circle at 50% -20%, rgba(37, 99, 235, 0.08), transparent 34%);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .shell {
+        position: relative;
+        max-width: 1480px;
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 750;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 7px 0 0;
+        color: var(--muted);
+      }
+
+      .filters {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .segmented {
+        display: inline-flex;
+        padding: 3px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+
+      .segmented button,
+      .ghost-button {
+        height: 34px;
+        border: 0;
+        border-radius: 6px;
+        padding: 0 14px;
+        background: transparent;
+        color: #465568;
+        cursor: pointer;
+        transition:
+          background 0.18s ease,
+          color 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+
+      .segmented button.active {
+        color: #fff;
+        background: var(--blue);
+        box-shadow: 0 5px 14px rgba(37, 99, 235, 0.22);
+      }
+
+      .ghost-button {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+
+      .ghost-button:hover,
+      .segmented button:not(.active):hover {
+        color: var(--blue);
+        background: #f7faff;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        margin-bottom: 16px;
+      }
+
+      .card,
+      .panel-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .metric-card {
+        position: relative;
+        min-height: 112px;
+        padding: 17px 16px 15px;
+        overflow: hidden;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+
+      .metric-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 3px;
+        background: #d8e4f6;
+      }
+
+      .metric-card:nth-child(3)::before,
+      .metric-card:nth-child(6)::before {
+        background: #fecaca;
+      }
+
+      .metric-card:nth-child(4)::before {
+        background: #fed7aa;
+      }
+
+      .metric-card:nth-child(5)::before {
+        background: #bbf7d0;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-2px);
+        border-color: #cfd8e5;
+        box-shadow: var(--shadow-strong);
+      }
+
+      .metric-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 550;
+      }
+
+      .metric-value {
+        margin-top: 12px;
+        font-size: 28px;
+        font-weight: 780;
+        line-height: 1;
+      }
+
+      .metric-sub {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tone-blue {
+        color: var(--blue);
+      }
+
+      .tone-green {
+        color: var(--green);
+      }
+
+      .tone-amber {
+        color: var(--amber);
+      }
+
+      .tone-red {
+        color: var(--red);
+      }
+
+      .main-grid {
+        grid-template-columns: 1.35fr 0.95fr;
+        align-items: stretch;
+        margin-bottom: 16px;
+      }
+
+      .panel-card {
+        padding: 18px;
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .panel-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 720;
+      }
+
+      .panel-note {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .type-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .type-card {
+        position: relative;
+        padding: 15px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffffff, #fbfdff);
+        cursor: pointer;
+        transition:
+          border-color 0.18s ease,
+          box-shadow 0.18s ease,
+          transform 0.18s ease;
+      }
+
+      .type-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 12px;
+        bottom: 12px;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: transparent;
+      }
+
+      .type-card:hover,
+      .type-card.active {
+        border-color: rgba(37, 99, 235, 0.6);
+        box-shadow: 0 12px 26px rgba(37, 99, 235, 0.11);
+        transform: translateY(-1px);
+      }
+
+      .type-card.active {
+        background: #f8fbff;
+      }
+
+      .type-card.active::before {
+        background: var(--blue);
+      }
+
+      .type-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .type-name {
+        font-weight: 720;
+      }
+
+      .type-count {
+        margin-top: 12px;
+        font-size: 26px;
+        font-weight: 780;
+      }
+
+      .type-bars {
+        margin-top: 14px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .structure-summary {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 14px;
+      }
+
+      .summary-box {
+        min-width: 0;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+      }
+
+      .summary-title {
+        margin: 0 0 12px;
+        font-weight: 720;
+      }
+
+      .stacked-bar {
+        height: 16px;
+        display: flex;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #eef2f7;
+      }
+
+      .stack-segment {
+        height: 100%;
+        min-width: 12px;
+      }
+
+      .composition-list {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px 14px;
+      }
+
+      .composition-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .composition-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .square {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        flex: none;
+      }
+
+      .rule-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .rule-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .rule-value {
+        font-weight: 700;
+        color: var(--text);
+        white-space: nowrap;
+      }
+
+      .bar-row {
+        display: grid;
+        grid-template-columns: 54px 1fr 34px;
+        gap: 8px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .bar-track {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #eef3f9;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: var(--blue);
+        transition: width 0.25s ease;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 8px;
+        align-items: stretch;
+      }
+
+      .flow-step {
+        position: relative;
+        min-height: 118px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease,
+          border-color 0.18s ease;
+      }
+
+      .flow-step:hover {
+        transform: translateY(-2px);
+        border-color: #cfd8e5;
+        box-shadow: 0 10px 24px rgba(18, 32, 53, 0.08);
+      }
+
+      .flow-step::after {
+        content: "";
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        width: 8px;
+        height: 1px;
+        background: var(--line-strong);
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .flow-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .flow-number {
+        margin-top: 10px;
+        font-size: 24px;
+        font-weight: 780;
+      }
+
+      .flow-delta {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr 1fr;
+        margin-bottom: 16px;
+      }
+
+      .trend {
+        height: 260px;
+        display: grid;
+        grid-template-columns: 44px repeat(6, 1fr);
+        gap: 12px;
+        align-items: end;
+        padding-top: 10px;
+      }
+
+      .axis {
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 11px;
+        text-align: right;
+      }
+
+      .month {
+        min-width: 0;
+      }
+
+      .columns {
+        height: 210px;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        gap: 7px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .col {
+        width: 18px;
+        min-height: 4px;
+        border-radius: 6px 6px 0 0;
+        transition:
+          height 0.25s ease,
+          opacity 0.2s ease;
+      }
+
+      .col.invoice {
+        background: #60a5fa;
+      }
+
+      .col.payment {
+        background: #34d399;
+      }
+
+      .month:hover .col {
+        opacity: 0.72;
+      }
+
+      .month-label {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .legend {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--blue);
+      }
+
+      .risk-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .risk-table th,
+      .risk-table td {
+        padding: 11px 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+
+      .risk-table th {
+        color: var(--muted);
+        font-weight: 500;
+        font-size: 12px;
+        background: #f8fafc;
+      }
+
+      .risk-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .project-name {
+        max-width: 210px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-size: 12px;
+        font-weight: 550;
+      }
+
+      .tag.red {
+        color: #b91c1c;
+        background: #fef2f2;
+        border-color: #fecaca;
+      }
+
+      .tag.amber {
+        color: #92400e;
+        background: #fffbeb;
+        border-color: #fde68a;
+      }
+
+      .tag.blue {
+        color: #1d4ed8;
+        background: #eff6ff;
+        border-color: #bfdbfe;
+      }
+
+      .tag.green {
+        color: #047857;
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+      }
+
+      .focus-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .mini-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .mini-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+        transition:
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+
+      .mini-item:hover {
+        border-color: #cfd8e5;
+        box-shadow: 0 8px 18px rgba(18, 32, 53, 0.06);
+      }
+
+      .focus-item {
+        display: block;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .focus-toggle {
+        width: 100%;
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .focus-toggle:hover {
+        background: #f8fafc;
+      }
+
+      .focus-detail {
+        display: grid;
+        gap: 8px;
+        padding: 0 10px 10px;
+      }
+
+      .focus-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 8px;
+        border-radius: 6px;
+        background: #ffffff;
+        border: 1px solid #edf0f5;
+        transition:
+          background 0.18s ease,
+          border-color 0.18s ease;
+      }
+
+      .focus-row:hover {
+        background: #f8fbff;
+        border-color: #d6e4ff;
+      }
+
+      .focus-project {
+        min-width: 0;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .focus-meta {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .focus-more {
+        color: var(--muted);
+        font-size: 12px;
+        padding: 0 2px;
+      }
+
+      .mini-title {
+        font-weight: 700;
+      }
+
+      .mini-sub {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .side-number {
+        font-weight: 780;
+        white-space: nowrap;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 1180px) {
+        .overview-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .main-grid,
+        .content-grid,
+        .focus-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .flow {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .structure-summary {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          padding: 14px;
+        }
+
+        .topbar {
+          display: block;
+        }
+
+        .filters {
+          justify-content: flex-start;
+          margin-top: 14px;
+        }
+
+        .overview-grid,
+        .type-grid,
+        .flow {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-step::after {
+          display: none;
+        }
+
+        .trend {
+          overflow-x: auto;
+          grid-template-columns: 44px repeat(6, 72px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="shell">
+        <section class="topbar">
+          <div>
+            <h1 class="title">项目经营驾驶舱</h1>
+            <p class="subtitle">先看总盘，再看链路卡点，最后定位资金和执行风险。</p>
+          </div>
+          <div class="filters" aria-label="筛选条件">
+            <div class="segmented" id="periodTabs">
+              <button class="active" data-period="year">本年</button>
+              <button data-period="quarter">本季</button>
+              <button data-period="month">本月</button>
+              <button data-period="all">全部</button>
+            </div>
+            <button class="ghost-button" id="refreshButton">刷新模拟数据</button>
+          </div>
+        </section>
+
+        <section class="grid overview-grid" id="overviewGrid"></section>
+
+        <section class="grid main-grid">
+          <div class="panel-card">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">项目类型分布与关注规则</h2>
+                <div class="panel-note">这里看结构占比和规则命中数量，具体对象在右侧展开。</div>
+              </div>
+              <span class="tag blue" id="selectedTypeTag">市场项目</span>
+            </div>
+            <div class="grid type-grid" id="typeGrid"></div>
+            <div class="structure-summary">
+              <div class="summary-box">
+                <p class="summary-title">四类项目占比</p>
+                <div class="stacked-bar" id="compositionBar"></div>
+                <div class="composition-list" id="compositionList"></div>
+              </div>
+              <div class="summary-box">
+                <p class="summary-title">规则命中概览</p>
+                <div class="rule-list" id="ruleList"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title" id="focusTitle">市场项目关注</h2>
+              <span class="panel-note">按管理动作排序</span>
+            </div>
+            <div class="mini-list" id="typeFocusList"></div>
+          </div>
+        </section>
+
+        <section class="panel-card" style="margin-bottom: 16px">
+          <div class="panel-head">
+            <h2 class="panel-title">市场到交付业务链路</h2>
+            <span class="panel-note">用于判断机会池是否顺畅转成可交付项目</span>
+          </div>
+          <div class="flow" id="flowGrid"></div>
+        </section>
+
+        <section class="grid content-grid">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">交付项目开票/回款趋势</h2>
+              <div class="legend">
+                <span class="legend-item"><i class="dot" style="background:#60a5fa"></i>开票</span>
+                <span class="legend-item"><i class="dot" style="background:#34d399"></i>回款</span>
+              </div>
+            </div>
+            <div class="trend" id="trendChart"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">资金与交付风险</h2>
+              <div class="segmented" id="riskTabs">
+                <button class="active" data-risk="collection">回款风险</button>
+                <button data-risk="delivery">交付风险</button>
+              </div>
+            </div>
+            <table class="risk-table">
+              <thead>
+                <tr>
+                  <th>项目</th>
+                  <th>负责人</th>
+                  <th>风险</th>
+                  <th style="text-align:right">金额/天数</th>
+                </tr>
+              </thead>
+              <tbody id="riskRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="grid focus-grid">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">研发项目关注</h2>
+              <span class="tag amber">周期关注</span>
+            </div>
+            <div class="mini-list" id="researchList"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">职能项目预算</h2>
+              <span class="tag green">内部投入</span>
+            </div>
+            <div class="mini-list" id="functionalList"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">管理动作建议</h2>
+              <span class="panel-note">从风险和链路自动汇总</span>
+            </div>
+            <div class="mini-list" id="actionsList"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const periodScale = {
+        month: 0.28,
+        quarter: 0.55,
+        year: 1,
+        all: 1.35,
+      };
+
+      const baseData = {
+        overview: [
+          { key: "total", label: "项目总数", value: 168, sub: "四类项目当前总盘", tone: "tone-blue", suffix: "个" },
+          { key: "active", label: "在推进项目", value: 116, sub: "市场投标、交付中、研发未到期", tone: "tone-green", suffix: "个" },
+          { key: "attention", label: "规则命中事项", value: 31, sub: "重点风险 + 管理关注", tone: "tone-red", suffix: "项" },
+          { key: "contract", label: "合同总额", value: 8260, sub: "仅统计交付项目合同", tone: "tone-amber", prefix: "¥", suffix: "万" },
+          { key: "payment", label: "已回款", value: 4380, sub: "回款率 53.0%", tone: "tone-green", prefix: "¥", suffix: "万" },
+          { key: "gap", label: "未回款金额", value: 3880, sub: "合同总额 - 已回款", tone: "tone-red", prefix: "¥", suffix: "万" },
+        ],
+        types: {
+          market: {
+            label: "市场项目",
+            count: 52,
+            color: "#2563eb",
+            risk: 5,
+            watch: 15,
+            bars: [
+              ["投标中", 12],
+              ["已中标", 8],
+              ["待推进", 9],
+            ],
+            focus: [
+              {
+                title: "待推进交付",
+                sub: "9 个市场项目已满足推进条件",
+                number: "9 个",
+                items: [
+                  ["智慧园区二期", "客户经理 林澈 / 已中标 12 天"],
+                  ["能源监测平台", "客户经理 陈一 / 合同范围待确认"],
+                  ["资产数字化平台", "客户经理 周可 / 待发起推进审批"],
+                ],
+              },
+              {
+                title: "投标结果待登记",
+                sub: "建议本周完成结果登记",
+                number: "6 个",
+                items: [
+                  ["政务门户改造", "客户经理 许明 / 开标后 5 天"],
+                  ["园区 IoT 接入", "客户经理 张帆 / 等待中标通知"],
+                  ["数据中台升级", "客户经理 王越 / 结果待补录"],
+                ],
+              },
+              {
+                title: "超过 30 天未更新",
+                sub: "需要客户经理补充进展",
+                number: "5 个",
+                items: [
+                  ["老旧系统替换", "客户经理 何青 / 41 天未更新"],
+                  ["档案治理项目", "客户经理 李言 / 36 天未更新"],
+                ],
+              },
+            ],
+          },
+          delivery: {
+            label: "交付项目",
+            count: 74,
+            color: "#16a34a",
+            risk: 12,
+            watch: 7,
+            bars: [
+              ["已立项", 10],
+              ["交付中", 46],
+              ["暂停", 4],
+            ],
+            focus: [
+              {
+                title: "低回款率项目",
+                sub: "合同额较大且回款率低于 30%",
+                number: "8 个",
+                items: [
+                  ["智慧园区一期", "负责人 张帆 / 回款率 18%"],
+                  ["能源监测平台", "负责人 林澈 / 未回款 ¥260万"],
+                  ["数据中台升级", "负责人 何青 / 回款率 24%"],
+                ],
+              },
+              {
+                title: "暂停项目",
+                sub: "需要确认恢复或终止计划",
+                number: "4 个",
+                items: [
+                  ["工业视觉项目", "负责人 许明 / 暂停 21 天"],
+                  ["统一门户迁移", "负责人 周可 / 暂停 13 天"],
+                ],
+              },
+              {
+                title: "待终验项目",
+                sub: "交付节点完成但未形成终验",
+                number: "7 个",
+                items: [
+                  ["资产盘点平台", "负责人 王越 / 初验已完成"],
+                  ["移动端重构", "负责人 李言 / 待客户排期"],
+                  ["合同归档系统", "负责人 陈一 / 终验材料待补"],
+                ],
+              },
+            ],
+          },
+          research: {
+            label: "研发项目",
+            count: 24,
+            color: "#7c3aed",
+            risk: 3,
+            watch: 4,
+            bars: [
+              ["进行中", 16],
+              ["将到期", 4],
+              ["已逾期", 2],
+            ],
+            focus: [
+              {
+                title: "即将到期",
+                sub: "未来 14 天内到研发结束日期",
+                number: "4 个",
+                items: [
+                  ["研发管理平台", "负责人 李言 / 06-30 到期"],
+                  ["报表性能优化", "负责人 周可 / 07-03 到期"],
+                  ["移动框架升级", "负责人 许明 / 07-06 到期"],
+                ],
+              },
+              {
+                title: "已逾期",
+                sub: "超过计划结束日期仍未关闭",
+                number: "2 个",
+                items: [
+                  ["知识库检索优化", "负责人 陈一 / 超期 9 天"],
+                  ["低代码组件升级", "负责人 王越 / 超期 4 天"],
+                ],
+              },
+              {
+                title: "负责人缺失",
+                sub: "影响后续工时和审批映射",
+                number: "1 个",
+                items: [
+                  ["接口压测平台", "未设置项目经理"],
+                ],
+              },
+            ],
+          },
+          functional: {
+            label: "职能项目",
+            count: 18,
+            color: "#0891b2",
+            risk: 1,
+            watch: 9,
+            bars: [
+              ["执行中", 11],
+              ["高预算", 3],
+              ["新建", 4],
+            ],
+            focus: [
+              {
+                title: "预算 Top 项目",
+                sub: "建议核对投入合理性",
+                number: "3 个",
+                items: [
+                  ["绩效规则升级", "负责人 赵宁 / 预算 ¥120万"],
+                  ["合同归档治理", "负责人 林澈 / 预算 ¥86万"],
+                  ["知识库整理", "负责人 何青 / 预算 ¥34万"],
+                ],
+              },
+              {
+                title: "近期新增",
+                sub: "本周期新建职能事项",
+                number: "4 个",
+                items: [
+                  ["资产标签治理", "负责人 周可 / 本周新增"],
+                  ["流程制度梳理", "负责人 陈一 / 本周新增"],
+                  ["供应商资料清理", "负责人 王越 / 本月新增"],
+                ],
+              },
+              {
+                title: "负责人分散",
+                sub: "涉及 7 个执行负责人",
+                number: "7 人",
+                items: [
+                  ["行政制度升级", "负责人 赵宁"],
+                  ["财务报销口径统一", "负责人 何青"],
+                ],
+              },
+            ],
+          },
+        },
+        flow: [
+          ["市场立项", 52, "机会池"],
+          ["投标中", 12, "23.1%"],
+          ["已中标", 8, "中标转化"],
+          ["待投入交付", 9, "待立项"],
+          ["交付已立项", 10, "未投入"],
+          ["交付中", 46, "收入主阵地"],
+          ["已完成", 18, "需看回款"],
+          ["暂停/终止", 7, "风险池"],
+        ],
+        trend: [
+          ["01月", 620, 480],
+          ["02月", 540, 510],
+          ["03月", 760, 620],
+          ["04月", 690, 560],
+          ["05月", 880, 740],
+          ["06月", 820, 710],
+        ],
+        risks: {
+          collection: [
+            ["智慧园区一期", "张帆", "回款率 18%", "¥ 420万", "red"],
+            ["能源监测平台", "林澈", "逾期未回款", "¥ 260万", "red"],
+            ["数据中台升级", "何青", "节点未申请", "¥ 180万", "amber"],
+            ["政务门户改造", "陈一", "待客户确认", "¥ 95万", "amber"],
+          ],
+          delivery: [
+            ["工业视觉项目", "许明", "暂停 21 天", "21 天", "red"],
+            ["园区 IoT 接入", "周可", "终验延迟", "14 天", "amber"],
+            ["资产盘点平台", "王越", "终验材料待补", "3 项", "amber"],
+            ["移动端重构", "李言", "资源待补充", "2 人", "blue"],
+          ],
+        },
+        research: [
+          ["研发管理平台", "李言 / 06-30 到期", "距结束 16 天"],
+          ["知识库检索优化", "周可 / 07-10 到期", "进度正常"],
+          ["移动框架升级", "许明 / 已逾期", "超期 9 天"],
+        ],
+        functional: [
+          ["绩效规则升级", "预算 ¥ 120万", "执行负责人 赵宁"],
+          ["合同归档治理", "预算 ¥ 86万", "执行负责人 林澈"],
+          ["内部知识库整理", "预算 ¥ 34万", "执行负责人 何青"],
+        ],
+        actions: [
+          ["优先催办回款", "2 个项目合计 ¥ 680万风险较高", "今天"],
+          ["推进待交付消化", "9 个市场项目等待进入交付池", "本周"],
+          ["复核研发延期", "2 个研发项目已超过计划结束日期", "本周"],
+        ],
+      };
+
+      const state = {
+        period: "year",
+        type: "market",
+        risk: "collection",
+        seed: 0,
+      };
+
+      const moneyKeys = new Set(["contract", "invoice", "payment"]);
+
+      function scaled(value) {
+        const factor = periodScale[state.period] || 1;
+        return Math.max(0, Math.round(value * factor + state.seed));
+      }
+
+      function formatMetric(item) {
+        const value = scaled(item.value);
+        return `${item.prefix || ""}${value.toLocaleString("zh-CN")}${item.suffix || ""}`;
+      }
+
+      function renderOverview() {
+        const root = document.getElementById("overviewGrid");
+        root.innerHTML = baseData.overview
+          .map((item) => {
+            const value = moneyKeys.has(item.key) ? formatMetric(item) : `${scaled(item.value)}${item.suffix}`;
+            return `
+              <article class="card metric-card">
+                <div class="metric-label">
+                  <span>${item.label}</span>
+                  <span>${state.period === "all" ? "全部" : state.period === "year" ? "本年" : state.period === "quarter" ? "本季" : "本月"}</span>
+                </div>
+                <div class="metric-value ${item.tone}">${value}</div>
+                <div class="metric-sub">${item.sub}</div>
+              </article>
+            `;
+          })
+          .join("");
+      }
+
+      function renderTypes() {
+        const root = document.getElementById("typeGrid");
+        root.innerHTML = Object.entries(baseData.types)
+          .map(([key, type]) => {
+            const max = Math.max(...type.bars.map((item) => item[1]));
+            return `
+              <article class="type-card ${state.type === key ? "active" : ""}" data-type="${key}">
+                <div class="type-row">
+                  <span class="type-name">${type.label}</span>
+                  <span class="tag blue">查看</span>
+                </div>
+                <div class="type-count" style="color:${type.color}">${scaled(type.count)} 个</div>
+                <div class="type-bars">
+                  ${type.bars
+                    .map(([label, count]) => `
+                      <div class="bar-row">
+                        <span>${label}</span>
+                        <span class="bar-track">
+                          <span class="bar-fill" style="width:${Math.max(12, (count / max) * 100)}%;background:${type.color}"></span>
+                        </span>
+                        <span>${scaled(count)}</span>
+                      </div>
+                    `)
+                    .join("")}
+                </div>
+              </article>
+            `;
+          })
+          .join("");
+
+        root.querySelectorAll(".type-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            state.type = card.dataset.type;
+            renderTypes();
+            renderFocus();
+          });
+        });
+
+        renderStructureSummary();
+      }
+
+      function renderStructureSummary() {
+        const entries = Object.entries(baseData.types);
+        const total = entries.reduce((sum, [, type]) => sum + scaled(type.count), 0) || 1;
+        document.getElementById("compositionBar").innerHTML = entries
+          .map(([, type]) => `
+            <span
+              class="stack-segment"
+              title="${type.label} ${scaled(type.count)} 个"
+              style="width:${(scaled(type.count) / total) * 100}%;background:${type.color}"
+            ></span>
+          `)
+          .join("");
+        document.getElementById("compositionList").innerHTML = entries
+          .map(([, type]) => {
+            const count = scaled(type.count);
+            return `
+              <div class="composition-item">
+                <span class="composition-name">
+                  <i class="square" style="background:${type.color}"></i>${type.label}
+                </span>
+                <strong>${((count / total) * 100).toFixed(1)}%</strong>
+              </div>
+            `;
+          })
+          .join("");
+
+        document.getElementById("ruleList").innerHTML = entries
+          .map(([, type]) => `
+            <div class="rule-row">
+              <span>${type.label}</span>
+              <span class="rule-value">${type.risk} 项风险 / ${type.watch} 项关注</span>
+            </div>
+          `)
+          .join("");
+      }
+
+      function renderFocus() {
+        const type = baseData.types[state.type];
+        document.getElementById("selectedTypeTag").textContent = type.label;
+        document.getElementById("focusTitle").textContent = `${type.label}关注`;
+        document.getElementById("typeFocusList").innerHTML = type.focus
+          .map((group, index) => `
+            <div class="mini-item focus-item">
+              <button class="focus-toggle" data-focus-index="${index}" aria-expanded="${index === 0 ? "true" : "false"}">
+                <span>
+                  <span class="mini-title">${group.title}</span>
+                  <span class="mini-sub">${group.sub}</span>
+                </span>
+                <span class="side-number" style="color:${type.color}">${group.number}</span>
+              </button>
+              <div class="focus-detail ${index === 0 ? "" : "hidden"}">
+                ${group.items
+                  .map((item) => `
+                    <div class="focus-row">
+                      <div>
+                        <div class="focus-project">${item[0]}</div>
+                        <div class="focus-meta">${item[1]}</div>
+                      </div>
+                      <span class="tag blue">查看</span>
+                    </div>
+                  `)
+                  .join("")}
+                <div class="focus-more">还有 ${group.number} 中的其余项目，可进入对应列表继续筛选。</div>
+              </div>
+            </div>
+          `)
+          .join("");
+
+        document.querySelectorAll(".focus-toggle").forEach((button) => {
+          button.addEventListener("click", () => {
+            const detail = button.nextElementSibling;
+            const expanded = !detail.classList.contains("hidden");
+            detail.classList.toggle("hidden", expanded);
+            button.setAttribute("aria-expanded", String(!expanded));
+          });
+        });
+      }
+
+      function renderFlow() {
+        document.getElementById("flowGrid").innerHTML = baseData.flow
+          .map(([label, count, delta], index) => `
+            <div class="flow-step">
+              <div class="flow-label">${index + 1}. ${label}</div>
+              <div class="flow-number">${scaled(count)}</div>
+              <div class="flow-delta">${delta}</div>
+            </div>
+          `)
+          .join("");
+      }
+
+      function renderTrend() {
+        const max = Math.max(...baseData.trend.flatMap((item) => [item[1], item[2]]));
+        document.getElementById("trendChart").innerHTML = `
+          <div class="axis"><span>900万</span><span>600万</span><span>300万</span><span>0</span></div>
+          ${baseData.trend
+            .map(([month, invoice, payment]) => `
+              <div class="month" title="${month} 开票 ${invoice}万 / 回款 ${payment}万">
+                <div class="columns">
+                  <div class="col invoice" style="height:${(invoice / max) * 100}%"></div>
+                  <div class="col payment" style="height:${(payment / max) * 100}%"></div>
+                </div>
+                <div class="month-label">${month}</div>
+              </div>
+            `)
+            .join("")}
+        `;
+      }
+
+      function renderRisks() {
+        document.getElementById("riskRows").innerHTML = baseData.risks[state.risk]
+          .map(([project, owner, risk, value, tone]) => `
+            <tr>
+              <td class="project-name">${project}</td>
+              <td>${owner}</td>
+              <td><span class="tag ${tone}">${risk}</span></td>
+              <td style="text-align:right;font-weight:650">${value}</td>
+            </tr>
+          `)
+          .join("");
+      }
+
+      function renderMiniLists() {
+        document.getElementById("researchList").innerHTML = baseData.research
+          .map(([title, sub, number]) => `
+            <div class="mini-item">
+              <div>
+                <div class="mini-title">${title}</div>
+                <div class="mini-sub">${sub}</div>
+              </div>
+              <div class="side-number">${number}</div>
+            </div>
+          `)
+          .join("");
+        document.getElementById("functionalList").innerHTML = baseData.functional
+          .map(([title, sub, number]) => `
+            <div class="mini-item">
+              <div>
+                <div class="mini-title">${title}</div>
+                <div class="mini-sub">${sub}</div>
+              </div>
+              <div class="side-number">${number}</div>
+            </div>
+          `)
+          .join("");
+        document.getElementById("actionsList").innerHTML = baseData.actions
+          .map(([title, sub, number]) => `
+            <div class="mini-item">
+              <div>
+                <div class="mini-title">${title}</div>
+                <div class="mini-sub">${sub}</div>
+              </div>
+              <div class="side-number tone-blue">${number}</div>
+            </div>
+          `)
+          .join("");
+      }
+
+      function renderAll() {
+        renderOverview();
+        renderTypes();
+        renderFocus();
+        renderFlow();
+        renderTrend();
+        renderRisks();
+        renderMiniLists();
+      }
+
+      document.getElementById("periodTabs").addEventListener("click", (event) => {
+        if (event.target.tagName !== "BUTTON") return;
+        state.period = event.target.dataset.period;
+        document.querySelectorAll("#periodTabs button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.period === state.period);
+        });
+        renderOverview();
+        renderTypes();
+        renderFlow();
+      });
+
+      document.getElementById("riskTabs").addEventListener("click", (event) => {
+        if (event.target.tagName !== "BUTTON") return;
+        state.risk = event.target.dataset.risk;
+        document.querySelectorAll("#riskTabs button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.risk === state.risk);
+        });
+        renderRisks();
+      });
+
+      document.getElementById("refreshButton").addEventListener("click", () => {
+        state.seed = Math.floor(Math.random() * 6);
+        renderAll();
+      });
+
+      renderAll();
+    </script>
+  </body>
+</html>
